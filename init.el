@@ -87,25 +87,13 @@
 
 (package-initialize)
 
-;;--- Js2 mode settings
-;;-----------------------
-;(setq-default js2-idle-timer-delay 0.1)
-;(setq-default js2-auto-indent-flag t)
-;(setq-default js2-global-externs '("module" "require" "jQuery" "$" "_" "buster" "sinon" "assert" "refute" "setTimeout" "clearTimeout" "setInterval" "clearInterval" "location" "__dirname" "console" "JSON"))
-;(setq-default js2-indent-on-enter-key t)
-;(require 'js2-mode)
-;(require 'js2-refactor)
-;(js2r-add-keybindings-with-prefix "C-c C-m")
-;(autoload 'js2-mode "js2" nil t)
-;(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
-
 
 ;(require 'erlang-config)
 ;(require 'tramp)
 ;(require 'perspective)
 ;(setq tramp-default-method "ftp")
 
-;(desktop-save-mode 1)
+(desktop-save-mode 1)
 
 (require 'setup-package)
 
@@ -141,6 +129,9 @@
 (when is-mac
   (require-package 'exec-path-from-shell)
   (exec-path-from-shell-initialize))
+
+;; Language specific setup files
+(eval-after-load 'js2-mode '(require 'setup-js2-mode))
   
 ;;; Smart M-x is smart
 ;(require 'smex)
