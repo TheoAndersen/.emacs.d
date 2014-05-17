@@ -94,7 +94,8 @@
   (packages-install
    '(magit
      diminish
-     dired-details
+     dired+
+     dired-details+
      git-commit-mode
      gitconfig-mode
      gitignore-mode
@@ -140,9 +141,11 @@
 
 
 ;; Make dired less verbose
-(require 'dired-details)
-(setq-default dired-details-hidden-string "--- ")
-(dired-details-install)
+(require 'dired+)
+(require 'dired-details+)
+(diredp-make-find-file-keys-reuse-dirs)
+
+;(setq-default dired-details-hidden-string "--- ")
 
 ;; Auto refresh buffers
 (global-auto-revert-mode 1)
