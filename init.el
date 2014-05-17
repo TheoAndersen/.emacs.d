@@ -110,7 +110,9 @@
      expand-region
      perspective
      ace-jump-mode
-     ace-jump-buffer)))
+     ace-jump-buffer
+     ido-ubiquitous
+     auto-complete)))
 
 (condition-case nil
     (init--install-packages)
@@ -136,16 +138,14 @@
 (eval-after-load 'magit '(require 'setup-magit))
 
 ;;; Smart M-x is smart
-                                        ;(require 'smex)
-                                        ;(smex-initialize)
-
+(require 'smex)
+(smex-initialize)
 
 ;; Make dired less verbose
 (require 'dired+)
 (require 'dired-details+)
 (diredp-make-find-file-keys-reuse-dirs)
-
-;(setq-default dired-details-hidden-string "--- ")
+(setq-default dired-details-hidden-string " ") ; string before each line in dired
 
 ;; Auto refresh buffers
 (global-auto-revert-mode 1)
@@ -153,6 +153,10 @@
 ;; Also auto refresh dired, but be quiet about it
 (setq global-auto-revert-non-file-buffers t)
 (setq auto-revert-verbose nil)
+
+(require 'auto-complete)
+(require 'auto-complete-config)
+(ac-config-default)
 
 (defun cleanup-buffer-safe ()
   "Perform a bunch of safe operations on the whitespace content of a buffer.
@@ -176,15 +180,17 @@ Including indent-buffer, which should not be called automatically on save."
 (global-set-key (kbd "C-c n") 'cleanup-buffer)
 
 ;; Use ido everywhere
-;(require 'ido-ubiquitous)
-;(ido-ubiquitous-mode 1)
+(require 'ido)
+(ido-mode t)
+(require 'ido-ubiquitous)
+(ido-ubiquitous-mode 1)
 
-;; Fix ido-ubiquitous for newer packages
-;; (defmacro ido-ubiquitous-use-new-completing-read (cmd package)
-;;   `(eval-after-load ,package
-;;      '(defadvice ,cmd (around ido-ubiquitous-new activate)
-;;         (let ((ido-ubiquitous-enable-compatibility nil))
-;;           ad-do-it))))
+;Fix ido-ubiquitous for newer packages
+(defmacro ido-ubiquitous-use-new-completing-read (cmd package)
+  `(eval-after-load ,package
+     '(defadvice ,cmd (around ido-ubiquitous-new activate)
+        (let ((ido-ubiquitous-enable-compatibility nil))
+          ad-do-it))))
 
 ;; (ido-ubiquitous-use-new-completing-read webjump 'webjump)
 ;; (ido-ubiquitous-use-new-completing-read yas/expand 'yasnippet)
