@@ -3,7 +3,9 @@ backups
 *~
 .places
 session.*
+.emacs.desktop*
 tramp
+autosave
 elpa
 swank
 emms

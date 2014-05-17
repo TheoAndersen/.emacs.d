@@ -10,7 +10,7 @@
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 
-;; right option is'nt emacs.. so that we can make {  and }
+;; right option isn't emacs.. so that we can make {  and }
 (setq mac-right-option-modifier nil)
 
 ;; Set path to dependencies
@@ -36,8 +36,6 @@
 (setenv "PATH" (read-system-path))
 (setenv "PATH" (concat "/usr/texbin:" (getenv "PATH")))
 
-
-
 ;;---------------------------------------|
 ;;  Backup / Autosave and locking files  |
 ;;_______________________________________|
@@ -49,7 +47,7 @@
 ; Don't use lock files (.#<file>) because they annoy build systems
 (setq create-lockfiles nil)
 
-;;; backup/autosave
+;;; backup/autosave to specific .emacs.d directories
 (defvar backup-dir (expand-file-name "~/.emacs.d/backup/"))
 (defvar autosave-dir (expand-file-name "~/.emacs.d/autosave/"))
 (setq backup-directory-alist (list (cons ".*" backup-dir)))
@@ -69,8 +67,8 @@
   "Toggle full screen"
   (interactive)
   (set-frame-parameter
-     nil 'fullscreen
-     (when (not (frame-parameter nil 'fullscreen)) 'fullboth)))
+   nil 'fullscreen
+   (when (not (frame-parameter nil 'fullscreen)) 'fullboth)))
 
 ;; mac friendly font
 ;(set-face-attribute 'default nil :font "Monaco" :height 140)
@@ -87,12 +85,6 @@
 
 (package-initialize)
 
-
-;(require 'erlang-config)
-;(require 'tramp)
-;(require 'perspective)
-;(setq tramp-default-method "ftp")
-
 (desktop-save-mode 1)
 
 (require 'setup-package)
@@ -101,21 +93,23 @@
 (defun init--install-packages ()
   (packages-install
    '(magit
-    git-commit-mode
-    gitconfig-mode
-    gitignore-mode
-    smooth-scrolling
-    undo-tree
-    js2-mode
-    js2-refactor
-    smex
-    zoom-frm
-    frame-cmds
-    frame-fns
-    expand-region
-    perspective
-    ace-jump-mode
-    ace-jump-buffer)))
+     diminish
+     dired-details
+     git-commit-mode
+     gitconfig-mode
+     gitignore-mode
+     smooth-scrolling
+     undo-tree
+     js2-mode
+     js2-refactor
+     smex
+     zoom-frm
+     frame-cmds
+     frame-fns
+     expand-region
+     perspective
+     ace-jump-mode
+     ace-jump-buffer)))
 
 (condition-case nil
     (init--install-packages)
@@ -123,6 +117,7 @@
    (package-refresh-contents)
    (init--install-packages)))
 
+(require 'setup-erlang-mode)
 (require 'sane-defaults)
 
 ;; Setup environment variables from the user's shell.
@@ -130,13 +125,76 @@
   (require-package 'exec-path-from-shell)
   (exec-path-from-shell-initialize))
 
-;; Language specific setup files
+(defmacro λ (&rest body)
+  `(lambda ()
+     (interactive)
+     ,@body))
+
+;; setup files - keep extension specific setup here, to enable/disable extensions
 (eval-after-load 'js2-mode '(require 'setup-js2-mode))
-  
+(eval-after-load 'magit '(require 'setup-magit))
+
 ;;; Smart M-x is smart
-;(require 'smex)
-;(smex-initialize)
+                                        ;(require 'smex)
+                                        ;(smex-initialize)
+
+
+;; Make dired less verbose
+(require 'dired-details)
+(setq-default dired-details-hidden-string "--- ")
+(dired-details-install)
+
+;; Auto refresh buffers
+(global-auto-revert-mode 1)
+
+;; Also auto refresh dired, but be quiet about it
+(setq global-auto-revert-non-file-buffers t)
+(setq auto-revert-verbose nil)
+
+(defun cleanup-buffer-safe ()
+  "Perform a bunch of safe operations on the whitespace content of a buffer.
+Does not indent buffer, because it is used for a before-save-hook, and that
+might be bad."
+  (interactive)
+  (untabify (point-min) (point-max))
+  (delete-trailing-whitespace)
+  (set-buffer-file-coding-system 'utf-8))
+
+;; Various superfluous white-space. Just say no.
+(add-hook 'before-save-hook 'cleanup-buffer-safe)
+
+(defun cleanup-buffer ()
+  "Perform a bunch of operations on the whitespace content of a buffer.
+Including indent-buffer, which should not be called automatically on save."
+  (interactive)
+  (cleanup-buffer-safe)
+  (indent-region (point-min) (point-max)))
+
+(global-set-key (kbd "C-c n") 'cleanup-buffer)
+
+;; Use ido everywhere
+;(require 'ido-ubiquitous)
+;(ido-ubiquitous-mode 1)
+
+;; Fix ido-ubiquitous for newer packages
+;; (defmacro ido-ubiquitous-use-new-completing-read (cmd package)
+;;   `(eval-after-load ,package
+;;      '(defadvice ,cmd (around ido-ubiquitous-new activate)
+;;         (let ((ido-ubiquitous-enable-compatibility nil))
+;;           ad-do-it))))
+
+;; (ido-ubiquitous-use-new-completing-read webjump 'webjump)
+;; (ido-ubiquitous-use-new-completing-read yas/expand 'yasnippet)
+;; (ido-ubiquitous-use-new-completing-read yas/visit-snippet-file 'yasnippet)
+
+
+(defmacro rename-modeline (package-name mode new-name)
+  `(eval-after-load ,package-name
+     '(defadvice ,mode (after rename-modeline activate)
+        (setq mode-name ,new-name))))
+
+(rename-modeline "js2-mode" js2-mode "JS2")
 
 (require 'key-bindings)
-;(require 'expand-region)
+
 (require 'appearance)

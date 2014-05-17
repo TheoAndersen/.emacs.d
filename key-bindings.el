@@ -28,14 +28,9 @@
   With prefix arg, kill this many lines starting at the line point is on."
    (interactive "p")
    (kill-region (line-beginning-position)
-	        (progn (forward-line n) (point))))
+                (progn (forward-line n) (point))))
 
 (global-set-key (kbd "<s-backspace>") 'pg-kill-this-line)
-
-;; Experimental multiple-cursors
-;(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-;(global-set-key (kbd "C-S-c C-e") 'mc/edit-ends-of-lines)
-;(global-set-key (kbd "C-S-c C-a") 'mc/edit-beginnings-of-lines)
 
 ;; Mark additional regions matching current region
 ;(global-set-key (kbd "M-æ") 'mc/mark-all-like-this-dwim)
@@ -52,11 +47,6 @@
 ;(global-set-key (kbd "s-Å") 'mc/mark-previous-symbol-like-this)
 ;(global-set-key (kbd "M-s-Æ") 'mc/mark-all-symbols-like-this)
 
-;; Extra multiple cursors stuff
-;(global-set-key (kbd "C-~") 'mc/reverse-regions)
-;(global-set-key (kbd "M-~") 'mc/sort-regions)
-;(global-set-key (kbd "H-~") 'mc/insert-numbers)
-
 ;(global-set-key (kbd "C-S-<mouse-1>") 'mc/add-cursor-on-click)
 
 ;; Set anchor to start rectangular-region-mode
@@ -70,7 +60,6 @@
 
 ;; Perform general cleanup.
 (global-set-key (kbd "C-c n") 'cleanup-buffer)
-;(global-set-key (kbd "C-c C-<return>") 'delete-blank-lines)
 
 ;; M-i for back-to-indentation
 (global-set-key (kbd "M-i") 'back-to-indentation)

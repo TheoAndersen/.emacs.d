@@ -1,4 +1,4 @@
-;;--- Js2 mode settings
+2;;--- Js2 mode settings
 ;;-----------------------
 (setq-default js2-idle-timer-delay 0.1)
 (setq-default js2-auto-indent-flag t)
