@@ -14,3 +14,5 @@ site-lisp/adventur-mode
 .DS_Store
 .yas-compiled-snippets.el
 eshell
+ac-comphist.dat
+ido.last

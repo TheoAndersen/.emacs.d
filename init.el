@@ -157,6 +157,7 @@
 (require 'auto-complete)
 (require 'auto-complete-config)
 (ac-config-default)
+(add-to-list 'ac-modes 'erlang-mode)
 
 (defun cleanup-buffer-safe ()
   "Perform a bunch of safe operations on the whitespace content of a buffer.
