@@ -17,6 +17,14 @@
 ;; Preeeetty font in Emacs 24/Ubuntu
 (if is-mac nil
   (set-default-font "Consolas"))
+
+;; mac friendly font
+(when is-mac
+ (custom-set-faces
+  '(default ((t (:height 180 :family "Inconsolata" :weight medium))))
+   )
+ )
+
 ;(if is-mac nil
 ;  (set-default-font "DejaVu Sans Mono")
 

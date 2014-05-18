@@ -77,12 +77,6 @@
    nil 'fullscreen
    (when (not (frame-parameter nil 'fullscreen)) 'fullboth)))
 
-;; mac friendly font
-;(set-face-attribute 'default nil :font "Monaco" :height
-;(set-face-attribute 'default nil :height 140)
-(custom-set-faces
-  '(default ((t (:height 140 :family "Inconsolata"))))
- )
 
 
 ;; keybinding to toggle full screen mode
