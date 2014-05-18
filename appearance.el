@@ -15,12 +15,10 @@
 ;(set-face-background 'yas/field-highlight-face "#333399")
 
 ;; Preeeetty font in Emacs 24/Ubuntu
+(if is-mac nil
+  (set-default-font "Consolas"))
 ;(if is-mac nil
 ;  (set-default-font "DejaVu Sans Mono")
-;  (set-face-attribute 'default nil :height 105))
-
-;; (set-face-attribute 'default nil
-;;                     :family "Monaco" :height 140 :weight 'normal)
 
 ;; org-mode colors
 (setq org-todo-keyword-faces

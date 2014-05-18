@@ -1,6 +1,15 @@
-(setq load-path (cons  "usr/local/Cellar/erlang/R16B03-1/lib/erlang/tools-2.6.6.4/emacs" load-path))
-(setq erlang-root-dir "/usr/local/Cellar/erlang/R16B03-1/lib/erlang/lib")
-(setq exec-path (cons "/usr/local/Cellar/erlang/R16B03-1/lib/erlang/bin" exec-path))
+(if is-mac nil ; windows
+  (setq load-path (cons  "C:/Program Files/erl6.0/lib/tools-2.6.14/emacs" load-path))
+  (setq erlang-root-dir "C:/Program Files/erl6.0/lib/")
+  (setq exec-path (cons "C:/Program Files/erl6.0/lib/bin" exec-path))
+)
+
+(when is-mac 
+  (setq load-path (cons  "usr/local/Cellar/erlang/R16B03-1/lib/erlang/tools-2.6.6.4/emacs" load-path))
+  (setq erlang-root-dir "/usr/local/Cellar/erlang/R16B03-1/lib/erlang/lib")
+  (setq exec-path (cons "/usr/local/Cellar/erlang/R16B03-1/lib/erlang/bin" exec-path))
+)
+
 (require 'erlang-start)
 (require 'erlang-flymake)
 (require 'erlang-eunit)

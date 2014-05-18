@@ -10,8 +10,13 @@
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 
+; is mac?
+(setq is-mac (equal system-type 'darwin))
+
 ;; right option isn't emacs.. so that we can make {  and }
-(setq mac-right-option-modifier nil)
+(when is-mac
+  (setq mac-right-option-modifier nil)
+  )
 
 ;; Set path to dependencies
 (setq site-lisp-dir
@@ -26,15 +31,19 @@
   (when (file-directory-p project)
     (add-to-list 'load-path project)))
 
-(defun read-system-path ()
-  (with-temp-buffer
-    (insert-file-contents "/etc/paths")
-    (goto-char (point-min))
-    (replace-regexp "\n" ":")
-    (thing-at-point 'line)))
+(when is-mac
+  (defun read-system-path ()
+    (with-temp-buffer
+      (insert-file-contents "/etc/paths")
+      (goto-char (point-min))
+      (replace-regexp "\n" ":")
+      (thing-at-point 'line)))
+)
 
-(setenv "PATH" (read-system-path))
-(setenv "PATH" (concat "/usr/texbin:" (getenv "PATH")))
+(when is-mac
+  (setenv "PATH" (read-system-path))
+  (setenv "PATH" (concat "/usr/texbin:" (getenv "PATH")))
+  )
 
 ;;---------------------------------------|
 ;;  Backup / Autosave and locking files  |
@@ -59,8 +68,6 @@
 ;;  Which system are we on?  |
 ;;___________________________|
 
-; is mac?
-(setq is-mac (equal system-type 'darwin))
 
 ;; Create function for mac-fullscreen
 (defun toggle-fullscreen ()
