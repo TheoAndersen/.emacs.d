@@ -33,11 +33,13 @@
 (global-set-key (kbd "<s-backspace>") 'pg-kill-this-line)
 
 ;; Mark additional regions matching current region
-;(global-set-key (kbd "M-æ") 'mc/mark-all-like-this-dwim)
-;(global-set-key (kbd "C-å") 'mc/mark-previous-like-this)
-;(global-set-key (kbd "C-æ") 'mc/mark-next-like-this)
-;(global-set-key (kbd "C-Æ") 'mc/mark-more-like-this-extended)
-;(global-set-key (kbd "M-å") 'mc/mark-all-in-region)
+(global-set-key (kbd "M-æ") 'mc/mark-all-like-this-dwim)
+(global-set-key (kbd "C-å") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-æ") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-Æ") 'mc/mark-more-like-this-extended)
+(global-set-key (kbd "M-å") 'mc/mark-all-in-region)
+
+(global-set-key (kbd "C-@") 'er/expand-region)
 
 ;; Symbol and word specific mark-more
 ;(global-set-key (kbd "s-æ") 'mc/mark-next-word-like-this)

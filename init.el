@@ -202,6 +202,7 @@ Including indent-buffer, which should not be called automatically on save."
 ;; (ido-ubiquitous-use-new-completing-read yas/expand 'yasnippet)
 ;; (ido-ubiquitous-use-new-completing-read yas/visit-snippet-file 'yasnippet)
 
+(require 'multiple-cursors)
 
 (defmacro rename-modeline (package-name mode new-name)
   `(eval-after-load ,package-name
