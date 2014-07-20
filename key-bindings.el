@@ -40,6 +40,7 @@
 (global-set-key (kbd "M-å") 'mc/mark-all-in-region)
 
 (global-set-key (kbd "C-@") 'er/expand-region)
+(global-set-key (kbd "C-'") 'er/expand-region)
 
 ;; Symbol and word specific mark-more
 ;(global-set-key (kbd "s-æ") 'mc/mark-next-word-like-this)
