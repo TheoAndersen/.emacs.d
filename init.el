@@ -169,7 +169,7 @@
 Does not indent buffer, because it is used for a before-save-hook, and that
 might be bad."
   (interactive)
-  (untabify (point-min) (point-max))
+  ;; (untabify (point-min) (point-max)) ;; uncommented because it interfered with Makefile-mode where makefiles requires tabs..
   (delete-trailing-whitespace)
   (set-buffer-file-coding-system 'utf-8))
 
