@@ -1,3 +1,4 @@
+
 ;;-----------------|
 ;;  Initial Setup  |
 ;;_________________|
@@ -117,7 +118,8 @@
      ace-jump-mode
      ace-jump-buffer
      ido-ubiquitous
-     auto-complete)))
+     auto-complete
+     find-file-in-project)))
 
 (condition-case nil
     (init--install-packages)
@@ -127,6 +129,7 @@
 
 (require 'setup-erlang-mode)
 (require 'sane-defaults)
+(require 'setup-ffip)
 
 ;; Setup environment variables from the user's shell.
 (when is-mac
@@ -141,6 +144,7 @@
 ;; setup files - keep extension specific setup here, to enable/disable extensions
 (eval-after-load 'js2-mode '(require 'setup-js2-mode))
 (eval-after-load 'magit '(require 'setup-magit))
+(eval-after-load 'grep '(require 'setup-rgrep))
 
 ;;; Smart M-x is smart
 (require 'smex)
