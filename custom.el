@@ -22,6 +22,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(TeX-PDF-mode t)
+ '(edts-man-root "/Users/Theo/.emacs.d/edts/doc/17.0")
  '(fill-column 80)
  '(ido-use-filename-at-point nil)
  '(js2-highlight-external-variables t)

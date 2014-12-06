@@ -69,7 +69,6 @@
 ;;  Which system are we on?  |
 ;;___________________________|
 
-
 ;; Create function for mac-fullscreen
 (defun toggle-fullscreen ()
   "Toggle full screen"
@@ -78,16 +77,12 @@
    nil 'fullscreen
    (when (not (frame-parameter nil 'fullscreen)) 'fullboth)))
 
-
-
 ;; keybinding to toggle full screen mode
 (global-set-key (quote [M-f10]) (quote toggle-fullscreen))
-
 
 ;;---------------------------------------------
 ;; Load / install and setup the right packages
 ;;_____________________________________________
-
 
 (package-initialize)
 
@@ -109,7 +104,7 @@
      undo-tree
      js2-mode
      js2-refactor
-     smex
+;     smex
      zoom-frm
      frame-cmds
      frame-fns
@@ -117,15 +112,18 @@
      perspective
      ace-jump-mode
      ace-jump-buffer
-     ido-ubiquitous
+ ;    ido-ubiquitous
      auto-complete
-     find-file-in-project)))
+     find-file-in-project
+     )))
 
 (condition-case nil
     (init--install-packages)
   (error
    (package-refresh-contents)
    (init--install-packages)))
+
+(package-initialize)
 
 (require 'setup-erlang-mode)
 (require 'sane-defaults)
@@ -147,8 +145,8 @@
 (eval-after-load 'grep '(require 'setup-rgrep))
 
 ;;; Smart M-x is smart
-(require 'smex)
-(smex-initialize)
+;; (require 'smex)
+;; (smex-initialize)
 
 ;; Make dired less verbose
 (require 'dired+)
@@ -190,17 +188,17 @@ Including indent-buffer, which should not be called automatically on save."
 (global-set-key (kbd "C-c n") 'cleanup-buffer)
 
 ;; Use ido everywhere
-(require 'ido)
-(ido-mode t)
-(require 'ido-ubiquitous)
-(ido-ubiquitous-mode 1)
+;; (require 'ido)
+;; (ido-mode t)
+;; (require 'ido-ubiquitous)
+;; (ido-ubiquitous-mode 1)
 
 ;Fix ido-ubiquitous for newer packages
-(defmacro ido-ubiquitous-use-new-completing-read (cmd package)
-  `(eval-after-load ,package
-     '(defadvice ,cmd (around ido-ubiquitous-new activate)
-        (let ((ido-ubiquitous-enable-compatibility nil))
-          ad-do-it))))
+;; (defmacro ido-ubiquitous-use-new-completing-read (cmd package)
+;;   `(eval-after-load ,package
+;;      '(defadvice ,cmd (around ido-ubiquitous-new activate)
+;;         (let ((ido-ubiquitous-enable-compatibility nil))
+;;           ad-do-it))))
 
 ;; (ido-ubiquitous-use-new-completing-read webjump 'webjump)
 ;; (ido-ubiquitous-use-new-completing-read yas/expand 'yasnippet)
@@ -216,5 +214,10 @@ Including indent-buffer, which should not be called automatically on save."
 (rename-modeline "js2-mode" js2-mode "JS2")
 
 (require 'key-bindings)
+
+;;
+;; (package-initialize)
+
+(require 'setup-helm)
 
 (require 'appearance)
