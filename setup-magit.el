@@ -44,5 +44,7 @@
 
 ;; (define-key magit-status-mode-map (kbd "W") 'magit-toggle-whitespace)
 
+(global-set-key (kbd "C-x m") 'magit-status)
+(autoload 'magit-status "magit")
 
 (provide 'setup-magit)

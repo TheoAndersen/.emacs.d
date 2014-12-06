@@ -1,4 +1,6 @@
 auto-save-list
+menu_log.notes
+projectile-bookmarks.eld
 backups
 *~
 .places
@@ -17,3 +19,4 @@ eshell
 ac-comphist.dat
 ido.last
 /.mc-lists.el
+games

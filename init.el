@@ -216,7 +216,7 @@ Including indent-buffer, which should not be called automatically on save."
 (require 'key-bindings)
 
 ;;
-;; (package-initialize)
+(package-initialize)
 
 (require 'setup-helm)
 

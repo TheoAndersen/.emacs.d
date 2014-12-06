@@ -7,7 +7,6 @@
 ;; (global-set-key (kbd "C-.") 'hippie-expand-no-case-fold)
 ;; (global-set-key (kbd "C-:") 'hippie-expand-lines)
 
-;(require 'misc)
 (global-set-key (kbd "s-.") 'copy-from-above-command)
 
 ;; Smart M-x
@@ -241,13 +240,6 @@
 ;(global-set-key (kbd "<s-up>") 'windmove-up)
 ;(global-set-key (kbd "<s-down>") 'windmove-down)
 
-;; Magit
-(global-set-key (kbd "C-x m") 'magit-status)
-(autoload 'magit-status "magit")
-
-;; Mu4e
-;(global-set-key (kbd "C-x M") 'mu4e-up-to-date-status)
-
 ;; Clever newlines
 ;(global-set-key (kbd "<C-return>") 'open-line-below)
 ;(global-set-key (kbd "<C-S-return>") 'open-line-above)
@@ -303,8 +295,6 @@
 ;; Find files by name and display results in dired
 ;(global-set-key (kbd "M-s f") 'find-name-dired)
 
-;; Find file in project
-(global-set-key (kbd "C-x p") 'find-file-in-project)
 
 ;(global-set-key (kbd "C-x C-o") 'next-multiframe-window)
 
