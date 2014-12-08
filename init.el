@@ -129,6 +129,9 @@
 (require 'sane-defaults)
 (require 'setup-ffip)
 
+(require 'omnisharp)
+(add-hook 'csharp-mode-hook 'omnisharp-mode)
+
 ;; Setup environment variables from the user's shell.
 (when is-mac
   (require-package 'exec-path-from-shell)
@@ -154,12 +157,18 @@
 (diredp-make-find-file-keys-reuse-dirs)
 (setq-default dired-details-hidden-string " ") ; string before each line in dired
 
+(define-key dired-mode-map "i" 'dired-subtree-insert)
+(define-key dired-mode-map ";" 'dired-subtree-remove)
+
 ;; Auto refresh buffers
 (global-auto-revert-mode 1)
 
 ;; Also auto refresh dired, but be quiet about it
 (setq global-auto-revert-non-file-buffers t)
 (setq auto-revert-verbose nil)
+
+
+(require 'setup-csharp)
 
 (require 'auto-complete)
 (require 'auto-complete-config)

@@ -9,8 +9,10 @@
 (global-hl-line-mode 1)
 
 ;; Customize background color of lighlighted line
-(set-face-background 'hl-line "#222222")
+;; (set-face-background 'hl-line "#222222")
 
+(load-theme 'zenburn t)
+(set-face-background 'default "#3a3a3a") ;; a little darker background please
 ;; Highlight in yasnippet
 ;(set-face-background 'yas/field-highlight-face "#333399")
 
