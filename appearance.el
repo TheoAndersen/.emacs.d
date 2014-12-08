@@ -1,3 +1,12 @@
+; no splash screen
+(setq inhibit-startup-message t)
+
+;; Turn off mouse interface early in startup to avoid momentary display
+(if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
+(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+(if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+
+
 (setq visible-bell t
       font-lock-maximum-decoration t
       color-theme-is-global t
@@ -7,6 +16,26 @@
 
 ;; Highlight current line
 (global-hl-line-mode 1)
+
+;; Create function for mac-fullscreen
+(defun toggle-fullscreen ()
+  "Toggle full screen"
+  (interactive)
+  (set-frame-parameter
+   nil 'fullscreen
+   (when (not (frame-parameter nil 'fullscreen)) 'fullboth)))
+
+;; keybinding to toggle full screen mode
+(global-set-key (quote [M-f10]) (quote toggle-fullscreen))
+
+
+
+(defmacro rename-modeline (package-name mode new-name)
+  `(eval-after-load ,package-name
+     '(defadvice ,mode (after rename-modeline activate)
+        (setq mode-name ,new-name))))
+
+(rename-modeline "js2-mode" js2-mode "JS2")
 
 ;; Customize background color of lighlighted line
 ;; (set-face-background 'hl-line "#222222")

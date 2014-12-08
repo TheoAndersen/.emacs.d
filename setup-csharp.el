@@ -32,7 +32,7 @@
 ;; add new csharp file
 
 (defun my-csharp-mode ()
-  (add-to-list 'company-backends 'company-omnisharp)
+;  (add-to-list 'company-backends 'company-omnisharp)
   (omnisharp-mode)
   (company-mode)
   (flycheck-mode) ;; how do i make it only open when omnisharp is loaded?

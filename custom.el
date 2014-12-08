@@ -36,7 +36,15 @@
  '(rng-nxml-auto-validate-flag nil)
  '(rngalt-display-validation-header nil)
  '(rngalt-minimal-validation-header nil)
- '(safe-local-variable-values (quote ((TeX-master . "report.tex") (encoding . utf-8))))
+ '(safe-local-variable-values
+   (quote
+    ((eval when
+           (require
+            (quote rainbow-mode)
+            nil t)
+           (rainbow-mode 1))
+     (TeX-master . "report.tex")
+     (encoding . utf-8))))
  '(vc-annotate-background "#2B2B2B")
  '(vc-annotate-color-map
    (quote

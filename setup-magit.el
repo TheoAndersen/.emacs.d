@@ -4,14 +4,14 @@
 (define-key magit-status-mode-map (kbd "C-g") 'magit-quit-session)
 
 ;; appearance
-(set-face-foreground 'magit-diff-file-header "yellow")
-(set-face-foreground 'magit-diff-hunk-header "yellow")
-(set-face-background 'magit-item-highlight "#0f004d")
-(set-face-foreground 'magit-diff-none "#666666")
-(set-face-foreground 'magit-diff-add "#00cc33")
-(set-face-attribute 'magit-diff-add nil :inherit 'diff-context)
-(set-face-foreground 'magit-diff-del "#a4121e")
-(set-face-attribute 'magit-diff-del nil :inherit 'diff-context)
+;; (set-face-foreground 'magit-diff-file-header "yellow")
+;; (set-face-foreground 'magit-diff-hunk-header "yellow")
+;; (set-face-background 'magit-item-highlight "#0f004d")
+;; (set-face-foreground 'magit-diff-none "#666666")
+;; (set-face-foreground 'magit-diff-add "#00cc33")
+;; (set-face-attribute 'magit-diff-add nil :inherit 'diff-context)
+;; (set-face-foreground 'magit-diff-del "#a4121e")
+;; (set-face-attribute 'magit-diff-del nil :inherit 'diff-context)
 
 ;; full screen magit-status
 (defadvice magit-status (around magit-fullscreen activate)
