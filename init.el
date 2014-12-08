@@ -1,9 +1,22 @@
+
 ;;-----------------|
 ;;  Initial Setup  |
 ;;_________________|
 
 ; no splash screen
 (setq inhibit-startup-message t)
+
+(setq locale-coding-system 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-selection-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
+
+(if (eq window-system 'x)
+    (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
+
+(if (eq system-type 'windows-nt)
+    (set-clipboard-coding-system 'utf-16le-dos))
 
 ;; Turn off mouse interface early in startup to avoid momentary display
 (if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
@@ -79,10 +92,10 @@
 
 ;; mac friendly font
 ;(set-face-attribute 'default nil :font "Monaco" :height
-;(set-face-attribute 'default nil :height 140)
-(custom-set-faces
-  '(default ((t (:height 140 :family "Inconsolata"))))
- )
+(set-face-attribute 'default nil :height 140)
+;; (custom-set-faces
+;;   '(default ((t (:height 140 :family "Inconsolata"))))
+;;  )
 
 
 ;; keybinding to toggle full screen mode
@@ -123,7 +136,8 @@
      ace-jump-mode
      ace-jump-buffer
      ido-ubiquitous
-     auto-complete)))
+     auto-complete
+     twittering-mode)))
 
 (condition-case nil
     (init--install-packages)
@@ -157,6 +171,8 @@
 (require 'dired-details+)
 (diredp-make-find-file-keys-reuse-dirs)
 (setq-default dired-details-hidden-string " ") ; string before each line in dired
+
+(require 'twittering-mode)
 
 ;; Auto refresh buffers
 (global-auto-revert-mode 1)
@@ -208,6 +224,7 @@ Including indent-buffer, which should not be called automatically on save."
 ;; (ido-ubiquitous-use-new-completing-read yas/expand 'yasnippet)
 ;; (ido-ubiquitous-use-new-completing-read yas/visit-snippet-file 'yasnippet)
 
+(require 'twittering-mode)
 
 (defmacro rename-modeline (package-name mode new-name)
   `(eval-after-load ,package-name
@@ -219,3 +236,4 @@ Including indent-buffer, which should not be called automatically on save."
 (require 'key-bindings)
 
 (require 'appearance)
+(set-clipboard-coding-system 'utf-16le-dos)
