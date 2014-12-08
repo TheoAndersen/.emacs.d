@@ -1,8 +1,9 @@
 (require 'magit)
 
+(global-set-key (kbd "C-c m") 'magit-status)
+(define-key magit-status-mode-map (kbd "C-g") 'magit-quit-session)
 
 ;; appearance
-
 (set-face-foreground 'magit-diff-file-header "yellow")
 (set-face-foreground 'magit-diff-hunk-header "yellow")
 (set-face-background 'magit-item-highlight "#0f004d")
@@ -24,8 +25,6 @@
   (kill-buffer)
   (jump-to-register :magit-fullscreen))
 
-;;(define-key magit-status-mode-map (kbd "q") 'magit-quit-session)
-
 (defun magit-toggle-whitespace ()
   (interactive)
   (if (member "-w" magit-diff-options)
@@ -44,7 +43,7 @@
 
 ;; (define-key magit-status-mode-map (kbd "W") 'magit-toggle-whitespace)
 
-(global-set-key (kbd "C-x m") 'magit-status)
+
 (autoload 'magit-status "magit")
 
 (provide 'setup-magit)
