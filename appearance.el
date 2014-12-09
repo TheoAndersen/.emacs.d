@@ -6,18 +6,15 @@
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 
-
 (setq visible-bell t
       font-lock-maximum-decoration t
       color-theme-is-global t
       truncate-partial-width-windows nil)
 
-(set-face-background 'region "#464740")
-
 ;; Highlight current line
 (global-hl-line-mode 1)
 
-;; Create function for mac-fullscreen
+;; Create function for mac-fullscreent
 (defun toggle-fullscreen ()
   "Toggle full screen"
   (interactive)
@@ -27,8 +24,6 @@
 
 ;; keybinding to toggle full screen mode
 (global-set-key (quote [M-f10]) (quote toggle-fullscreen))
-
-
 
 (defmacro rename-modeline (package-name mode new-name)
   `(eval-after-load ,package-name
@@ -42,22 +37,9 @@
 
 (load-theme 'zenburn t)
 (set-face-background 'default "#3a3a3a") ;; a little darker background please
+
 ;; Highlight in yasnippet
 ;(set-face-background 'yas/field-highlight-face "#333399")
-
-;; Preeeetty font in Emacs 24/Ubuntu
-(if is-mac nil
-  (set-default-font "Consolas"))
-
-;; mac friendly font
-(when is-mac
- (custom-set-faces
-  '(default ((t (:height 180 :family "Inconsolata" :weight medium))))
-   )
- )
-
-;(if is-mac nil
-;  (set-default-font "DejaVu Sans Mono")
 
 ;; org-mode colors
 (setq org-todo-keyword-faces

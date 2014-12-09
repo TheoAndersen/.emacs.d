@@ -22,4 +22,13 @@
 (setenv "PATH" (read-system-path))
 (setenv "PATH" (concat "/usr/texbin:" (getenv "PATH")))
 
+;; mac friendly font
+(when is-mac
+ (custom-set-faces
+  '(default ((t (:height 180 :family "Inconsolata" :weight medium))))
+   )
+ )
+
+
+(message "setup mac")
 (provide 'setup-mac)

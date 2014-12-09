@@ -3,6 +3,7 @@
 ;;  Initial Setup  |
 ;;_________________|
 
+; is mac?
 (setq is-mac (equal system-type 'darwin))
 
 ;;-------------------------|
@@ -75,6 +76,7 @@
      find-file-in-project
      csharp-mode
      helm
+     helm-projectile
      zenburn-theme
      )))
 
@@ -93,18 +95,21 @@
 (when is-mac
   (require 'setup-mac)
   )
+(if (eq system-type 'windows-nt)
+    (require 'setup-windows)
+  )
 
 (require 'sane-defaults)
 (require 'key-bindings)
 (require 'appearance)
-(require 'setup-ffip)
-(require 'setup-helm)
-(require 'setup-magit)
-(require 'setup-autocomplete)
-(require 'multiple-cursors)
-(eval-after-load 'emacs-lisp-mode '(require 'setup-elisp))
-(eval-after-load 'erlang-mode '(require 'setup-erlang-mode))
-(eval-after-load 'js2-mode '(require 'setup-js2-mode))
-(eval-after-load 'grep '(require 'setup-rgrep))
-(eval-after-load 'dired '(require 'setup-dired))
-(eval-after-load 'csharp-mode '(require 'setup-csharp))
+;; (require 'setup-ffip)
+;; (require 'setup-helm)
+;; (require 'setup-magit)
+;; (require 'setup-autocomplete)
+;; (require 'multiple-cursors)
+;; (eval-after-load 'emacs-lisp-mode '(require 'setup-elisp))
+;; (eval-after-load 'erlang-mode '(require 'setup-erlang-mode))
+;; (eval-after-load 'js2-mode '(require 'setup-js2-mode))
+;; (eval-after-load 'grep '(require 'setup-rgrep))
+;; (eval-after-load 'dired '(require 'setup-dired))
+;; (eval-after-load 'csharp-mode '(require 'setup-csharp))
