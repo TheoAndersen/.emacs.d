@@ -3,6 +3,7 @@
 ;;  Initial Setup  |
 ;;_________________|
 
+; is mac?
 (setq is-mac (equal system-type 'darwin))
 
 ;;-------------------------|
@@ -75,6 +76,7 @@
      find-file-in-project
      csharp-mode
      helm
+     helm-projectile
      zenburn-theme
      edts
      )))
@@ -93,6 +95,9 @@
 
 (when is-mac
   (require 'setup-mac)
+  )
+(if (eq system-type 'windows-nt)
+    (require 'setup-windows)
   )
 
 (require 'sane-defaults)
