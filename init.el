@@ -76,6 +76,7 @@
      csharp-mode
      helm
      zenburn-theme
+     edts
      )))
 
 (condition-case nil
@@ -100,7 +101,7 @@
 (require 'setup-ffip)
 (require 'setup-helm)
 (require 'setup-magit)
-(require 'setup-autocomplete)
+;; (require 'setup-autocomplete)
 (require 'multiple-cursors)
 (eval-after-load 'emacs-lisp-mode '(require 'setup-elisp))
 (eval-after-load 'erlang-mode '(require 'setup-erlang-mode))
