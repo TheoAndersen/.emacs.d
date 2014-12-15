@@ -11,8 +11,6 @@
       color-theme-is-global t
       truncate-partial-width-windows nil)
 
-;; Highlight current line
-(global-hl-line-mode 1)
 
 ;; Create function for mac-fullscreent
 (defun toggle-fullscreen ()
@@ -35,8 +33,14 @@
 ;; Customize background color of lighlighted line
 ;; (set-face-background 'hl-line "#222222")
 
+;; Highlight current line
+(global-hl-line-mode 1)
+
+;; Theme adjustmens
 (load-theme 'zenburn t)
 (set-face-background 'default "#3a3a3a") ;; a little darker background please
+(set-face-attribute 'region nil :background "#000") ;; To hard to see regions if not very black
+
 
 ;; Highlight in yasnippet
 ;(set-face-background 'yas/field-highlight-face "#333399")
