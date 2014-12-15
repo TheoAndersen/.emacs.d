@@ -41,4 +41,5 @@
 (setq omnisharp-company-strip-trailing-brackets nil)
 (add-hook 'csharp-mode-hook 'my-csharp-mode)
 
+(message "--> Loaded setup-csharp")
 (provide 'setup-csharp)

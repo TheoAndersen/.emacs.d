@@ -18,10 +18,6 @@
 ;; C-, find symbol
 ;; M-<space> autocomplete (and with documentation)
 
-(define-key edts-mode-map (kbd "<f12>") 'edts-find-source-under-point)
-(define-key edts-mode-map (kbd "C-,") 'helm-projectile-grep)
-(define-key edts-mode-map (kbd "C-S-b") 'edts-code-compile-and-display)
-(define-key edts-mode-map (kbd "M-SPC") 'auto-complete)
 
 (add-hook 'erlang-mode-hook
      (lambda ()
@@ -34,12 +30,18 @@
         (imenu-add-to-menubar "imenu")
         ))
 
-
-(defun my-after-init-hook ()
-  (require 'edts-start))
-
 (add-hook 'after-init-hook 'my-after-init-hook)
+(defun my-after-init-hook ()
+  (require 'edts-start)
+  (define-key edts-mode-map (kbd "<f12>") 'edts-find-source-under-point)
+  (define-key edts-mode-map (kbd "C-,") 'helm-projectile-grep)
+  (define-key edts-mode-map (kbd "C-S-b") 'edts-code-compile-and-display)
+  (define-key edts-mode-map (kbd "M-SPC") 'auto-complete)
+  )
+
+
 
 ;;(add-to-list 'ac-modes 'erlang-mode)
 
+(message "-> loaded 'setup-erlang-mode")
 (provide 'setup-erlang-mode)

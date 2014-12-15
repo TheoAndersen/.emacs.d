@@ -58,4 +58,5 @@
 
 (define-key emacs-lisp-mode-map (kbd "<f12>") 'elisp-find-definition)
 
+(message "-> loaded 'setup-elisp")
 (provide 'setup-elisp)

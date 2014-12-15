@@ -23,14 +23,18 @@
 (setq site-lisp-dir
       (expand-file-name "site-lisp" user-emacs-directory))
 
+(setq lisp-dir
+      (expand-file-name "lisp" user-emacs-directory))
+
+
 ;; Set up load path
-(add-to-list 'load-path (concat user-emacs-directory "lisp"))
-(add-to-list 'load-path site-lisp-dir)
+(add-to-list 'load-path lisp-dir)
+;(add-to-list 'load-path site-lisp-dir)
 
 ;; Add external projects to load path
-(dolist (project (directory-files site-lisp-dir t "\\w+"))
-  (when (file-directory-p project)
-    (add-to-list 'load-path project)))
+;(dolist (project (directory-files site-lisp-dir t "\\w+"))
+;  (when (file-directory-p project)
+;    (add-to-list 'load-path project)))
 
 (require 'common-utils)
 
@@ -56,7 +60,7 @@
 ;;___________________________________|
 
 (package-initialize)
-(desktop-save-mode 1)
+;; (desktop-save-mode 1)
 
 (require 'setup-package)
 
@@ -117,9 +121,10 @@
 (require 'setup-magit)
 ;; (require 'setup-autocomplete)
 (require 'multiple-cursors)
-(eval-after-load 'emacs-lisp-mode '(require 'setup-elisp))
-(eval-after-load 'erlang-mode '(require 'setup-erlang-mode))
-(eval-after-load 'js2-mode '(require 'setup-js2-mode))
-(eval-after-load 'grep '(require 'setup-rgrep))
-(eval-after-load 'dired '(require 'setup-dired))
-(eval-after-load 'csharp-mode '(require 'setup-csharp))
+(require 'setup-elisp)
+(require 'setup-erlang-mode)
+(require 'setup-js2-mode)
+(require 'setup-rgrep)
+(require 'setup-dired)
+(require 'setup-csharp)
+;(eval-after-load 'csharp-mode '(require 'setup-csharp))
