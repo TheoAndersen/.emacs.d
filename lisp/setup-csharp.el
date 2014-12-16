@@ -16,7 +16,14 @@
 ;; farverne er helt æmrkelige
 ;; flycheck er slet ikke tydeligt.. man kan ikke se hvad der er fejl og hvad der ikke er
 
-(setq omnisharp-server-executable-path "/Users/Theo/Downloads/OmniSharpServer/OmniSharp/bin/Debug/OmniSharp.exe")
+(when is-mac
+  (setq omnisharp-server-executable-path "/Users/Theo/Downloads/OmniSharpServer/OmniSharp/bin/Debug/OmniSharp.exe")
+  )
+(if (eq system-type 'windows-nt)
+    (setq omnisharp-server-executable-path "C:\\\Dev\\tools\\OmniSharpServer\\OmniSharp\\bin\\Debug\\OmniSharp.exe")
+  )
+
+;;(setq omnisharp--curl-Executable-path "C:\\\Chocolatey\\lib\\curl.7.28.1\\tools\\curl.exe")
 
 (define-key csharp-mode-map (kbd "C-S-b") 'omnisharp-build-in-emacs)
 (define-key csharp-mode-map (kbd "M-SPC") 'omnisharp-auto-complete)

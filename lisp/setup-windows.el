@@ -7,6 +7,9 @@
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 (set-clipboard-coding-system 'utf-16le-dos)
 
+(setq find-program "C:\\\windows\\system32\\find.EXE"
+      grep-program "c:\\\GnuWin32\\bin\\grep.exe")
+
 ;; Preeeetty font in Emacs 24/Ubuntu
 (set-default-font "Consolas")
 

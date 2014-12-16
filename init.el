@@ -87,6 +87,8 @@
      ace-jump-buffer
      auto-complete
      find-file-in-project
+     flycheck
+     company
      csharp-mode
      helm
      helm-projectile
