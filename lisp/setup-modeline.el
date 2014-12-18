@@ -31,7 +31,7 @@
 (display-time-mode 1)
 (setq display-time-format "%a %m/%d%t%R") ;"%a %m/%d%t%R")
 (display-battery-mode 1)
-(setq battery-mode-line-format "%p%%") ; Default: "[%b%p%%]"
+(setq battery-mode-line-format "%b%p%%") ; Default: "[%b%p%%]"
 
 (diminish 'isearch-mode)
 
