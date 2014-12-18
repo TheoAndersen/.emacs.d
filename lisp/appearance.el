@@ -11,7 +11,6 @@
       color-theme-is-global t
       truncate-partial-width-windows nil)
 
-
 ;; Create function for mac-fullscreent
 (defun toggle-fullscreen ()
   "Toggle full screen"
@@ -39,7 +38,16 @@
 ;; Theme adjustmens
 (load-theme 'zenburn t)
 (set-face-background 'default "#3a3a3a") ;; a little darker background please
+;(set-face-background 'helm-ff-file "#2F362A")
+;(set-face-background 'helm-header "2F362A")
 (set-face-attribute 'region nil :background "#000") ;; To hard to see regions if not very black
+;; (set-face-attribute 'helm-ff-file nil :background "#2F362A")
+;; (set-face-attribute 'helm-ff-directory nil :background "#2F362A")
+;; (set-face-attribute 'helm-ff-executable nil :background "#2F362A")
+;; (set-face-attribute 'helm-ff-invalid-symlink nil :background "#2F362A")
+;; (set-face-attribute 'helm-ff-symlink nil :background "#2F362A")
+;; (set-face-attribute 'helm-ff-prefix nil :background "#2F362A")
+;; (set-face-attribute 'helm-header nil :background "#2F362A")
 
 
 ;; Highlight in yasnippet
@@ -67,5 +75,7 @@
 ;; Sweet window-splits
 (defadvice split-window-right (after balance activate) (balance-windows))
 (defadvice delete-window (after balance activate) (balance-windows))
+
+(require 'chgbackground)
 
 (provide 'appearance)
