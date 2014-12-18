@@ -92,8 +92,10 @@
      csharp-mode
      helm
      helm-projectile
+     helm-ag
      zenburn-theme
      edts
+     ag
      )))
 
 (condition-case nil
@@ -118,6 +120,7 @@
 (require 'sane-defaults)
 (require 'key-bindings)
 (require 'appearance)
+(require 'setup-ag)
 (require 'setup-ffip)
 (require 'setup-helm)
 (require 'setup-magit)
