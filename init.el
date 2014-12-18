@@ -135,4 +135,5 @@
 (require 'setup-rgrep)
 (require 'setup-dired)
 (require 'setup-csharp)
+(require 'setup-acejump)
 ;(eval-after-load 'csharp-mode '(require 'setup-csharp))
