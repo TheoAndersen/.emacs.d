@@ -70,11 +70,11 @@
            )
           )
 
-(add-hook 'helm-after-action-hook
-          (lambda ()
-            (message (concat "helm-mode-hook (HEST): " (buffer-name)))
-           )
-          )
+;; (add-hook 'helm-after-action-hook
+;;           (lambda ()
+;;             (message (concat "helm-mode-hook (HEST): " (buffer-name)))
+;;            )
+;;           )
 
 (provide 'chgbackground)
 

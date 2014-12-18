@@ -67,7 +67,8 @@
 ;; Install extensions if they're missing
 (defun init--install-packages ()
   (packages-install
-   '(magit
+   '(use-package
+     magit
      diminish
      dired+
      dired-details+
@@ -117,6 +118,8 @@
     (require 'setup-windows)
   )
 
+(require 'use-package)
+(require 'setup-modeline)
 (require 'sane-defaults)
 (require 'key-bindings)
 (require 'appearance)
