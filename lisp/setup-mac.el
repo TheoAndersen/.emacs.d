@@ -4,6 +4,7 @@
 ;; right option isn't emacs.. so that we can make {  and }
 (when is-mac
   (setq mac-right-option-modifier nil)
+  (setq mac-left-option-modifier 'Meta)
   )
 
 (defun read-system-path ()

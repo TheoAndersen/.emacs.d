@@ -24,3 +24,6 @@ games
 /url/
 /projectile.cache
 /server/
+/#init.el#
+/#theo.el#
+/theo.el

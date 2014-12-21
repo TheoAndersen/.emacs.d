@@ -1,0 +1,1153 @@
+#+TITLE: Theo Andersen Carton's Emacs configuration
+#+OPTIONS: toc:4 h:4
+* Missing pieces
+** TODO Left alt as Meta in mac
+* Introduction
+** Quotations
+*** On Emacs
+#+begin_quote
+Emacs outshines all other editing software in approximately the same way that the noonday sun does the stars. It is not just bigger and brighter; it simply makes everything else vanish.
+
+-- Neal Stephenson, "[[http://www.cryptonomicon.com/beginning.html][In the Beginning was the Command Line]]"
+#+end_quote
+
+#+begin_quote
+On 2 Apr 1992 in the journal Nature the discovery was reported that a giant ancient fungus had been living under the forests of Michigan for at least 1,500 years, the oldest and largest living thing on Earth. Software could get to be like that, I suppose, and Emacs, incorporating, like the fungal thallus, all the the filamentous strands of Emacs Lisp that now already thinly web the Earth, is surely a front runner. But do not be distracted by such lives.  Even the life of Emacs, like the life of that fungus, is an ephemerality; to grok life one must transcend not only thermospace but cyberspace.
+
+-- [[http://www.eskimo.com/~seldon/dotemacs.el][Will Mengarini]]
+#+end_quote
+*** On Literate Programming
+#+begin_quote
+Let us change our traditional attitude to the construction of programs: Instead of imagining that our main task is to instruct a computer what to do, let us concentrate rather on explaining to human beings what we want a computer to do.
+
+The practitioner of literate programming can be regarded as an essayist, whose main concern is with exposition and excellence of style. Such an author, with thesaurus in hand, chooses the names of variables carefully and explains what each variable means. He or she strives for a program that is comprehensible because its concepts have been introduced in an order that is best for human understanding, using a mixture of formal and informal methods that reinforce each other.
+
+-- Donald Knuth
+#+end_quote
+
+#+begin_quote
+In my experience, software created with literate programming has turned out to be significantly better than software developed in more traditional ways...
+
+Jon Bentley probably hit the nail on the head when he once was asked why literate programming hasn’t taken the whole world by storm. He observed that a small percentage of the world’s population is good at programming, and a small percentage is good at writing; apparently I am asking everybody to be in both subsets.
+
+Yet to me, literate programming is certainly the most important thing that came out of the TeX project. Not only has it enabled me to write and maintain programs faster and more reliably than ever before, and been one of my greatest sources of joy since the 1980s—it has actually been indispensable at times.
+
+-- [[http://www.informit.com/articles/article.aspx?p=1193856][Donald Knuth]]
+#+end_quote
+* General settings
+** Personal information
+#+BEGIN_SRC emacs-lisp
+  (setq user-full-name "Theo Andersen Carton"
+        user-mail-address "andersen.theo@gmail.com")
+#+END_SRC
+** Set global variables for identifying the system (Mac or Windows)
+#+BEGIN_SRC emacs-lisp
+; is mac?
+(setq is-mac (equal system-type 'darwin))
+(setq is-windows (equal system-type 'windows-nt))
+#+END_SRC
+** Enable package support
+I set up packages, Melpa, and use-package bright and early so that I can make use of use-package's bind-key macro.
+
+When I first copy this set-up into a new machine, I still have to require package, add MELPA, initialize package, and grab use-package, solarized-theme, and a couple of others (including my tid-mode) from the package archives and the internet. This could be improved, but it's not so bad.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'package)
+  (add-to-list 'package-archives
+               '("melpa" . "http://melpa.org/packages/") t)
+  (add-to-list 'package-archives
+               '("marmalade" . "http://marmalade-repo.org/packages/") t)
+  (add-to-list 'package-archives
+               '("elpa" . "http://marmalade-repo.org/packages/") t)
+
+  (setq load-prefer-newer t)
+  (require 'use-package) ;; currently you have to evaluate everything up to here, and grab use-package manually :/
+
+  (use-package diminish
+    :ensure t
+    :init
+    (defmacro rename-modeline (package-name mode new-name)
+      `(eval-after-load ,package-name
+         '(defadvice ,mode (after rename-modeline activate)
+            (setq mode-name ,new-name)))))
+#+END_SRC
+** Backups
+#+BEGIN_SRC emacs-lisp
+  (setq backup-directory-alist
+        `(("." . ,(expand-file-name
+                   (concat user-emacs-directory "backups")))))
+#+END_SRC
+
+** Saner defaults
+*** Change prompts
+Make yes or no prompts be y or n prompts.
+
+#+BEGIN_SRC emacs-lisp
+  (fset 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+*** Apropos
+Let apropos commands perform more extensive searches than default. This also comes from Better Defaults.
+
+#+BEGIN_SRC emacs-lisp
+  (setq apropos-do-all t)
+#+END_SRC
+*** No file warning when file dosen't exist
+Remove the warning if a buffer or file does not exist, so you can create them.
+
+#+BEGIN_SRC emacs-lisp
+  (setq confirm-nonexistent-file-or-buffer nil)
+
+  ;; via https://iqbalansari.github.io/blog/2014/12/07/automatically-create-parent-directories-on-visiting-a-new-file-in-emacs/
+
+  (defun create-non-existent-directory ()
+    "Check whether a given file's parent directories exist; if they do not, offer to create them."
+    (let ((parent-directory (file-name-directory buffer-file-name)))
+      (when (and (not (file-exists-p parent-directory))
+                 (y-or-n-p (format "Directory `%s' does not exist! Create it?" parent-directory)))
+        (make-directory parent-directory t))))
+
+  (add-to-list 'find-file-not-found-functions #'create-non-existent-directory)
+#+END_SRC
+*** Better ediff
+The default Ediff behavior is confusing and not desirable. This fixes it.
+
+#+BEGIN_SRC emacs-lisp
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+#+END_SRC
+*** Additional more sane behaviour
+Some features and settings are disabled by default; this is sane behavior for new users, but it is expected that we will disable them eventually.
+
+#+BEGIN_SRC emacs-lisp
+  (put 'narrow-to-region 'disabled nil)
+  (put 'narrow-to-page 'disabled nil)
+  (put 'upcase-region 'disabled nil)
+  (put 'downcase-region 'disabled nil)
+  (put 'erase-buffer 'disabled nil)
+
+;; Allow pasting selection outside of Emacs
+(setq x-select-enable-clipboard t)
+
+;; Auto refresh buffers
+(global-auto-revert-mode 1)
+
+;; Also auto refresh dired, but be quiet about it
+(setq global-auto-revert-non-file-buffers t)
+(setq auto-revert-verbose nil)
+
+;; Show keystrokes in progress
+(setq echo-keystrokes 0.1)
+
+;; Move files to trash when deleting
+(setq delete-by-moving-to-trash t)
+
+;; Real emacs knights don't use shift to mark things
+(setq shift-select-mode nil)
+
+;; Transparently open compressed files
+(auto-compression-mode t)
+
+;; Enable syntax highlighting for older Emacsen that have it off
+(global-font-lock-mode t)
+
+;; Answering just 'y' or 'n' will do
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+;; UTF-8 please
+(setq locale-coding-system 'utf-8) ; pretty
+(set-terminal-coding-system 'utf-8) ; pretty
+(set-keyboard-coding-system 'utf-8) ; pretty
+(set-selection-coding-system 'utf-8) ; please
+(prefer-coding-system 'utf-8) ; with sugar on top
+
+;; Show active region
+(transient-mark-mode 1)
+(make-variable-buffer-local 'transient-mark-mode)
+(put 'transient-mark-mode 'permanent-local t)
+(setq-default transient-mark-mode t)
+
+;; Remove text in active region if inserting text
+(delete-selection-mode 1)
+
+;; Don't highlight matches with jump-char - it's distracting
+(setq jump-char-lazy-highlight-face nil)
+
+;; Always display line and column numbers
+(setq line-number-mode t)
+(setq column-number-mode t)
+
+;; Lines should be 80 characters wide, not 72
+(setq fill-column 80)
+
+;; Save a list of recent files visited. (open recent file with C-x f)
+(recentf-mode 1)
+(setq recentf-max-saved-items 100) ;; just 20 is too recent
+
+;; Undo/redo window configuration with C-c <left>/<right>
+(winner-mode 1)
+
+;; Never insert tabs
+(set-default 'indent-tabs-mode nil)
+
+;; Show me empty lines after buffer end
+(set-default 'indicate-empty-lines t)
+
+;; Easily navigate sillycased words
+;(global-subword-mode 1) ; dunno what this is, but the ", " in the bar is silly
+
+;; Don't break lines for me, please
+(setq-default truncate-lines t)
+
+;; Keep cursor away from edges when scrolling up/down
+(require 'smooth-scrolling)
+
+;; org-mode: Don't ruin S-arrow to switch windows please (use M-+ and M-- instead to toggle)
+(setq org-replace-disputed-keys t)
+
+;; Fontify org-mode code blocks
+(setq org-src-fontify-natively t)
+
+;; Represent undo-history as an actual tree (visualize with C-x u)
+(setq undo-tree-mode-lighter "")
+(require 'undo-tree)
+(global-undo-tree-mode)
+
+;; Sentences do not need double spaces to end. Period.
+(set-default 'sentence-end-double-space nil)
+
+;; Add parts of each file's directory to the buffer name if not unique
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'forward)
+
+;; A saner ediff
+(setq ediff-diff-options "-w")
+(setq ediff-split-window-function 'split-window-horizontally)
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+
+;; Nic says eval-expression-print-level needs to be set to nil (turned off) so
+;; that you can always see what's happening.
+(setq eval-expression-print-level nil)
+
+;; When popping the mark, continue popping until the cursor actually moves
+;; Also, if the last command was a copy - skip past all the expand-region cruft.
+(defadvice pop-to-mark-command (around ensure-new-position activate)
+  (let ((p (point)))
+    (when (eq last-command 'save-region-or-current-line)
+      ad-do-it
+      ad-do-it
+      ad-do-it)
+    (dotimes (i 10)
+      (when (= p (point)) ad-do-it))))
+#+END_SRC
+
+* Appearance
+** Turn off unnecessary graphical features (like menu, etc.)
+*** No menu, scroll or tool bar
+#+BEGIN_SRC emacs-lisp
+  (if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
+  (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+  (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+#+END_SRC
+*** No startup messages
+#+BEGIN_SRC emacs-lisp
+  (setq inhibit-startup-message t
+        initial-scratch-message ""
+        inhibit-startup-echo-area-message t)
+#+END_SRC
+** Font and Theming - Use the Zenburn theme, only slightly modified
+#+BEGIN_SRC emacs-lisp
+  (use-package zenburn-theme
+    :ensure t
+    :init)
+
+(load-theme 'zenburn t)
+(set-face-background 'default "#3a3a3a") ;; a little darker background please
+(set-face-attribute 'region nil :background "#000") ;; To hard to see regions if not very black
+
+(when is-mac
+ (custom-set-faces
+  '(default ((t (:height 180 :family "Inconsolata" :weight medium))))
+  )
+ )
+
+(when is-windows
+ (set-default-font "Consolas")
+ (setq locale-coding-system 'utf-8)
+ (set-terminal-coding-system 'utf-8)
+ (set-keyboard-coding-system 'utf-8)
+ (set-selection-coding-system 'utf-8)
+ (prefer-coding-system 'utf-8)
+
+ (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+ (set-clipboard-coding-system 'utf-16le-dos)
+)
+
+#+END_SRC
+** Slimmer mode line
+[[http://www.lunaryorn.com/2014/07/26/make-your-emacs-mode-line-more-useful.html#understanding-mode-line-format][Sebastian Wiesner]] inspired me to slim down my mode line.
+
+I change the default mode-line-format variable, but comment out any variables that I eliminated, so that I can add them in later if I deem them useful.
+
+I add in the date, time, and battery information in formats that I like.
+
+Finally, I diminish some built-in minor modes.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default mode-line-format
+                '("%e" ; print error message about full memory.
+                  mode-line-front-space
+                  ; mode-line-mule-info
+                  ; mode-line-client
+                  ; mode-line-modified
+                  ; mode-line-remote
+                  ; mode-line-frame-identification
+                  mode-line-buffer-identification
+                  "   "
+                  ; mode-line-position
+                  ; (vc-mode vc-mode)
+                  ; "  "
+                  mode-line-modes
+                  "   "
+                  ; mode-line-misc-info
+                  display-time-string
+                  "   "
+                  battery-mode-line-string
+                  mode-line-end-spaces))
+
+  (display-time-mode 1)
+  (setq display-time-format "%a %m/%d%t%R")
+  (display-battery-mode 1)
+  (setq battery-mode-line-format "%p%%") ; Default: "[%b%p%%]"
+
+  (diminish 'isearch-mode)
+#+END_SRC
+* Key bindings
+Although keybindings are also located elsewhere, this section will aim to provide bindings that are not specific to any mode, package, or function.
+** System-specific
+#+BEGIN_SRC emacs-lisp
+  (when is-mac
+    (setq ;mac-command-modifier 'meta
+          mac-option-modifier 'super
+          mac-right-option-modifier nil
+          ;mac-control-modifier 'control
+          ;ns-function-modifier 'hyper
+))
+#+END_SRC
+** From [[https://github.com/technomancy/better-defaults][Better Defaults]]
+#+BEGIN_SRC emacs-lisp
+  (bind-keys ("M-/" .  hippie-expand)
+             ("C-x C-b" .  ibuffer)
+             ("C-s" . isearch-forward-regexp)
+             ("C-r" . isearch-backward-regexp)
+             ("C-M-s" . isearch-forward)
+             ("C-M-r" . isearch-backward))
+#+END_SRC
+** Lines
+Enable line indenting automatically. If needed, you can disable on a mode-by-mode basis.
+
+#+BEGIN_SRC emacs-lisp
+  (bind-keys ("RET" . newline-and-indent)
+             ("C-j" . newline-and-indent))
+#+END_SRC
+
+Make C-n insert new lines if the point is at the end of the buffer.
+
+#+BEGIN_SRC emacs-lisp
+  (setq next-line-add-newlines t)
+#+END_SRC
+** Movement
+These keybindings for movement come from [[http://whattheemacsd.com/key-bindings.el-02.html][What the .emacs.d?]].
+
+#+BEGIN_SRC emacs-lisp
+  (bind-keys ("C-S-n" . (lambda () (interactive) (ignore-errors (next-line 5))))
+             ("C-S-p" . (lambda () (interactive) (ignore-errors (previous-line 5))))
+             ("C-S-b" . (lambda () (interactive) (ignore-errors (backward-char 5))))
+             ("C-S-f" . (lambda () (interactive) (ignore-errors (forward-char 5)))))
+#+END_SRC
+
+** Meta Binds
+Since you don't need three ways to do numeric prefixes, you can [[http://endlessparentheses.com/Meta-Binds-Part-1%25253A-Drunk-in-the-Dark.html][make use of]] meta-binds instead:
+
+#+BEGIN_SRC emacs-lisp
+  (bind-keys ("M-9" . sp-backward-sexp)
+             ("M-0" . sp-forward-sexp)
+             ("M-1" . delete-other-windows)
+             ("M-%" . query-replace-regexp)
+             ("M-5" . replace-regexp)
+             ("M-O" . mode-line-other-buffer))
+#+END_SRC
+** backward-kill-line
+This binding comes from [[http://emacsredux.com/blog/2013/04/08/kill-line-backward/][Emacs Redux]]. Note that we don't need a new function, just an anonymous function.
+
+#+BEGIN_SRC emacs-lisp
+  (bind-key "C-<backspace>" (lambda ()
+                              (interactive)
+                              (kill-line 0)
+                              (indent-according-to-mode)))
+#+END_SRC
+** Sentence and Paragraph Commands
+By default, sentence-end-double-space is set to t. That convention may be programatically convenient, but that's not how I write. I want to be able to write normal sentences, but still be able to fill normally. Let to the rescue!
+
+#+BEGIN_SRC emacs-lisp
+  (defadvice forward-sentence (around real-forward)
+    "Consider a sentence to have one space at the end."
+    (let ((sentence-end-double-space nil))
+      ad-do-it))
+
+  (defadvice backward-sentence (around real-backward)
+    "Consider a sentence to have one space at the end."
+    (let ((sentence-end-double-space nil))
+      ad-do-it))
+
+  (defadvice kill-sentence (around real-kill)
+    "Consider a sentence to have one space at the end."
+    (let ((sentence-end-double-space nil))
+      ad-do-it))
+
+  (ad-activate 'forward-sentence)
+  (ad-activate 'backward-sentence)
+  (ad-activate 'kill-sentence)
+#+END_SRC
+A slightly less tricky matter is the default binding of backward- and forward-paragraph, which are at the inconvenient M-{ and M-}. This makes a bit more sense, no?
+
+#+BEGIN_SRC emacs-lisp
+  (bind-keys ("M-A" . backward-paragraph)
+             ("M-E" . forward-paragraph))
+#+END_SRC
+** [[http://endlessparentheses.com/the-toggle-map-and-wizardry.html][Toggle Map]]
+Augmented by a post on [[http://irreal.org/blog/?p%3D2830][Irreal]]. Some keys on the toggle map are elsewhere in this config.
+
+#+BEGIN_SRC emacs-lisp
+  (define-prefix-command 'toggle-map)
+  (bind-key "C-x t" 'toggle-map)
+  (bind-keys :map toggle-map
+             ("l" . linum-mode)
+             ("o" . org-mode)
+             ("s" . smartparens-mode)
+             ("t" . text-mode)
+             ("w" . whitespace-mode))
+#+END_SRC
+** [[http://endlessparentheses.com/launcher-keymap-for-standalone-features.html][Launcher Map]]
+#+BEGIN_SRC emacs-lisp
+  (define-prefix-command 'launcher-map)
+  (bind-key "C-x l" 'launcher-map)
+  (bind-keys :map launcher-map
+             ("a" . ansi-term)
+             ("c" . calc)
+             ("d" . ediff-buffers)
+             ("e" . eshell)
+             ("h" . man)
+             ("p" . list-packages)
+             ("P" . proced))
+#+END_SRC
+* System
+All of my packages for interacting with my laptop.
+** Shell
+#+BEGIN_SRC emacs-lisp
+  (use-package shell
+    :bind ("<f1>" . shell)
+    :init
+    (dirtrack-mode)
+    (setq explicit-shell-file-name (cond ((eq system-type 'darwin) "/bin/bash")
+                                         ((eq system-type 'gnu/linux) "/usr/bin/bash")))
+    (when (eq system-type 'darwin)
+      (use-package exec-path-from-shell
+        :init
+        (exec-path-from-shell-initialize))))
+#+END_SRC
+** Dired - Directories tree-view
+#+BEGIN_SRC emacs-lisp
+  (use-package dired
+    :bind ("<f2>" . dired)
+    :init
+    (use-package dired-x)  ; enables dired-jump, C-x C-j
+    :config
+    (put 'dired-find-alternate-file 'disabled nil)
+    (setq dired-dwim-target t
+          dired-recursive-deletes 'always
+          dired-recursive-copies 'always)
+    (bind-keys :map dired-mode-map
+               ("<return>" . dired-find-alternate-file)
+               ("^" . (lambda () (interactive) (find-alternate-file "..")))
+               ("'" . wdired-change-to-wdired-mode))
+    (when (eq system-type 'darwin)
+      (add-to-list 'dired-omit-extensions ".DS_STORE"))
+    (use-package dired-details
+      :ensure t
+      :init
+      (dired-details-install))
+    (use-package dired-subtree
+      :ensure t
+      :init
+      (bind-keys :map dired-mode-map
+                 :prefix "C-,"
+                 :prefix-map dired-subtree-map
+                 :prefix-docstring "Dired subtree map."
+                 ("C-i" . dired-subtree-insert)
+                 ("C-/" . dired-subtree-apply-filter)
+                 ("C-k" . dired-subtree-remove)
+                 ("C-n" . dired-subtree-next-sibling)
+                 ("C-p" . dired-subtree-previous-sibling)
+                 ("C-u" . dired-subtree-up)
+                 ("C-d" . dired-subtree-down)
+                 ("C-a" . dired-subtree-beginning)
+                 ("C-e" . dired-subtree-end)
+                 ("m" . dired-subtree-mark-subtree)
+                 ("u" . dired-subtree-unmark-subtree)
+                 ("C-o C-f" . dired-subtree-only-this-file)
+                 ("C-o C-d" . dired-subtree-only-this-directory))))
+#+END_SRC
+
+Some of these suggestions are adapted from Xah Lee's [[http://ergoemacs.org/emacs/emacs_dired_tips.html][article on Dired]]. dired-find-alternate-file, which is bound to a, is disabled by default. <return> was previously dired-advertised-find-file, and ^ was previously dired-up-directory. Relatedly, I re-bind 'q' to my kill-this-buffer function below.
+
+Dired-details lets me show or hide the details with ) and (, respectively. If, for some reason, it becomes hard to remember this, dired-details+ makes the parentheses interchangeable.
+** Helm - doing and finding stuff much faster
+#+BEGIN_SRC emacs-lisp
+
+(use-package helm
+  :ensure t
+  :init
+   (use-package helm-projectile
+     :ensure t
+      :init
+     (projectile-global-mode)
+     (setq projectile-completion-system 'helm)
+     (helm-projectile-on)
+   )
+  (when (executable-find "curl")
+    (setq helm-google-suggest-use-curl-p t))
+
+  (setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
+        helm-buffers-fuzzy-matching           t ; fuzzy matching buffer names when non--nil
+        helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
+        helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
+        helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
+        helm-ff-file-name-history-use-recentf t)
+  (helm-mode 1)
+
+  (global-set-key (kbd "C-c h") 'helm-command-prefix)
+  (global-unset-key (kbd "C-x c"))
+  (global-set-key (kbd "M-x") 'helm-M-x)
+  (global-set-key (kbd "M-y") 'helm-show-kill-ring)
+  (global-set-key (kbd "C-x b") 'helm-mini)
+  (global-set-key (kbd "C-x C-f") 'helm-find-files)
+  (global-set-key (kbd "C-c h o") 'helm-occur)
+
+  (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
+  (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
+  (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
+)
+
+#+END_SRC
+** Ag - Silver searcher (fast text searching)
+#+BEGIN_SRC emacs-lisp
+  (use-package ag
+    :ensure t
+    :init
+    (use-package helm-ag
+      :ensure t)
+    :config
+    (setq ag-highlight-search t))
+#+END_SRC
+** Company Mode - Autocompletion
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+    :ensure t
+    :bind ("C-." . company-complete)
+    :init
+    (add-hook 'prog-mode-hook 'company-mode)
+    :config
+    (diminish 'company-mode)
+    (bind-keys :map company-active-map
+               ("C-n" . company-select-next)
+               ("C-p" . company-select-previous)
+               ("C-d" . company-show-doc-buffer)
+               ("<tab>" . company-complete)))
+#+END_SRC
+** Ace Jump Mode - jump to everywhere fast
+#+BEGIN_SRC emacs-lisp
+  (use-package ace-jump-mode
+    :ensure t
+    :bind ("M-SPC" . ace-jump-char-mode)
+    :init
+    (use-package ace-jump-buffer
+      :ensure t)
+    (use-package ace-link
+      :ensure t
+      :init
+      (ace-link-setup-default))
+    (use-package ace-jump-zap
+      :ensure t)
+    (bind-keys :prefix-map ace-jump-map
+               :prefix "C-c j"
+               ("c" . ace-jump-char-mode)
+               ("l" . ace-jump-line-mode)
+               ("w" . ace-jump-word-mode)
+               ("b" . ace-jump-buffer)
+               ("o" . ace-jump-buffer-other-window)
+               ("p" . ace-jump-projectile-buffers)
+               ("z" . ace-jump-zap-to-char)
+               ("Z" . ace-jump-zap-up-to-char)))
+
+  (bind-key "C-x SPC" 'cycle-spacing)
+#+END_SRC
+** Expand Region
+Configured like Magnars in Emacs Rocks, [[http://emacsrocks.com/e09.html][Episode 09]].
+*** Configuration
+#+BEGIN_SRC emacs-lisp
+  (use-package expand-region
+    :ensure t
+    :bind (("C-@" . er/expand-region)
+           ("C-=" . er/expand-region)))
+  (pending-delete-mode t)
+#+END_SRC
+*** Extension
+#+BEGIN_SRC emacs-lisp
+; dosen't work
+;  (use-package change-inner
+;    :ensure t
+;    :bind (("M-i" . change-inner)
+;           ("M-o" . change-outer)))
+#+END_SRC
+** Multiple Cursors
+You've got to admit, [[http://emacsrocks.com/e13.html][Emacs Rocks]]. Thanks for the [[https://dl.dropboxusercontent.com/u/3968124/sacha-emacs.html#sec-1-3-3-1][code]], Sacha.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package multiple-cursors
+    :ensure t
+    :bind
+    (("C->" . mc/mark-next-like-this)
+     ("C-<" . mc/mark-previous-like-this)
+     ("C-*" . mc/mark-all-like-this)))
+#+END_SRC EMACS-LISP
+** Hungry Delete Mode
+Via [[http://endlessparentheses.com/hungry-delete-mode.html?source%3Drss][Endless Parentheses]].
+#+BEGIN_SRC emacs-lisp
+; cannot find
+;  (use-package hungry-delete
+;    :ensure t
+;    :init
+;    (global-hungry-delete-mode))
+#+END_SRC
+** easy-kill
+#+BEGIN_SRC emacs-lisp
+;  (use-package easy-kill
+;    :ensure t
+;    :bind ("M-w" . easy-kill))
+#+END_SRC
+** Kill Ring
+The word "kill" might be antiquated, idiosyncratic jargon, but it's great that Emacs keeps track of what's been killed. The package "Browse Kill Ring" is crucial to making that functionality visible and usable.
+
+# #+BEGIN_SRC emacs-lisp
+#   (use-package browse-kill-ring
+#     :ensure t
+#     :bind ("C-x C-y" . browse-kill-ring)
+#     :config
+#     (setq browse-kill-ring-quit-action 'kill-and-delete-window))
+# #+END_SRC
+** Recent Files
+Recent files is a minor mode that keeps track of which files you're using, and provides it in some handy places.
+
+I also rebind the find-file-read-only with ido-recent-files functionality, which I took from [[http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files-package/][Mastering Emacs]].
+
+#+BEGIN_SRC emacs-lisp
+  (use-package recentf
+    :init
+    (recentf-mode t)
+    (setq recentf-max-saved-items 100)
+    (defun ido-recentf-open ()
+      "Use `ido-completing-read' to \\[find-file] a recent file"
+      (interactive)
+      (if (find-file (ido-completing-read "Find recent file: " recentf-list))
+          (message "Opening file...")
+        (message "Aborting")))
+    :bind ("C-x C-r" . ido-recentf-open))
+#+END_SRC
+** Save Place
+This comes from [[http://whattheemacsd.com/init.el-03.html][Magnars]].
+
+#+BEGIN_SRC emacs-lisp
+  (use-package saveplace
+    :init
+    (setq-default save-place t)
+    (setq save-place-file (expand-file-name ".places" user-emacs-directory)))
+#+END_SRC
+** Golden Ratio - make the current buffer a bit larger than the rest
+#+BEGIN_SRC emacs-lisp
+  (use-package golden-ratio
+    :ensure t
+    :diminish golden-ratio-mode
+    :init
+    (golden-ratio-mode 1))
+#+END_SRC
+** Regex Builder
+#+BEGIN_SRC emacs-lisp
+  (use-package re-builder
+    :init
+    (setq reb-re-syntax 'string))
+#+END_SRC
+* Networking
+** External Browsers
+#+BEGIN_SRC emacs-lisp
+  (setq browse-url-browser-function 'browse-url-generic
+        browse-url-generic-program (cond ((eq system-type 'darwin) "open")
+                                         ((eq system-type 'gnu/linux) "firefox")))
+
+  (bind-key "C-c B" 'browse-url-at-point)
+#+END_SRC
+** Twitter (Twittering)
+#+BEGIN_SRC emacs-lisp
+  (use-package twittering-mode
+    :disabled t
+    :ensure t
+    :bind ("C-c t" . twit)
+    :config
+    (bind-keys :map twittering-mode-map
+               ("?" . describe-mode)
+               ("@" . twittering-reply-to-user)
+               ("F" . twittering-follow))
+    (setq twittering-use-master-password t
+          twittering-icon-mode t
+          twittering-use-icon-storage t))
+#+END_SRC
+* Development
+** Emacs Lisp
+*** Elisp-Slime-Nav
+#+BEGIN_SRC emacs-lisp
+  (use-package elisp-slime-nav
+    :ensure t
+    :diminish elisp-slime-nav-mode
+    :init
+    (dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
+      (add-hook hook 'elisp-slime-nav-mode)))
+#+END_SRC
+*** [fails] Eldoc
+When in emacs-lisp-mode, display the argument list for the current function. I liked this functionality in SLIME; glad Emacs has it too. Thanks for the tip and code, Sacha.
+
+#+BEGIN_SRC emacs-lisp
+;  (autoload 'turn-on-eldoc-mode "eldoc" nil t)
+;  (diminish 'eldoc-mode)
+;  (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+;  (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
+;  (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
+;  (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+#+END_SRC
+** Flycheck
+Flycheck presents a handsome and usable interface for [[http://endlessparentheses.com/Checkdoc%25252C-Package-Developing%25252C-and-Cakes.html][checkdoc]], amongst other things.
+#+BEGIN_SRC emacs-lisp
+  (use-package flycheck
+    :disabled t
+    :ensure t
+    :init
+    (global-flycheck-mode))
+#+END_SRC
+
+** Git
+I understand that some beardy-folks are worried that the ubiquity of Github will cause people to equate it with Git, and forget that you can use Git without Github. I don't worry about that- I worry about forgetting how to use Git itself. Magit has spoiled me!
+
+This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] opens magit-status in one frame, and then restores the old window configuration when you quit.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package magit
+    :ensure t
+    :diminish magit-auto-revert-mode
+    :bind (("C-x m" . magit-status)
+           ("C-c m" . magit-status))
+    :init
+    (use-package git-timemachine
+      :ensure t
+      :bind (("C-x v t" . git-timemachine)))
+    (use-package git-link
+      :ensure t
+      :bind (("C-x v L" . git-link))
+      :init
+      (setq git-link-open-in-browser t))
+    :config
+    (setq magit-use-overlays nil)
+    (defadvice magit-status (around magit-fullscreen activate)
+      (window-configuration-to-register :magit-fullscreen)
+      ad-do-it
+      (delete-other-windows))
+
+    (defun magit-quit-session ()
+      "Restores the previous window configuration and kills the magit buffer"
+      (interactive)
+      (kill-buffer)
+      (jump-to-register :magit-fullscreen))
+
+    (bind-keys :map magit-status-mode-map
+               ("q" . magit-quit-session)))
+#+END_SRC
+** smartparens
+#+BEGIN_SRC emacs-lisp
+  (use-package smartparens
+    :ensure t
+    :diminish smartparens-mode
+    :bind
+    (("C-M-f" . sp-forward-sexp)
+     ("C-M-b" . sp-backward-sexp)
+     ("C-M-d" . sp-down-sexp)
+     ("C-M-a" . sp-backward-down-sexp)
+     ("C-S-a" . sp-beginning-of-sexp)
+     ("C-S-d" . sp-end-of-sexp)
+     ("C-M-e" . sp-up-sexp)
+     ("C-M-u" . sp-backward-up-sexp)
+     ("C-M-t" . sp-transpose-sexp)
+     ("C-M-n" . sp-next-sexp)
+     ("C-M-p" . sp-previous-sexp)
+     ("C-M-k" . sp-kill-sexp)
+     ("C-M-w" . sp-copy-sexp)
+     ("M-<delete>" . sp-unwrap-sexp)
+     ("M-S-<backspace>" . sp-backward-unwrap-sexp)
+     ("C-<right>" . sp-forward-slurp-sexp)
+     ("C-<left>" . sp-forward-barf-sexp)
+     ("C-M-<left>" . sp-backward-slurp-sexp)
+     ("C-M-<right>" . sp-backward-barf-sexp)
+     ("M-D" . sp-splice-sexp)
+     ("C-M-<delete>" . sp-splice-sexp-killing-forward)
+     ("C-M-<backspace>" . sp-splice-sexp-killing-backward)
+     ("C-M-S-<backspace>" . sp-splice-sexp-killing-around)
+     ("C-]" . sp-select-next-thing-exchange)
+     ("C-<left_bracket>" . sp-select-previous-thing)
+     ("C-M-]" . sp-select-next-thing)
+     ("M-F" . sp-forward-symbol)
+     ("M-B" . sp-backward-symbol)
+     ("H-t" . sp-prefix-tag-object)
+     ("H-p" . sp-prefix-pair-object)
+     ("H-s c" . sp-convolute-sexp)
+     ("H-s a" . sp-absorb-sexp)
+     ("H-s e" . sp-emit-sexp)
+     ("H-s p" . sp-add-to-previous-sexp)
+     ("H-s n" . sp-add-to-next-sexp)
+     ("H-s j" . sp-join-sexp)
+     ("H-s s" . sp-split-sexp))
+    :init
+    (smartparens-global-mode t)
+    (show-smartparens-global-mode t)
+    (use-package smartparens-config)
+    (when (eq system-type 'darwin)
+      (bind-keys ("<s-right>" . sp-forward-slurp-sexp)
+                 ("<s-left>" . sp-forward-barf-sexp)))
+    (use-package rainbow-delimiters
+      :ensure t
+      :init
+      (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)))
+#+END_SRC
+** Projectile
+#+BEGIN_SRC emacs-lisp
+  (use-package projectile
+    :ensure t
+    :bind ("M-p" . projectile-find-file)
+    :diminish projectile-mode
+    :init
+    (projectile-global-mode)
+    (setq projectile-enable-caching t))
+#+END_SRC
+** Erlang
+#+BEGIN_SRC emacs-lisp
+(use-package erlang
+  :mode ("\\.erl\\'" . erlang-mode)
+  :ensure t
+  :config
+  (progn
+    (when is-windows
+      (setq load-path (cons  "C:/Program Files/erl6.0/lib/tools-2.6.14/emacs" load-path))
+      (setq erlang-root-dir "C:/Program Files/erl6.0/lib/")
+      (setq exec-path (cons "C:/Program Files/erl6.0/lib/bin" exec-path))
+    )
+    (when is-mac
+      (setq load-path (cons  "/usr/local/Cellar/erlang/17.3.4/lib/erlang/tools-2.6.6.4/emacs" load-path))
+      (setq erlang-root-dir "/usr/local/Cellar/erlang/17.3.4/lib/erlang/lib")
+      (setq exec-path (cons "/usr/local/Cellar/erlang/17.3.4/lib/erlang/bin" exec-path))
+    )
+;:ensure erlang-start
+;:ensure erlang-flymake
+;    (use-package erlang-eunit
+;      :ensure t
+;    )
+    (use-package edts
+      :ensure t
+      :init
+      (progn
+        (require 'edts-start)
+        (define-key edts-mode-map (kbd "<f12>") 'edts-find-source-under-point)
+        (define-key edts-mode-map (kbd "C-,") 'helm-projectile-grep)
+        (define-key edts-mode-map (kbd "C-S-b") 'edts-code-compile-and-display)
+        (define-key edts-mode-map (kbd "M-SPC") 'auto-complete)
+      )
+    )
+  )
+)
+#+END_SRC
+* Words and Numbers
+"GNU Office Suite Pro Edition," coming to a cubicle near you!
+** Org Mode
+*** Quotations
+#+begin_quote
+Org-mode does outlining, note-taking, hyperlinks, spreadsheets, TODO lists, project planning, GTD, HTML and LaTeX authoring, all with plain text files in Emacs.
+
+-- [[http://article.gmane.org/gmane.emacs.orgmode/6224][Carsten Dominik]]
+#+end_quote
+
+#+begin_quote
+If I hated everything about Emacs, I would still use it for org-mode.
+
+-- [[http://orgmode.org/worg/org-quotes.html][Avdi]] on Twitter
+#+end_quote
+
+#+begin_quote
+...for all intents and purposes, Org-mode *is* [[http://www.taskpaper.com/][Taskpaper]]!
+
+-- [[http://article.gmane.org/gmane.emacs.orgmode/6224][Carsten Dominik]]
+#+end_quote
+*** Configuration
+I use the stock package of org-mode as the default major mode.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package org
+    :init
+    (setq default-major-mode 'org-mode
+          org-directory "~/org/"
+          org-log-done t
+          org-startup-indented t
+          org-agenda-inhibit-startup nil
+          org-startup-truncated nil
+          org-startup-with-inline-images t
+          org-completion-use-ido t
+          org-agenda-start-on-weekday nil
+          org-refile-targets (quote ((nil :maxlevel . 9)
+                                     (org-agenda-files :maxlevel . 9)))
+          org-refile-use-outline-path t
+          org-default-notes-file (concat org-directory "notes.org")
+          org-goto-max-level 10
+          org-imenu-depth 5
+          org-goto-interface 'outline-path-completion
+          org-outline-path-complete-in-steps nil
+          org-use-speed-commands t
+          org-src-fontify-natively t
+          org-lowest-priority 68
+          org-default-priority 68
+          org-file-apps
+          '((auto-mode . emacs)
+            ("\\.mm\\'" . default)
+            ("\\.x?html?\\'" . "firefox %s")
+            ("\\.pdf\\'" . "evince %s")))
+    (unbind-key "C-c [")
+    (unbind-key "C-c ]")
+    (add-to-list 'org-structure-template-alist '("g" "# -*- mode:org; epa-file-encrypt-to: (\"michaelwfogleman@gmail.com\") -*-"))
+    (add-hook 'org-shiftup-final-hook 'windmove-up)
+    (add-hook 'org-shiftleft-final-hook 'windmove-left)
+    (add-hook 'org-shiftdown-final-hook 'windmove-down)
+    (add-hook 'org-shiftright-final-hook 'windmove-right))
+#+END_SRC
+My settings for capture were some of my first Elisp :) I did need, and still need, the help of the  [[http://orgmode.org/manual/Capture-templates.html#Capture-templates][Org-Mode manual]], of course.
+
+I use org-struct in mu4e. See above.
+** Markdown
+#+BEGIN_SRC emacs-lisp
+  (use-package markdown-mode
+    :ensure t)
+#+END_SRC
+** Calc
+#+BEGIN_SRC emacs-lisp
+  (use-package calc
+    :config
+    (setq calc-display-trail ()))
+#+END_SRC
+* Functions
+** Emacs Configuration File
+This function and the corresponding keybinding allows me to rapidly access my configuration. They are adapted from Bozhidar Batsov's [[http://emacsredux.com/blog/2013/05/18/instant-access-to-init-dot-el/][post on Emacs Redux]].
+
+I use mwf-init-file rather than user-init-file, because I edit the config file in a Git repo.
+
+#+BEGIN_SRC emacs-lisp
+  (defun find-init-file ()
+    "Edit my init file in another window."
+    (interactive)
+    (let ((mwf-init-file "~/src/config/home/.emacs.d/michael.org"))
+      (find-file mwf-init-file)))
+
+  (bind-key "C-c I" 'find-init-file)
+#+END_SRC
+
+Relatedly, I often want to reload my init-file. This will actually use the system-wide user-init-file variable.
+
+#+BEGIN_SRC emacs-lisp
+  (defun reload-init-file ()
+    "Reload my init file."
+    (interactive)
+    (load-file user-init-file))
+
+  (bind-key "C-c M-l" 'reload-init-file)
+#+END_SRC
+** Buffer Management
+*** Open Org Agenda
+This function opens the agenda in full screen.
+
+#+BEGIN_SRC emacs-lisp
+  (defun open-agenda ()
+    "Opens the org-agenda."
+    (interactive)
+    (let ((agenda "*Org Agenda*"))
+      (if (equal (get-buffer agenda) nil)
+          (org-agenda-list)
+        (unless (equal (buffer-name (current-buffer)) agenda)
+          (switch-to-buffer agenda))
+        (org-agenda-redo t)
+        (beginning-of-buffer)))
+    (delete-other-windows))
+
+  (bind-key "<f5>" 'open-agenda)
+#+END_SRC
+*** Kill This Buffer
+#+BEGIN_SRC emacs-lisp
+  (defun kill-this-buffer ()
+    (interactive)
+    (kill-buffer (current-buffer)))
+
+  (bind-key "C-x C-k" 'kill-this-buffer)
+#+END_SRC
+
+By default, pressing 'q' in either Dired or package-menu runs quit-window, which quits the window and buries its buffer. I'd prefer the buffer to close.
+
+#+BEGIN_SRC emacs-lisp
+  (bind-keys :map dired-mode-map
+             ("q" . kill-this-buffer))
+
+  (bind-keys :map package-menu-mode-map
+             ("q" . kill-this-buffer))
+#+END_SRC
+*** Kill All Other Buffers
+#+BEGIN_SRC emacs-lisp
+  (defun kill-other-buffers ()
+     "Kill all other buffers."
+     (interactive)
+     (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
+#+END_SRC
+*** Minibuffer
+This code comes from [[http://www.emacswiki.org/emacs/MiniBuffer][EmacsWiki]].
+
+#+BEGIN_SRC emacs-lisp
+  (defun switch-to-minibuffer ()
+    "Switch to minibuffer window."
+    (interactive)
+    (if (active-minibuffer-window)
+        (select-window (active-minibuffer-window))
+      (error "Minibuffer is not active")))
+
+  (bind-key "M-m" 'switch-to-minibuffer)
+#+END_SRC
+** Org Go To Heading
+Speed commands are really useful, but I often want to make use of them when I'm not at the beginning of a header. This command brings you back to the beginning of an item's header, so that you can do speed commands.
+
+#+BEGIN_SRC emacs-lisp
+  (defun org-go-speed ()
+    "Goes to the beginning of an element's header, so that you can execute speed commands."
+    (interactive)
+    (when (equal major-mode 'org-mode)
+      (if (org-at-heading-p)
+          (org-beginning-of-line)
+        (org-up-element))))
+
+  (bind-key "C-c s" 'org-go-speed)
+#+END_SRC
+** Hide Mode Line
+I wonder if Will Mengarini would approve of [[http://bzg.fr/emacs-hide-mode-line.html][Bastien's post]]... I know I need all the space I can get on this laptop!
+
+#+BEGIN_SRC emacs-lisp
+  (defvar-local hidden-mode-line-mode nil)
+
+  (define-minor-mode hidden-mode-line-mode
+    "Minor mode to hide the mode-line in the current buffer."
+    :init-value nil
+    :global t
+    :variable hidden-mode-line-mode
+    :group 'editing-basics
+    (if hidden-mode-line-mode
+        (setq hide-mode-line mode-line-format
+              mode-line-format nil)
+      (setq mode-line-format hide-mode-line
+            hide-mode-line nil))
+    (force-mode-line-update)
+    ;; Apparently force-mode-line-update is not always enough to
+    ;; redisplay the mode-line
+    (redraw-display)
+    (when (and (called-interactively-p 'interactive)
+               hidden-mode-line-mode)
+      (run-with-idle-timer
+       0 nil 'message
+       (concat "Hidden Mode Line Mode enabled.  "
+               "Use M-x hidden-mode-line-mode to make the mode-line appear."))))
+
+  (bind-key "m" 'hidden-mode-line-mode toggle-map)
+#+END_SRC
+** Narrowing and Widening
+Before this function, I was alternating between C-x n s (org-narrow-to-subtree) and C-x n w (widen) in Org files. I originally implemented this to [[http://endlessparentheses.com/the-toggle-map-and-wizardry.html][toggle]] between those two cases as well as the region. [[http://endlessparentheses.com/emacs-narrow-or-widen-dwim.html][Artur Malabarba and Sacha Chua]] have made successive improvements: a prefix argument to narrow no matter what, and increasing features for Org.
+
+#+BEGIN_SRC emacs-lisp
+  (defun narrow-or-widen-dwim (p)
+    "If the buffer is narrowed, it widens. Otherwise, it narrows
+  intelligently.  Intelligently means: region, org-src-block,
+  org-subtree, or defun, whichever applies first.  Narrowing to
+  org-src-block actually calls `org-edit-src-code'.
+
+  With prefix P, don't widen, just narrow even if buffer is already
+  narrowed."
+    (interactive "P")
+    (declare (interactive-only))
+    (cond ((and (buffer-narrowed-p) (not p)) (widen))
+          ((and (boundp 'org-src-mode) org-src-mode (not p))
+           (org-edit-src-exit))
+          ((region-active-p)
+           (narrow-to-region (region-beginning) (region-end)))
+          ((derived-mode-p 'org-mode)
+           (cond ((ignore-errors (org-edit-src-code))
+                  (delete-other-windows))
+                 ((org-at-block-p)
+                  (org-narrow-to-block))
+                 (t (org-narrow-to-subtree))))
+          ((derived-mode-p 'prog-mode) (narrow-to-defun))
+          (t (error "Please select a region to narrow to"))))
+
+  (bind-key "n" 'narrow-or-widen-dwim toggle-map)
+#+END_SRC
+** Move Lines
+Via [[https://github.com/hrs/dotfiles][Harry Schwartz]].
+
+#+BEGIN_SRC emacs-lisp
+  (defun move-line-up ()
+    (interactive)
+    (transpose-lines 1)
+    (forward-line -2))
+
+  (defun move-line-down ()
+    (interactive)
+    (forward-line 1)
+    (transpose-lines 1)
+    (forward-line -1))
+
+  (bind-keys ("M-<up>" . move-line-up)
+             ("M-<down>" . move-line-down))
+#+END_SRC
+** Window Management
+Via [[https://github.com/hrs/dotfiles][Harry Schwartz]].
+
+#+BEGIN_SRC emacs-lisp
+  (defun split-window-below-and-switch ()
+    (interactive)
+    (split-window-below)
+    (other-window 1))
+
+  (defun split-window-right-and-switch ()
+    (interactive)
+    (split-window-right)
+    (other-window 1))
+
+  (bind-keys ("C-x 2" . split-window-below-and-switch)
+             ("C-x 3" . split-window-right-and-switch))
+#+END_SRC
+** Zap Up To Char
+#+BEGIN_SRC emacs-lisp
+  (autoload 'zap-up-to-char "misc"
+    "Kill up to, but not including ARGth occurrence of CHAR.")
+  (bind-key "M-Z" 'zap-up-to-char)
+#+END_SRC
