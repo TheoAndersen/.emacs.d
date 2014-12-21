@@ -309,12 +309,15 @@ Finally, I diminish some built-in minor modes.
                   "   "
                   ; mode-line-misc-info
                   display-time-string
-                  "   "
+                  "         "
                   battery-mode-line-string
                   mode-line-end-spaces))
 
+
+  (setq display-time-default-load-average nil)
+  (setq display-time-24hr-format t)
+  (setq display-time-format "%a %d/%m %R")
   (display-time-mode 1)
-  (setq display-time-format "%a %m/%d%t%R")
   (display-battery-mode 1)
   (setq battery-mode-line-format "%p%%") ; Default: "[%b%p%%]"
 
@@ -326,8 +329,9 @@ Although keybindings are also located elsewhere, this section will aim to provid
 #+BEGIN_SRC emacs-lisp
   (when is-mac
     (setq ;mac-command-modifier 'meta
-          mac-option-modifier 'super
+          ;mac-option-modifier 'super
           mac-right-option-modifier nil
+          mac-option-key-is-meta t
           ;mac-control-modifier 'control
           ;ns-function-modifier 'hyper
 ))
@@ -614,10 +618,13 @@ You've got to admit, [[http://emacsrocks.com/e13.html][Emacs Rocks]]. Thanks for
 #+BEGIN_SRC emacs-lisp
   (use-package multiple-cursors
     :ensure t
-    :bind
-    (("C->" . mc/mark-next-like-this)
-     ("C-<" . mc/mark-previous-like-this)
-     ("C-*" . mc/mark-all-like-this)))
+    :init
+    (progn
+      (bind-key "C->" 'mc/mark-next-like-this)
+      (bind-key "C-<" 'mc/mark-previous-like-this)
+      (bind-key "C-*" 'mc/mark-all-like-this)
+    )
+   )
 #+END_SRC EMACS-LISP
 ** Hungry Delete Mode
 Via [[http://endlessparentheses.com/hungry-delete-mode.html?source%3Drss][Endless Parentheses]].
@@ -710,6 +717,14 @@ This comes from [[http://whattheemacsd.com/init.el-03.html][Magnars]].
           twittering-use-icon-storage t))
 #+END_SRC
 * Development
+I try to keep almost the same keyboard shortcuts for each language..
+"<f1>" = help in context of the cursor position
+"<f12>" = Go to definition
+"<S-f12>" = find references
+"<C-.>" = Find symbols in project (can fallback to projectile helm AG search)
+"<C-,>" = Toggle refactoring suggestions (if possible)
+"<S-C-b>" = Compile (along with the normal C-c because this is the .net binding im used to)
+"<M-<spc>" = Autocomplete
 ** Emacs Lisp
 *** Elisp-Slime-Nav
 #+BEGIN_SRC emacs-lisp
@@ -875,6 +890,40 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
         (define-key edts-mode-map (kbd "M-SPC") 'auto-complete)
       )
     )
+  )
+)
+#+END_SRC
+** C# / .Net
+#+BEGIN_SRC emacs-lisp
+(use-package csharp-mode
+  :mode ("\\.cs\\'" . csharp-mode)
+  :ensure t
+  :config
+  (progn
+    (when is-windows
+      (setq omnisharp-server-executable-path "C:\\\Dev\\tools\\OmniSharpServer\\OmniSharp\\bin\\Debug\\OmniSharp.exe")
+    )
+    (when is-mac
+      (setq omnisharp-server-executable-path "/Users/Theo/Downloads/OmniSharpServer/OmniSharp/bin/Debug/OmniSharp.exe")
+    )
+    (use-package omnisharp
+      :ensure t
+      :init 
+      (progn
+        (add-to-list 'company-backends 'company-omnisharp)
+        (setq omnisharp-company-strip-trailing-brackets nil)
+        (define-key csharp-mode-map (kbd "C-S-b") 'omnisharp-build-in-emacs)
+        (define-key csharp-mode-map (kbd "M-SPC") 'omnisharp-auto-complete)
+        (define-key csharp-mode-map (kbd "C-,") 'omnisharp-helm-find-symbols)
+        (define-key csharp-mode-map (kbd "<f12>") 'omnisharp-go-to-definition)
+        (define-key csharp-mode-map (kbd "C-<f12>") 'omnisharp-helm-find-usages)
+        (define-key csharp-mode-map (kbd "S-<f12>") 'omnisharp-find-implementations)
+        (define-key csharp-mode-map (kbd "C-.") 'omnisharp-run-code-action-refactoring)
+        (define-key csharp-mode-map (kbd "C-r r") 'omnisharp-rename)
+        (define-key csharp-mode-map (kbd "C-r u") 'omnisharp-fix-usings) ;; adds missing as well
+      )
+    )
+    (add-hook 'csharp-mode-hook 'omnisharp-mode)
   )
 )
 #+END_SRC
@@ -1151,3 +1200,5 @@ Via [[https://github.com/hrs/dotfiles][Harry Schwartz]].
     "Kill up to, but not including ARGth occurrence of CHAR.")
   (bind-key "M-Z" 'zap-up-to-char)
 #+END_SRC
+
+
