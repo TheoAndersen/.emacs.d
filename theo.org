@@ -724,8 +724,13 @@ I try to keep almost the same keyboard shortcuts for each language..
 "<C-.>" = Find symbols in project (can fallback to projectile helm AG search)
 "<C-,>" = Toggle refactoring suggestions (if possible)
 "<S-C-b>" = Compile (along with the normal C-c because this is the .net binding im used to)
-"<M-<spc>" = Autocomplete
+"<M-<spc>" = Autocomplete 
 ** Emacs Lisp
+*** Emacs lisp
+#+BEGIN_SRC emacs-lisp
+;  (define-key Emacs-l (kbd "C-S-b") 'omnisharp-build-in-emacs)
+#+END_SRC
+
 *** Elisp-Slime-Nav
 #+BEGIN_SRC emacs-lisp
   (use-package elisp-slime-nav
@@ -739,12 +744,12 @@ I try to keep almost the same keyboard shortcuts for each language..
 When in emacs-lisp-mode, display the argument list for the current function. I liked this functionality in SLIME; glad Emacs has it too. Thanks for the tip and code, Sacha.
 
 #+BEGIN_SRC emacs-lisp
-;  (autoload 'turn-on-eldoc-mode "eldoc" nil t)
+  (autoload 'turn-on-eldoc-mode "eldoc" nil t)
 ;  (diminish 'eldoc-mode)
-;  (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
-;  (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
-;  (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
-;  (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+  (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+  (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
+  (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
+  (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
 #+END_SRC
 ** Flycheck
 Flycheck presents a handsome and usable interface for [[http://endlessparentheses.com/Checkdoc%25252C-Package-Developing%25252C-and-Cakes.html][checkdoc]], amongst other things.
