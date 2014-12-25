@@ -24,6 +24,7 @@ games
 /url/
 /projectile.cache
 /server/
-/#init.el#
-/#theo.el#
+/#*#
 /theo.el
+/lisp/#*#
+/lisp/.#setup-csharp.el
