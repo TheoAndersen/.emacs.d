@@ -55,12 +55,13 @@ When I first copy this set-up into a new machine, I still have to require packag
   (require 'package)
   (add-to-list 'package-archives
                '("melpa" . "http://melpa.org/packages/") t)
-  (add-to-list 'package-archives
-               '("marmalade" . "http://marmalade-repo.org/packages/") t)
-  (add-to-list 'package-archives
-               '("elpa" . "http://marmalade-repo.org/packages/") t)
+;  (add-to-list 'package-archives
+;               '("marmalade" . "http://marmalade-repo.org/packages/") t)
+;  (add-to-list 'package-archives
+;               '("elpa" . "http://marmalade-repo.org/packages/") t)
 
   (setq load-prefer-newer t)
+;  (package-refresh-contents)
   (require 'use-package) ;; currently you have to evaluate everything up to here, and grab use-package manually :/
 
   (use-package diminish
@@ -270,7 +271,10 @@ Some features and settings are disabled by default; this is sane behavior for ne
  )
 
 (when is-windows
- (set-default-font "Consolas")
+ (set-face-font 'default "-outline-Consolas-normal-normal-normal-mono-18-*-*-*-c-*-iso8859-1")
+ (set-face-font 'bold "-outline-Consolas-bold-normal-normal-normal-18-*-*-*-c-*-iso8859")
+ (set-face-font 'italic "-outline-Consolas-normal-i-normal-normal-18-*-*-*-c-*-iso8859")
+ (set-face-font 'bold-italic "-outline-Consolas-bold-i-normal-normal-18-*-*-*-c-*-iso8859-1")
  (setq locale-coding-system 'utf-8)
  (set-terminal-coding-system 'utf-8)
  (set-keyboard-coding-system 'utf-8)
@@ -442,6 +446,11 @@ Augmented by a post on [[http://irreal.org/blog/?p%3D2830][Irreal]]. Some keys o
              ("h" . man)
              ("p" . list-packages)
              ("P" . proced))
+#+END_SRC
+** Zooming buffers
+#+BEGIN_SRC emacs-lisp
+(define-key global-map (kbd "C-+") 'zoom-frm-in)
+(define-key global-map (kbd "C--") 'zoom-frm-out)
 #+END_SRC
 * System
 All of my packages for interacting with my laptop.
@@ -1205,5 +1214,12 @@ Via [[https://github.com/hrs/dotfiles][Harry Schwartz]].
     "Kill up to, but not including ARGth occurrence of CHAR.")
   (bind-key "M-Z" 'zap-up-to-char)
 #+END_SRC
+
+
+
+
+
+
+
 
 
