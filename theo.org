@@ -370,6 +370,9 @@ These keybindings for movement come from [[http://whattheemacsd.com/key-bindings
              ("C-S-p" . (lambda () (interactive) (ignore-errors (previous-line 5))))
              ("C-S-b" . (lambda () (interactive) (ignore-errors (backward-char 5))))
              ("C-S-f" . (lambda () (interactive) (ignore-errors (forward-char 5)))))
+
+  (global-set-key (kbd "M-p") 'backward-paragraph)
+  (global-set-key (kbd "M-n") 'forward-paragraph)
 #+END_SRC
 
 ** Meta Binds
@@ -973,7 +976,7 @@ I use the stock package of org-mode as the default major mode.
           org-log-done t
           org-startup-indented t
           org-agenda-inhibit-startup nil
-          org-startup-truncated nil
+          org-startup-truncated t
           org-startup-with-inline-images t
           org-completion-use-ido t
           org-agenda-start-on-weekday nil
