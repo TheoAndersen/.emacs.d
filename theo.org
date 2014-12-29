@@ -239,6 +239,10 @@ Some features and settings are disabled by default; this is sane behavior for ne
     (dotimes (i 10)
       (when (= p (point)) ad-do-it))))
 #+END_SRC
+*** TODO Quitable buffers can all be exited with C-g
+If q exists the buffer, then bind C-g to do the same.
+
+This way we don't have to try one or the other, but can always just use C-g
 
 * Appearance
 ** Turn off unnecessary graphical features (like menu, etc.)
