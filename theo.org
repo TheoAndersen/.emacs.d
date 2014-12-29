@@ -737,6 +737,13 @@ I try to keep almost the same keyboard shortcuts for each language..
 "<C-,>" = Toggle refactoring suggestions (if possible)
 "<S-C-b>" = Compile (along with the normal C-c because this is the .net binding im used to)
 "<M-<spc>" = Autocomplete 
+
+** Detailed settings
+*** Tab width of 2 spaces
+#+BEGIN_SRC emacs-lisp
+(setq-default tab-width 2)
+#+END_SRC
+
 ** Emacs Lisp
 *** Emacs lisp
 #+BEGIN_SRC emacs-lisp
@@ -873,6 +880,19 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
     :init
     (projectile-global-mode)
     (setq projectile-enable-caching t))
+#+END_SRC
+** Web
+#+BEGIN_SRC emacs-lisp
+(use-package web-mode
+  :mode ("\\.html?\\'" . web-mode)
+  :ensure web-mode
+  :config
+  (progn
+    (setq web-mode-enable-current-element-highlight t)
+    (setq web-mode-ac-sources-alist
+          '(("css" . (ac-source-css-property))
+            ("html" . (ac-source-words-in-buffer ac-source-abbrev)))
+          )))
 #+END_SRC
 ** Erlang
 #+BEGIN_SRC emacs-lisp
@@ -1217,6 +1237,8 @@ Via [[https://github.com/hrs/dotfiles][Harry Schwartz]].
     "Kill up to, but not including ARGth occurrence of CHAR.")
   (bind-key "M-Z" 'zap-up-to-char)
 #+END_SRC
+
+
 
 
 
