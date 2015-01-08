@@ -1263,6 +1263,9 @@ Via [[https://github.com/hrs/dotfiles][Harry Schwartz]].
 
   (bind-keys ("C-x 2" . split-window-below-and-switch)
              ("C-x 3" . split-window-right-and-switch))
+
+  ; use Shift+arrow keys to move curser around split panes
+  (windmove-default-keybindings)
 #+END_SRC
 ** Zap Up To Char
 #+BEGIN_SRC emacs-lisp
