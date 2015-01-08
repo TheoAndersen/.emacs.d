@@ -891,7 +891,6 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
 #+BEGIN_SRC emacs-lisp
   (use-package projectile
     :ensure t
-    :bind ("M-p" . projectile-find-file)
     :diminish projectile-mode
     :init
     (progn
