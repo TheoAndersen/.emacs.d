@@ -1,7 +1,11 @@
 #+TITLE: Theo Andersen Carton's Emacs configuration
 #+OPTIONS: toc:4 h:4
 * Missing pieces
-** TODO Left alt as Meta in mac
+** DONE Left alt as Meta in mac
+** Hvorfor kan den ikke selv hente pakker når den starter op (ikke så vigtigt)
+** Er js2-mode sat op til at tage sig af .js og .json?
+** Kan ikke kommentere med C-c C-c i js-2 mode
+** Kan ikke flytte mellem paragrafer med M-n og M-p (hæfter sig til projectile ved p ?!?)  
 * Introduction
 ** Quotations
 *** On Emacs
@@ -335,8 +339,8 @@ Finally, I diminish some built-in minor modes.
 This dosen't work for helm buffers so far, because they are a bit special
 
 #+BEGIN_SRC emacs-lisp
-(load "~/.emacs.d/lisp/chgbackground.el")
-(require 'chgbackground)
+;(load "~/.emacs.d/lisp/chgbackground.el")
+;(require 'chgbackground)
 
 #+END_SRC
 * Key bindings
@@ -890,8 +894,14 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
     :bind ("M-p" . projectile-find-file)
     :diminish projectile-mode
     :init
-    (projectile-global-mode)
-    (setq projectile-enable-caching t))
+    (progn
+      (projectile-global-mode)
+      (setq projectile-enable-caching t)
+      (add-to-list 'projectile-globally-ignored-directories "elpa")
+      (add-to-list 'projectile-globally-ignored-directories ".cache")
+      (add-to-list 'projectile-globally-ignored-directories "node_modules")
+    )
+  )
 #+END_SRC
 ** Web
 #+BEGIN_SRC emacs-lisp
@@ -905,6 +915,17 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
           '(("css" . (ac-source-css-property))
             ("html" . (ac-source-words-in-buffer ac-source-abbrev)))
           )))
+#+END_SRC
+** Javascript
+#+BEGIN_SRC emacs-lisp
+(use-package js2-mode
+  :mode ("\\.js?\\'" . js2-mode)
+  :mode ("\\.json?\\'" . js2-mode)
+  :ensure js2-mode
+  :config
+  (progn
+    (setq-default js2-auto-indent-p t)
+ )
 #+END_SRC
 ** Erlang
 #+BEGIN_SRC emacs-lisp
