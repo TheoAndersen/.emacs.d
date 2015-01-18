@@ -632,6 +632,8 @@ Configured like Magnars in Emacs Rocks, [[http://emacsrocks.com/e09.html][Episod
            ("C-=" . er/expand-region)))
   (pending-delete-mode t)
 #+END_SRC
+**** TODO Mark according to what char we are on or next non space char
+In this way using expand-region on a '(' would automatically mark from '(' to ')' on the first attempt
 *** Extension
 #+BEGIN_SRC emacs-lisp
 ; dosen't work
@@ -898,14 +900,17 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
       (setq projectile-enable-caching t)
       (add-to-list 'projectile-globally-ignored-directories "elpa")
       (add-to-list 'projectile-globally-ignored-directories ".cache")
-      (add-to-list 'projectile-globally-ignored-directories "node_modules")
+      (add-to-list 'projectile-globally-ignored-directories "*node_modules")
+      (add-to-list 'projectile-globally-ignored-files "#*.*")
     )
   )
 #+END_SRC
+*** TODO Ignore everything under node_modules folders
 ** Web
 #+BEGIN_SRC emacs-lisp
 (use-package web-mode
   :mode ("\\.html?\\'" . web-mode)
+  :mode ("\\.hbs?\\'" . web-mode)
   :ensure web-mode
   :config
   (progn
@@ -913,7 +918,12 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
     (setq web-mode-ac-sources-alist
           '(("css" . (ac-source-css-property))
             ("html" . (ac-source-words-in-buffer ac-source-abbrev)))
-          )))
+          )
+    (setq web-mode-code-indent-offset 2)
+    (setq web-mode-css-indent-offset 2)
+    (setq web-mode-markup-indent-offset 2)
+  )
+)
 #+END_SRC
 ** Javascript
 #+BEGIN_SRC emacs-lisp
@@ -921,9 +931,17 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
   :mode ("\\.js?\\'" . js2-mode)
   :mode ("\\.json?\\'" . js2-mode)
   :ensure js2-mode
+    ;; :bind
+    ;;  (
+    ;;     ("C-c k" . comment-or-uncomment-region)
+    ;;   )
   :config
   (progn
     (setq-default js2-auto-indent-p t)
+    (setq-default js2-basic-offset 2)
+    (use-package js2-refactor
+       :init)
+  )
  )
 #+END_SRC
 ** Erlang
@@ -1272,6 +1290,8 @@ Via [[https://github.com/hrs/dotfiles][Harry Schwartz]].
     "Kill up to, but not including ARGth occurrence of CHAR.")
   (bind-key "M-Z" 'zap-up-to-char)
 #+END_SRC
+
+
 
 
 
