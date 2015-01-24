@@ -5,7 +5,11 @@
 ** Hvorfor kan den ikke selv hente pakker når den starter op (ikke så vigtigt)
 ** Er js2-mode sat op til at tage sig af .js og .json?
 ** Kan ikke kommentere med C-c C-c i js-2 mode
-** Kan ikke flytte mellem paragrafer med M-n og M-p (hæfter sig til projectile ved p ?!?)  
+** Kan ikke flytte mellem paragrafer med M-n og M-p (hæfter sig til projectile ved p ?!?)
+** Man kan ikke se på status-baren når den ikke har gemt bufferen
+** Cmd (Super)-backspace skal slette hele den nuværende linje
+** Hvordan markerer man i en region?
+** Hvor er multiple cursors mode?
 * Introduction
 ** Quotations
 *** On Emacs
