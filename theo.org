@@ -1,15 +1,8 @@
 #+TITLE: Theo Andersen Carton's Emacs configuration
 #+OPTIONS: toc:4 h:4
 * Missing pieces
-** DONE Left alt as Meta in mac
-** Hvorfor kan den ikke selv hente pakker når den starter op (ikke så vigtigt)
-** Er js2-mode sat op til at tage sig af .js og .json?
 ** Kan ikke kommentere med C-c C-c i js-2 mode
-** Kan ikke flytte mellem paragrafer med M-n og M-p (hæfter sig til projectile ved p ?!?)
-** Man kan ikke se på status-baren når den ikke har gemt bufferen
-** Cmd (Super)-backspace skal slette hele den nuværende linje
-** Hvordan markerer man i en region?
-** Hvor er multiple cursors mode?
+** Hvorfor kan den ikke selv hente pakker når den starter op (ikke så vigtigt)
 * Introduction
 ** Quotations
 *** On Emacs
@@ -313,7 +306,7 @@ Finally, I diminish some built-in minor modes.
                   mode-line-front-space
                   ; mode-line-mule-info
                   ; mode-line-client
-                  ; mode-line-modified
+                   mode-line-modified
                   ; mode-line-remote
                   ; mode-line-frame-identification
                   mode-line-buffer-identification
@@ -352,7 +345,7 @@ Although keybindings are also located elsewhere, this section will aim to provid
 ** System-specific
 #+BEGIN_SRC emacs-lisp
   (when is-mac
-    (setq ;mac-command-modifier 'meta
+    (setq mac-command-modifier 'super
           ;mac-option-modifier 'super
           mac-right-option-modifier nil
           mac-option-key-is-meta t
@@ -381,6 +374,12 @@ Make C-n insert new lines if the point is at the end of the buffer.
 
 #+BEGIN_SRC emacs-lisp
   (setq next-line-add-newlines t)
+#+END_SRC
+
+Make sure we can remove whole lines
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "s-<backspace>") 'kill-whole-line)
 #+END_SRC
 ** Movement
 These keybindings for movement come from [[http://whattheemacsd.com/key-bindings.el-02.html][What the .emacs.d?]].
@@ -475,6 +474,11 @@ Augmented by a post on [[http://irreal.org/blog/?p%3D2830][Irreal]]. Some keys o
 (define-key global-map (kbd "C-+") 'zoom-frm-in)
 (define-key global-map (kbd "C--") 'zoom-frm-out)
 #+END_SRC
+** Fullscreen
+#+BEGIN_SRC emacs-lisp
+(define-key global-map (kbd "M-<f11>") 'toggle-frame-fullscreen)
+#+END_SRC
+
 * System
 All of my packages for interacting with my laptop.
 ** Shell
@@ -653,11 +657,11 @@ You've got to admit, [[http://emacsrocks.com/e13.html][Emacs Rocks]]. Thanks for
   (use-package multiple-cursors
     :ensure t
     :init
-    (progn
-      (bind-key "C->" 'mc/mark-next-like-this)
-      (bind-key "C-<" 'mc/mark-previous-like-this)
-      (bind-key "C-*" 'mc/mark-all-like-this)
-    )
+    :bind (
+            ("C->" . mc/mark-next-like-this)
+            ("C-<" . mc/mark-previous-like-this)
+            ("C-*" . mc/mark-all-like-this)
+          )
    )
 #+END_SRC EMACS-LISP
 ** Hungry Delete Mode
