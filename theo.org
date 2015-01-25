@@ -1,7 +1,7 @@
 #+TITLE: Theo Andersen Carton's Emacs configuration
 #+OPTIONS: toc:4 h:4
 * Missing pieces
-** Kan ikke kommentere med C-c C-c i js-2 mode
+** Kan ikke markere i en firkant og redigere på alle linjer samtidigt
 ** Hvorfor kan den ikke selv hente pakker når den starter op (ikke så vigtigt)
 * Introduction
 ** Quotations
@@ -476,9 +476,30 @@ Augmented by a post on [[http://irreal.org/blog/?p%3D2830][Irreal]]. Some keys o
 #+END_SRC
 ** Fullscreen
 #+BEGIN_SRC emacs-lisp
-(define-key global-map (kbd "M-<f11>") 'toggle-frame-fullscreen)
+  (define-key global-map (kbd "M-<f11>") 'toggle-frame-fullscreen)
 #+END_SRC
+** Comments
+A more Visual Studio/Eclipse way of commenting..
+based on the answer by @mellowmaroon in http://stackoverflow.com/a/20064658
 
+#+BEGIN_SRC emacs-lisp
+  (define-key global-map (kbd "C-c k") 'comment-eclipse)
+
+  (defun comment-eclipse ()
+  (interactive)
+  (let ((start (line-beginning-position))
+        (end (line-end-position)))
+    (when (or (not transient-mark-mode) (region-active-p))
+      (setq start (save-excursion
+                    (goto-char (region-beginning))
+                    (beginning-of-line)
+                    (point))
+            end (save-excursion
+                  (goto-char (region-end))
+                  (end-of-line)
+                  (point))))
+    (comment-or-uncomment-region start end)))
+#+END_SRC
 * System
 All of my packages for interacting with my laptop.
 ** Shell
