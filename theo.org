@@ -9,7 +9,6 @@
 ** Org mode skal automatisk truncate lines og word wrap
 ** Hvorfor kan den ikke selv hente pakker når den starter op (ikke så vigtigt)
 ** Able to save desktop of a current project, recall it when projecile opens the project (where was i last in this project)
-
 * Introduction
 ** Quotations
 *** On Emacs
@@ -358,7 +357,12 @@ Although keybindings are also located elsewhere, this section will aim to provid
           mac-option-key-is-meta t
           ;mac-control-modifier 'control
           ;ns-function-modifier 'hyper
-))
+    )
+  )
+
+  (when window-system
+    (setq w32-lwindow-modifier 'super)
+  )
 #+END_SRC
 ** From [[https://github.com/technomancy/better-defaults][Better Defaults]]
 #+BEGIN_SRC emacs-lisp
