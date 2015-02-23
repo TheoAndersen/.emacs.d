@@ -1,7 +1,6 @@
 #+TITLE: Theo Andersen Carton's Emacs configuration
 #+OPTIONS: toc:4 h:4
 * Missing pieces
-
 ** Multiple cursors - js2-mode C-> is undefined??!?
 
 ** Hvad søren er der galt med de der auto escaped " osv, den prøver at sætte ind alle de forkerte steder?
@@ -9,7 +8,7 @@
 ** Org mode skal automatisk truncate lines og word wrap
 ** Hvorfor kan den ikke selv hente pakker når den starter op (ikke så vigtigt)
 ** Able to save desktop of a current project, recall it when projecile opens the project (where was i last in this project)
-
+** Projectiles/Helm should filter out node_modules in searches
 * Introduction
 ** Quotations
 *** On Emacs
