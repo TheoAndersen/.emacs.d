@@ -1,14 +1,14 @@
 #+TITLE: Theo Andersen Carton's Emacs configuration
 #+OPTIONS: toc:4 h:4
 * Missing pieces
-** Multiple cursors - js2-mode C-> is undefined??!?
-
 ** Hvad søren er der galt med de der auto escaped " osv, den prøver at sætte ind alle de forkerte steder?
-** Kan ikke markere i en firkant og redigere på alle linjer samtidigt
 ** Org mode skal automatisk truncate lines og word wrap
-** Hvorfor kan den ikke selv hente pakker når den starter op (ikke så vigtigt)
-** Able to save desktop of a current project, recall it when projecile opens the project (where was i last in this project)
+** Kan ikke markere i en firkant og redigere på alle linjer samtidigt
+** Multiple cursors - js2-mode C-> is undefined??!?
 ** Projectiles/Helm should filter out node_modules in searches
+** Able to save desktop of a current project, recall it when projecile opens the project (where was i last in this project)
+** Hvorfor kan den ikke selv hente pakker når den starter op (ikke så vigtigt)
+** Web-mode format document (en nemmere måde end mark-page og <tab>)
 * Introduction
 ** Quotations
 *** On Emacs
