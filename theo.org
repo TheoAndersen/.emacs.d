@@ -1075,13 +1075,13 @@ I use the stock package of org-mode as the default major mode.
 
 #+BEGIN_SRC emacs-lisp
   (use-package org
-    :init
+    :config
+    (progn
     (setq default-major-mode 'org-mode
           org-directory "~/org/"
           org-log-done t
           org-startup-indented t
           org-agenda-inhibit-startup nil
-          org-startup-truncated t
           org-startup-with-inline-images t
           org-completion-use-ido t
           org-agenda-start-on-weekday nil
@@ -1108,7 +1108,12 @@ I use the stock package of org-mode as the default major mode.
     (add-hook 'org-shiftup-final-hook 'windmove-up)
     (add-hook 'org-shiftleft-final-hook 'windmove-left)
     (add-hook 'org-shiftdown-final-hook 'windmove-down)
-    (add-hook 'org-shiftright-final-hook 'windmove-right))
+    (add-hook 'org-shiftright-final-hook 'windmove-right)
+    (add-hook 'org-mode-hook (lambda () (setq truncate-lines nil)))
+    (add-hook 'org-mode-hook (lambda () (setq word-wrap t)))
+    )
+  )
+
 #+END_SRC
 My settings for capture were some of my first Elisp :) I did need, and still need, the help of the  [[http://orgmode.org/manual/Capture-templates.html#Capture-templates][Org-Mode manual]], of course.
 
