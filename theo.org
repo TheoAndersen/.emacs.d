@@ -2,13 +2,12 @@
 #+OPTIONS: toc:4 h:4
 * Missing pieces
 ** Hvad søren er der galt med de der auto escaped " osv, den prøver at sætte ind alle de forkerte steder?
-** Org mode skal automatisk truncate lines og word wrap
 ** Kan ikke markere i en firkant og redigere på alle linjer samtidigt
 ** Multiple cursors - js2-mode C-> is undefined??!?
+** Web-mode format document (en nemmere måde end mark-page og <tab>)
 ** Projectiles/Helm should filter out node_modules in searches
 ** Able to save desktop of a current project, recall it when projecile opens the project (where was i last in this project)
 ** Hvorfor kan den ikke selv hente pakker når den starter op (ikke så vigtigt)
-** Web-mode format document (en nemmere måde end mark-page og <tab>)
 * Introduction
 ** Quotations
 *** On Emacs
