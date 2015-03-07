@@ -934,7 +934,7 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
       (setq projectile-enable-caching t)
       (add-to-list 'projectile-globally-ignored-directories "elpa")
       (add-to-list 'projectile-globally-ignored-directories ".cache")
-      (add-to-list 'projectile-globally-ignored-directories "*node_modules")
+      (add-to-list 'projectile-globally-ignored-directories "node_modules")
       (add-to-list 'projectile-globally-ignored-files "#*.*")
     )
   )
