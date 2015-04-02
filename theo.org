@@ -2,6 +2,8 @@
 #+OPTIONS: toc:4 h:4
 * Missing pieces
 ** Hvad søren er der galt med de der auto escaped " osv, den prøver at sætte ind alle de forkerte steder?
+** Melpa versus Melpa-stable?
+** Hvorfor virker js2-refactor ikke med extract method?
 ** Kan ikke markere i en firkant og redigere på alle linjer samtidigt
 ** Web-mode format document (en nemmere måde end mark-page og <tab>)
 ** Web-mode comments in javascript chooses correctly
