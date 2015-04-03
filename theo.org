@@ -1,16 +1,18 @@
 #+TITLE: Theo Andersen Carton's Emacs configuration
 #+OPTIONS: toc:4 h:4
 * Missing pieces
-** Hvad søren er der galt med de der auto escaped " osv, den prøver at sætte ind alle de forkerte steder?
-
+** Hvad søren er der galt med de der auto escaped " osv, den prøver at sætte ind alle de forkerte steder?j
 ** Hvorfor virker js2-refactor ikke med extract method?
 ** Kan ikke markere i en firkant og redigere på alle linjer samtidigt
+Rectangle mark mode... men virker ikke helt så godt som i Visual Studio
 ** Web-mode format document (en nemmere måde end mark-page og <tab>)
 ** Web-mode comments in javascript chooses correctly
+** Able to save desktop of a current project, recall it when projecile opens the project (where was i last in this project)
+** Hide Helm-buffers so that i only see the content buffers
+** Ignore .emacs.d/elpa/* from recentf (.places?)
+** Hvorfor kan den ikke selv hente pakker når den starter op (ikke så vigtigt)
 ** /done/ Projectiles/Helm should filter out node_modules in searches
 Hvis man tilføjer det man vil filtrere ud i .projectile filen så virker det
-** Able to save desktop of a current project, recall it when projecile opens the project (where was i last in this project)
-** Hvorfor kan den ikke selv hente pakker når den starter op (ikke så vigtigt)
 * Introduction
 ** Quotations
 *** On Emacs
@@ -191,9 +193,7 @@ Some features and settings are disabled by default; this is sane behavior for ne
 ;; Lines should be 80 characters wide, not 72
 (setq fill-column 80)
 
-;; Save a list of recent files visited. (open recent file with C-x f)
-(recentf-mode 1)
-(setq recentf-max-saved-items 100) ;; just 20 is too recent
+
 
 ;; Undo/redo window configuration with C-c <left>/<right>
 (winner-mode 1)
@@ -732,6 +732,7 @@ I also rebind the find-file-read-only with ido-recent-files functionality, which
     :init
     (recentf-mode t)
     (setq recentf-max-saved-items 100)
+    (add-to-list 'recentf-exclude "\\elpa/*\'")
     (defun ido-recentf-open ()
       "Use `ido-completing-read' to \\[find-file] a recent file"
       (interactive)
@@ -981,7 +982,8 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
     (setq-default js2-auto-indent-p t)
     (setq-default js2-basic-offset 2)
     (use-package js2-refactor
-       :init)
+       :init
+       (js2r-add-keybindings-with-prefix "C-c "))
   )
  )
 #+END_SRC
