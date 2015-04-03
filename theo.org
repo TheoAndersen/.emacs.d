@@ -2,7 +2,7 @@
 #+OPTIONS: toc:4 h:4
 * Missing pieces
 ** Hvad søren er der galt med de der auto escaped " osv, den prøver at sætte ind alle de forkerte steder?
-** Melpa versus Melpa-stable?
+
 ** Hvorfor virker js2-refactor ikke med extract method?
 ** Kan ikke markere i en firkant og redigere på alle linjer samtidigt
 ** Web-mode format document (en nemmere måde end mark-page og <tab>)
@@ -62,8 +62,9 @@ When I first copy this set-up into a new machine, I still have to require packag
 
 #+BEGIN_SRC emacs-lisp
   (require 'package)
+  ;; Melpa-stable tager sidste taggede commit, hvor Melpa tager sidste commit
   (add-to-list 'package-archives
-               '("melpa" . "http://melpa.org/packages/") t)
+               '("melpa-stable" . "http://stable.melpa.org/packages/") t)
   (add-to-list 'package-archives
                '("gnu" "http://elpa.gnu.org/packages/") t)
 ;  (add-to-list 'package-archives
@@ -695,7 +696,7 @@ You've got to admit, [[http://emacsrocks.com/e13.html][Emacs Rocks]]. Thanks for
           )
     :init
    )
-#+END_SRC EMACS-LISP
+#+END_SRC 
 ** DELETED Hungry Delete Mode
 Via [[http://endlessparentheses.com/hungry-delete-mode.html?source%3Drss][Endless Parentheses]].
 #+BEGIN_SRC emacs-lisp
