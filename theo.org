@@ -850,16 +850,17 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
     :ensure t
     :diminish magit-auto-revert-mode
     :bind (("C-x m" . magit-status)
-           ("C-c m" . magit-status))
+           ("C-c m" . magit-status)
+           ("C-x v d" . magit-diff-working-tree)) ;; diff the current file
     :init
     (use-package git-timemachine
       :ensure t
       :bind (("C-x v t" . git-timemachine)))
-    (use-package git-link
-      :ensure t
-      :bind (("C-x v L" . git-link))
-      :init
-      (setq git-link-open-in-browser t))
+    ;;(use-package git-link
+    ;;  :ensure t
+    ;;  :bind (("C-x v L" . git-link))
+    ;;  :init
+    ;;  (setq git-link-open-in-browser t))
     :config
     (setq magit-use-overlays nil)
     (defadvice magit-status (around magit-fullscreen activate)
