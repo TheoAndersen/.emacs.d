@@ -954,6 +954,7 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
   :mode ("\\.html?\\'" . web-mode)
   :mode ("\\.hbs?\\'" . web-mode)
   :ensure web-mode
+  :bind ("C-c k" . web-mode-comment-or-uncomment)
   :config
   (progn
     (setq web-mode-enable-current-element-highlight t)
@@ -964,6 +965,7 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
     (setq web-mode-code-indent-offset 2)
     (setq web-mode-css-indent-offset 2)
     (setq web-mode-markup-indent-offset 2)
+    (setq web-mode-enable-auto-pairing t)
   )
 )
 #+END_SRC
