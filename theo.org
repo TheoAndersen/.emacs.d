@@ -5,7 +5,8 @@
 ** Kan ikke markere i en firkant og redigere på alle linjer samtidigt
 Rectangle mark mode... men virker ikke helt så godt som i Visual Studio
 ** Web-mode format document (en nemmere måde end mark-page og <tab>)
-** Web-mode comments in javascript chooses correctly
+** Hvad er paredit?
+** Kan man få emacs til at forstå elisp sektionerne bedre heri (indrykning, autocomplete osv??)
 ** Able to save desktop of a current project, recall it when projecile opens the project (where was i last in this project)
 ** Hide Helm-buffers so that i only see the content buffers
 ** Ignore .emacs.d/elpa/* from recentf (.places?)
