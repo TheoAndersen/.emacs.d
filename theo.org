@@ -2,7 +2,6 @@
 #+OPTIONS: toc:4 h:4
 * Missing pieces
 ** Hvad søren er der galt med de der auto escaped " osv, den prøver at sætte ind alle de forkerte steder?j
-** Hvorfor virker js2-refactor ikke med extract method?
 ** Kan ikke markere i en firkant og redigere på alle linjer samtidigt
 Rectangle mark mode... men virker ikke helt så godt som i Visual Studio
 ** Web-mode format document (en nemmere måde end mark-page og <tab>)
@@ -10,6 +9,8 @@ Rectangle mark mode... men virker ikke helt så godt som i Visual Studio
 ** Able to save desktop of a current project, recall it when projecile opens the project (where was i last in this project)
 ** Hide Helm-buffers so that i only see the content buffers
 ** Ignore .emacs.d/elpa/* from recentf (.places?)
+** TODO Hvorfor virker js2-refactor ikke med extract method?
+--> den er ikke lavet til den opsætning... pull request??
 ** Hvorfor kan den ikke selv hente pakker når den starter op (ikke så vigtigt)
 ** /done/ Projectiles/Helm should filter out node_modules in searches
 Hvis man tilføjer det man vil filtrere ud i .projectile filen så virker det
@@ -732,7 +733,8 @@ I also rebind the find-file-read-only with ido-recent-files functionality, which
     :init
     (recentf-mode t)
     (setq recentf-max-saved-items 100)
-    (add-to-list 'recentf-exclude "\\elpa/*\'")
+    (setq recentf-exclude '("[/\\]\\.elpa/" "[/\\]\\.ido\\.last\\'" "[/\\]\\.git/" ".*\\.gz\\'" ".*-autoloads\\.el\\'" "[/\\]archive-contents\\'" "[/\\]\\.loaddefs\\.el\\'" "url/cookies"))
+    (setq recentf-save-file (expand-file-name ".recentf" tmp-local-dir))
     (defun ido-recentf-open ()
       "Use `ido-completing-read' to \\[find-file] a recent file"
       (interactive)
