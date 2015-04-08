@@ -8,7 +8,6 @@ session.*
 .emacs.desktop*
 tramp
 autosave
-elpa
 swank
 emms
 site-lisp/adventur-mode
