@@ -13,6 +13,8 @@ Rectangle mark mode... men virker ikke helt så godt som i Visual Studio
 ** TODO Hvorfor virker js2-refactor ikke med extract method?
 --> den er ikke lavet til den opsætning... pull request??
 ** Hvorfor kan den ikke selv hente pakker når den starter op (ikke så vigtigt)
+** Able to save desktop of a current project, recall it when projecile opens the project (where was i last in this project)
+
 ** /done/ Projectiles/Helm should filter out node_modules in searches
 Hvis man tilføjer det man vil filtrere ud i .projectile filen så virker det
 * Introduction
@@ -364,7 +366,12 @@ Although keybindings are also located elsewhere, this section will aim to provid
           mac-option-key-is-meta t
           ;mac-control-modifier 'control
           ;ns-function-modifier 'hyper
-))
+    )
+  )
+
+  (when window-system
+    (setq w32-lwindow-modifier 'super)
+  )
 #+END_SRC
 ** From [[https://github.com/technomancy/better-defaults][Better Defaults]]
 #+BEGIN_SRC emacs-lisp
