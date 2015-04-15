@@ -814,6 +814,14 @@ I try to keep almost the same keyboard shortcuts for each language..
 (setq-default tab-width 2)
 #+END_SRC
 
+** Snippets
+#+BEGIN_SRC emacs-lisp
+   (use-package yasnippet
+     :ensure t
+     :init
+     (yas-global-mode 1)
+   )
+#+END_SRC
 ** Emacs Lisp
 *** Emacs lisp
 #+BEGIN_SRC emacs-lisp
@@ -1064,6 +1072,7 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
         (define-key csharp-mode-map (kbd "C-.") 'omnisharp-run-code-action-refactoring)
         (define-key csharp-mode-map (kbd "C-r r") 'omnisharp-rename)
         (define-key csharp-mode-map (kbd "C-r u") 'omnisharp-fix-usings) ;; adds missing as well
+        (define-key csharp-mode-map (kbd "C-r a") 'omnisharp-unit-test-all)
       )
     )
     (add-hook 'csharp-mode-hook 'omnisharp-mode)
