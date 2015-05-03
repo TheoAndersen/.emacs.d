@@ -7,6 +7,8 @@ Rectangle mark mode... men virker ikke helt så godt som i Visual Studio
 ** Web-mode format document (en nemmere måde end mark-page og <tab>)
 ** Hvad er paredit?
 ** Kan man få emacs til at forstå elisp sektionerne bedre heri (indrykning, autocomplete osv??)
+** M-p and M-n should jump 10 lines up and down, if it dosen't match paragraphs
+*** Markdown - cannot move paragraphs with M-p and M-n
 ** Able to save desktop of a current project, recall it when projecile opens the project (where was i last in this project)
 ** Hide Helm-buffers so that i only see the content buffers
 ** Ignore .emacs.d/elpa/* from recentf (.places?)
@@ -70,7 +72,7 @@ When I first copy this set-up into a new machine, I still have to require packag
   (require 'package)
   ;; Melpa-stable tager sidste taggede commit, hvor Melpa tager sidste commit
   (add-to-list 'package-archives
-               '("melpa-stable" . "http://stable.melpa.org/packages/") t)
+               '("melpa" . "http://melpa.milkbox.net/packages/") t)
   (add-to-list 'package-archives
                '("gnu" "http://elpa.gnu.org/packages/") t)
 ;  (add-to-list 'package-archives
@@ -260,6 +262,12 @@ If q exists the buffer, then bind C-g to do the same.
 
 This way we don't have to try one or the other, but can always just use C-g
 
+** Whole-line-or-region
+#+BEGIN_SRC emacs-lisp
+  (use-package whole-line-or-region
+    :init
+  )
+#+END_SRC
 * Appearance
 ** Turn off unnecessary graphical features (like menu, etc.)
 *** No menu, scroll or tool bar
@@ -1005,7 +1013,8 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
     (use-package js2-refactor
        :init
        (js2r-add-keybindings-with-prefix "C-c "))
-  )
+    )
+    
  )
 #+END_SRC
 ** Erlang
@@ -1049,14 +1058,13 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
 (use-package csharp-mode
   :mode ("\\.cs\\'" . csharp-mode)
   :ensure t
-  :config
+  :init
   (progn
     (when is-windows
       (setq omnisharp-server-executable-path "C:\\\Dev\\tools\\OmniSharpServer\\OmniSharp\\bin\\Debug\\OmniSharp.exe")
     )
-    (when is-mac
-      (setq omnisharp-server-executable-path "/Users/Theo/Downloads/OmniSharpServer/OmniSharp/bin/Debug/OmniSharp.exe")
-    )
+
+      (setq omnisharp-server-executable-path "/Users/Theo/Documents/tools/OmniSharpServer/OmniSharp/bin/Debug/OmniSharp.exe")
     (use-package omnisharp
       :ensure t
       :init 
