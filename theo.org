@@ -1057,7 +1057,6 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
 #+BEGIN_SRC emacs-lisp
 (use-package csharp-mode
   :mode ("\\.cs\\'" . csharp-mode)
-  :ensure t
   :init
   (progn
     (when is-windows
@@ -1067,9 +1066,9 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
       (setq omnisharp-server-executable-path "/Users/Theo/Documents/tools/OmniSharpServer/OmniSharp/bin/Debug/OmniSharp.exe")
     (use-package omnisharp
       :ensure t
-      :init 
+      :defer
       (progn
-        (add-to-list 'company-backends 'company-omnisharp)
+;        (add-to-list 'company-backends 'company-omnisharp)
         (setq omnisharp-company-strip-trailing-brackets nil)
         (define-key csharp-mode-map (kbd "C-S-b") 'omnisharp-build-in-emacs)
         (define-key csharp-mode-map (kbd "M-SPC") 'omnisharp-auto-complete)
