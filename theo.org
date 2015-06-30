@@ -1152,6 +1152,7 @@ I use the stock package of org-mode as the default major mode.
     (add-hook 'org-shiftright-final-hook 'windmove-right)
     (add-hook 'org-mode-hook (lambda () (setq truncate-lines nil)))
     (add-hook 'org-mode-hook (lambda () (setq word-wrap t)))
+    (setq org-tags-column -140)
     )
   )
 
