@@ -601,11 +601,16 @@ Dired-details lets me show or hide the details with ) and (, respectively. If, f
   :init
    (use-package helm-projectile
      :ensure t
-      :init
+     :init
      (projectile-global-mode)
      (setq projectile-completion-system 'helm)
      (helm-projectile-on)
    )
+   (use-package helm-swoop
+     :init
+     (global-set-key (kbd "C-c u") 'helm-swoop)
+   )
+   
   (when (executable-find "curl")
     (setq helm-google-suggest-use-curl-p t))
 
