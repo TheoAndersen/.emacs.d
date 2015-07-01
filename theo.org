@@ -9,16 +9,13 @@ Rectangle mark mode... men virker ikke helt så godt som i Visual Studio
 ** Kan man få emacs til at forstå elisp sektionerne bedre heri (indrykning, autocomplete osv??)
 ** M-p and M-n should jump 10 lines up and down, if it dosen't match paragraphs
 *** Markdown - cannot move paragraphs with M-p and M-n
-** Able to save desktop of a current project, recall it when projecile opens the project (where was i last in this project)
 ** Org-mode - Every point starting with [] should color the [whatever] in another color to make it stand out
-** Org-mode - YES, NO or GOOD/BAD should make the line go green og red - to make it easier to make pro's and con's lists
 ** Windows - How do i enable drag and drop so that i can drag and drop a file on top of emacs
 ** Windows - How do i make emacs open files if i select them from explorer (it dosen't work right)
 ** Hide Helm-buffers so that i only see the content buffers
 ** Ignore .emacs.d/elpa/* from recentf (.places?)
-** TODO Hvorfor virker js2-refactor ikke med extract method?
+** Hvorfor virker js2-refactor ikke med extract method?
 --> den er ikke lavet til den opsætning... pull request??
-** Hvorfor kan den ikke selv hente pakker når den starter op (ikke så vigtigt)
 ** Able to save desktop of a current project, recall it when projecile opens the project (where was i last in this project)
 
 ** /done/ Projectiles/Helm should filter out node_modules in searches
