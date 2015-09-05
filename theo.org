@@ -30,6 +30,13 @@ Rectangle mark mode... men virker ikke helt så godt som i Visual Studio
 ** Hvad søren er der galt med de der auto escaped " osv, den prøver at sætte ind alle de forkerte steder?j
 ** /done/ Projectiles/Helm should filter out node_modules in searches
 Hvis man tilføjer det man vil filtrere ud i .projectile filen så virker det
+** Elixir
+*** Comments shortcut missing
+*** Autosuggest tips would be nice
+*** Easier compile keys (C-c?)
+*** Indentation could be more aggressive.
+its getting better all the tiiimme..
+*** Flycheck for elixir??
 * Introduction
 ** Quotations
 *** On Emacs
@@ -85,6 +92,8 @@ When I first copy this set-up into a new machine, I still have to require packag
   (add-to-list 'package-archives
                '("melpa" . "http://melpa.milkbox.net/packages/") t)
   (add-to-list 'package-archives
+               '("melpa-stable" . "http://stable.melpa.org/packages/") t)
+  (add-to-list 'package-archives
                '("gnu" "http://elpa.gnu.org/packages/") t)
 ;  (add-to-list 'package-archives
 ;               '("marmalade" . "http://marmalade-repo.org/packages/") t)
@@ -94,7 +103,7 @@ When I first copy this set-up into a new machine, I still have to require packag
   (setq load-prefer-newer t)
 ;  (package-refresh-contents)
   (require 'use-package) ;; currently you have to evaluate everything up to here, and grab use-package manually :/
-
+  (setq use-package-verbose t)
   (use-package diminish
     :ensure t
     :init
@@ -557,9 +566,12 @@ All of my packages for interacting with my laptop.
 ** Dired - Directories tree-view
 #+BEGIN_SRC emacs-lisp
   (use-package dired
+    :defer t
     :bind ("<f2>" . dired)
     :init
-    (use-package dired-x)  ; enables dired-jump, C-x C-j
+    (use-package dired-x
+      :defer t
+      )  ; enables dired-jump, C-x C-j
     :config
     (put 'dired-find-alternate-file 'disabled nil)
     (setq dired-dwim-target t
@@ -569,14 +581,14 @@ All of my packages for interacting with my laptop.
                ("<return>" . dired-find-alternate-file)
                ("^" . (lambda () (interactive) (find-alternate-file "..")))
                ("'" . wdired-change-to-wdired-mode))
-    (when (eq system-type 'darwin)
-      (add-to-list 'dired-omit-extensions ".DS_STORE"))
+;    (when (eq system-type 'darwin)
+;      (add-to-list 'dired-omit-extensions ".DS_STORE"))
 ;    (use-package dired-details
 ;      :ensure t
 ;      :init
 ;      (dired-details-install))
     (use-package dired-subtree
-      :ensure t
+      :disabled t
       :init
       (bind-keys :map dired-mode-map
                  :prefix "C-,"
@@ -646,10 +658,8 @@ Dired-details lets me show or hide the details with ) and (, respectively. If, f
 ** Ag - Silver searcher (fast text searching)
 #+BEGIN_SRC emacs-lisp
   (use-package ag
-    :ensure t
-    :init
-    (use-package helm-ag
-      :ensure t)
+    :defer
+    (use-package helm-ag)
     :config
     (setq ag-highlight-search t))
 #+END_SRC
@@ -795,6 +805,7 @@ This comes from [[http://whattheemacsd.com/init.el-03.html][Magnars]].
 ** Regex Builder
 #+BEGIN_SRC emacs-lisp
   (use-package re-builder
+    :defer
     :init
     (setq reb-re-syntax 'string))
 #+END_SRC
@@ -832,7 +843,7 @@ I try to keep almost the same keyboard shortcuts for each language..
 "<S-C-b>" = Compile (along with the normal C-c because this is the .net binding im used to)
 "<M-<spc>" = Autocomplete 
 
-** Detailed settings
+** Detauiled settings
 *** Tab width of 2 spaces
 #+BEGIN_SRC emacs-lisp
 (setq-default tab-width 2)
@@ -841,9 +852,7 @@ I try to keep almost the same keyboard shortcuts for each language..
 ** Snippets
 #+BEGIN_SRC emacs-lisp
    (use-package yasnippet
-     :ensure t
-     :init
-     (yas-global-mode 1)
+     :config
    )
 #+END_SRC
 ** Emacs Lisp
@@ -855,6 +864,7 @@ I try to keep almost the same keyboard shortcuts for each language..
 *** Elisp-Slime-Nav
 #+BEGIN_SRC emacs-lisp
   (use-package elisp-slime-nav
+    :defer
     :ensure t
     :diminish elisp-slime-nav-mode
     :init
@@ -872,7 +882,7 @@ When in emacs-lisp-mode, display the argument list for the current function. I l
   (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
   (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
 #+END_SRC
-** Flycheck
+** DISABLED Flycheck
 Flycheck presents a handsome and usable interface for [[http://endlessparentheses.com/Checkdoc%25252C-Package-Developing%25252C-and-Cakes.html][checkdoc]], amongst other things.
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck
@@ -889,14 +899,12 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
 
 #+BEGIN_SRC emacs-lisp
   (use-package magit
-    :ensure t
     :diminish magit-auto-revert-mode
     :bind (("C-x m" . magit-status)
            ("C-c m" . magit-status)
            ("C-x v d" . magit-diff-working-tree)) ;; diff the current file
     :init
     (use-package git-timemachine
-      :ensure t
       :bind (("C-x v t" . git-timemachine)))
     ;;(use-package git-link
     ;;  :ensure t
@@ -919,60 +927,16 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
     (bind-keys :map magit-status-mode-map
                ("q" . magit-quit-session)))
 #+END_SRC
-** smartparens
-;#+BEGIN_SRC emacs-lisp
-  (use-package smartparens
-    :ensure t
-    :diminish smartparens-mode
-    :bind
-    (("C-M-f" . sp-forward-sexp)
-     ("C-M-b" . sp-backward-sexp)
-     ("C-M-d" . sp-down-sexp)
-     ("C-M-a" . sp-backward-down-sexp)
-     ("C-S-a" . sp-beginning-of-sexp)
-     ("C-S-d" . sp-end-of-sexp)
-     ("C-M-e" . sp-up-sexp)
-     ("C-M-u" . sp-backward-up-sexp)
-     ("C-M-t" . sp-transpose-sexp)
-     ("C-M-n" . sp-next-sexp)
-     ("C-M-p" . sp-previous-sexp)
-     ("C-M-k" . sp-kill-sexp)
-     ("C-M-w" . sp-copy-sexp)
-     ("M-<delete>" . sp-unwrap-sexp)
-     ("M-S-<backspace>" . sp-backward-unwrap-sexp)
-     ("C-<right>" . sp-forward-slurp-sexp)
-     ("C-<left>" . sp-forward-barf-sexp)
-     ("C-M-<left>" . sp-backward-slurp-sexp)
-     ("C-M-<right>" . sp-backward-barf-sexp)
-     ("M-D" . sp-splice-sexp)
-     ("C-M-<delete>" . sp-splice-sexp-killing-forward)
-     ("C-M-<backspace>" . sp-splice-sexp-killing-backward)
-     ("C-M-S-<backspace>" . sp-splice-sexp-killing-around)
-     ("C-]" . sp-select-next-thing-exchange)
-     ("C-<left_bracket>" . sp-select-previous-thing)
-     ("C-M-]" . sp-select-next-thing)
-     ("M-F" . sp-forward-symbol)
-     ("M-B" . sp-backward-symbol)
-     ("H-t" . sp-prefix-tag-object)
-     ("H-p" . sp-prefix-pair-object)
-     ("H-s c" . sp-convolute-sexp)
-     ("H-s a" . sp-absorb-sexp)
-     ("H-s e" . sp-emit-sexp)
-     ("H-s p" . sp-add-to-previous-sexp)
-     ("H-s n" . sp-add-to-next-sexp)
-     ("H-s j" . sp-join-sexp)
-     ("H-s s" . sp-split-sexp))
-    :init
-    (smartparens-global-mode t)
-    (show-smartparens-global-mode t)
-    (use-package smartparens-config)
-    (when (eq system-type 'darwin)
-      (bind-keys ("<s-right>" . sp-forward-slurp-sexp)
-                 ("<s-left>" . sp-forward-barf-sexp)))
+** Smartparens
+#+BEGIN_SRC emacs-lisp
+(use-package smartparens
+    :config
     (use-package rainbow-delimiters
       :ensure t
       :init
-      (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)))
+    )
+    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+)
 #+END_SRC
 ** Projectile
 #+BEGIN_SRC emacs-lisp
@@ -1037,7 +1001,6 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
 #+BEGIN_SRC emacs-lisp
 (use-package erlang
   :mode ("\\.erl\\'" . erlang-mode)
-  :ensure t
   :config
   (progn
     (when is-windows
@@ -1056,7 +1019,7 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
 ;      :ensure t
 ;    )
     (use-package edts
-      :ensure t
+      :defer
       :init
       (progn
         (require 'edts-start)
@@ -1071,12 +1034,31 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
 #+END_SRC
 ** Elixir
 #+BEGIN_SRC emacs-lisp
-(use-package elixir-mode
-  :mode "\\.ex\\'"
-  :mode "\\.exs\\'"
-  :config
-  (use-package alchemist)
-)
+  (use-package elixir-mode
+    :mode "\\.ex\\'"
+    :mode "\\.exs\\'"
+    :config
+
+    (use-package alchemist
+      :defer
+      :pin melpa-stable
+      )
+
+    (defun my-elixir-do-end-close-action (id action context)
+      (when (eq action 'insert)
+        (newline-and-indent)
+        (previous-line)
+        (indent-according-to-mode)))
+    (sp-with-modes '(elixir-mode)
+      (sp-local-pair "do" "end"
+                     :when '(("SPC" "RET"))
+                     :post-handlers '(:add my-elixir-do-end-close-action)
+                     :actions '(insert)
+                     )
+      )
+    (add-hook 'elixir-mode-hook 'smartparens-mode +1)
+    (add-hook 'elixir-mode-hook 'yas-minor-mode)
+    )
 #+END_SRC
 ** C# / .Net
 #+BEGIN_SRC emacs-lisp
@@ -1090,7 +1072,6 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
 
       (setq omnisharp-server-executable-path "/Users/Theo/Documents/tools/OmniSharpServer/OmniSharp/bin/Debug/OmniSharp.exe")
     (use-package omnisharp
-      :ensure t
       :defer
       (progn
 ;        (add-to-list 'company-backends 'company-omnisharp)
@@ -1137,9 +1118,10 @@ I use the stock package of org-mode as the default major mode.
 
 #+BEGIN_SRC emacs-lisp
   (use-package org
+    :mode ("\\.org\\'" . org-mode)
     :config
     (progn
-    (setq default-major-mode 'org-mode
+      (setq default-major-mode 'org-mode
           org-directory "~/org/"
           org-log-done t
           org-startup-indented t
@@ -1157,6 +1139,7 @@ I use the stock package of org-mode as the default major mode.
           org-outline-path-complete-in-steps nil
           org-use-speed-commands t
           org-src-fontify-natively t
+          org-src-tab-acts-natively t
           org-lowest-priority 68
           org-default-priority 68
           org-file-apps
@@ -1184,12 +1167,14 @@ I use org-struct in mu4e. See above.
 ** Markdown
 #+BEGIN_SRC emacs-lisp
   (use-package markdown-mode
-    :ensure t)
+   :defer
+   )
 #+END_SRC
 ** Calc
 #+BEGIN_SRC emacs-lisp
   (use-package calc
-    :config
+    :defer
+    :init
     (setq calc-display-trail ()))
 #+END_SRC
 * Functions
@@ -1393,6 +1378,9 @@ Via [[https://github.com/hrs/dotfiles][Harry Schwartz]].
     "Kill up to, but not including ARGth occurrence of CHAR.")
   (bind-key "M-Z" 'zap-up-to-char)
 #+END_SRC
+
+
+
 
 
 
