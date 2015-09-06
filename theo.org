@@ -1038,10 +1038,13 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
     :mode "\\.ex\\'"
     :mode "\\.exs\\'"
     :config
+    ;(setq alchemist-goto-erlang-source-dir "/path/to/erlang/source/")
+    (setq alchemist-goto-elixir-source-dir "/Users/Theo/Documents/Source/elixir/")
 
     (use-package alchemist
       :defer
       :pin melpa-stable
+      :config
       )
 
     (defun my-elixir-do-end-close-action (id action context)
@@ -1049,6 +1052,7 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
         (newline-and-indent)
         (previous-line)
         (indent-according-to-mode)))
+
     (sp-with-modes '(elixir-mode)
       (sp-local-pair "do" "end"
                      :when '(("SPC" "RET"))
@@ -1056,8 +1060,11 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
                      :actions '(insert)
                      )
       )
+
+
     (add-hook 'elixir-mode-hook 'smartparens-mode +1)
-    (add-hook 'elixir-mode-hook 'yas-minor-mode)
+    (add-hook 'elixir-mode-hook 'yas-minor-mode +1)
+    (add-hook 'elixir-mode-hook 'alchemist-mode +1)
     )
 #+END_SRC
 ** C# / .Net
