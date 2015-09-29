@@ -4,6 +4,8 @@
 ** Kan ikke markere i en firkant og redigere på alle linjer samtidigt
 Rectangle mark mode... men virker ikke helt så godt som i Visual Studio
 ** Web-mode format document (en nemmere måde end mark-page og <tab>)
+** HVordan går jeg til start og slut, når nu multiple-cursors har C-> og C-<?
+** /elixir/ Hvordan får jeg autokompileret og ind i iex, mode så jeg bare heletiden kan prøve på ny?
 ** Hvad er paredit?
 ** Kan man få emacs til at forstå elisp sektionerne bedre heri (indrykning, autocomplete osv??)
 ** Kunne flytte ting nemmere
@@ -1034,38 +1036,50 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
 #+END_SRC
 ** Elixir
 #+BEGIN_SRC emacs-lisp
-  (use-package elixir-mode
-    :mode "\\.ex\\'"
-    :mode "\\.exs\\'"
-    :config
-    ;(setq alchemist-goto-erlang-source-dir "/path/to/erlang/source/")
-    (setq alchemist-goto-elixir-source-dir "/Users/Theo/Documents/Source/elixir/")
-
-    (use-package alchemist
-      :defer
-      :pin melpa-stable
+    (use-package elixir-mode
+      :mode "\\.ex\\'"
+      :mode "\\.exs\\'"
       :config
+      ;(setq alchemist-goto-erlang-source-dir "/path/to/erlang/source/")
+      (setq alchemist-goto-elixir-source-dir "/Users/Theo/Documents/Source/elixir/")
+
+      (use-package alchemist
+        :defer
+        :pin melpa-stable
+        :config
+        )
+
+      (defun my-elixir-do-end-close-action (id action context)
+        (when (eq action 'insert)
+          (newline-and-indent)
+          (previous-line)
+          (indent-according-to-mode)))
+
+      (sp-with-modes '(elixir-mode)
+        (sp-local-pair "do" "end"
+                       :when '(("SPC" "RET"))
+                       :post-handlers '(:add my-elixir-do-end-close-action)
+                       :actions '(insert)
+                       )
+        )
+
+      (add-to-list 'display-buffer-alist
+                   `(,(rx bos (or "*alchemist test report*"
+                                  "*alchemist mix*"
+                                  "*alchemist help*"
+                                  "*alchemist elixir*"
+                                  "*alchemist elixirc*"))
+                     (display-buffer-reuse-window
+                      display-buffer-in-side-window)
+                     (reusable-frames . visible)
+                     (side            . right)
+                     (window-width   . 0.5)))
+
+
+      (add-hook 'elixir-mode-hook 'smartparens-mode +1)
+      (add-hook 'elixir-mode-hook 'yas-minor-mode +1)
+      (add-hook 'elixir-mode-hook 'alchemist-mode +1)
       )
-
-    (defun my-elixir-do-end-close-action (id action context)
-      (when (eq action 'insert)
-        (newline-and-indent)
-        (previous-line)
-        (indent-according-to-mode)))
-
-    (sp-with-modes '(elixir-mode)
-      (sp-local-pair "do" "end"
-                     :when '(("SPC" "RET"))
-                     :post-handlers '(:add my-elixir-do-end-close-action)
-                     :actions '(insert)
-                     )
-      )
-
-
-    (add-hook 'elixir-mode-hook 'smartparens-mode +1)
-    (add-hook 'elixir-mode-hook 'yas-minor-mode +1)
-    (add-hook 'elixir-mode-hook 'alchemist-mode +1)
-    )
 #+END_SRC
 ** C# / .Net
 #+BEGIN_SRC emacs-lisp
