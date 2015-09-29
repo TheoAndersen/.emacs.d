@@ -79,9 +79,12 @@ Yet to me, literate programming is certainly the most important thing that came 
 #+END_SRC
 ** Set global variables for identifying the system (Mac or Windows)
 #+BEGIN_SRC emacs-lisp
-; is mac?
-(setq is-mac (equal system-type 'darwin))
-(setq is-windows (equal system-type 'windows-nt))
+  ; is mac?
+  (setq is-mac (equal system-type 'darwin))
+  (setq is-windows (equal system-type 'windows-nt))
+
+  (setenv "PATH" (concat "/usr/local/bin:" (getenv "PATH")))
+  (setq exec-path (append exec-path '("/usr/local/bin")))
 #+END_SRC
 ** Enable package support
 I set up packages, Melpa, and use-package bright and early so that I can make use of use-package's bind-key macro.
@@ -91,19 +94,20 @@ When I first copy this set-up into a new machine, I still have to require packag
 #+BEGIN_SRC emacs-lisp
   (require 'package)
   ;; Melpa-stable tager sidste taggede commit, hvor Melpa tager sidste commit
-  (add-to-list 'package-archives
-               '("melpa" . "http://melpa.milkbox.net/packages/") t)
+
   (add-to-list 'package-archives
                '("melpa-stable" . "http://stable.melpa.org/packages/") t)
   (add-to-list 'package-archives
                '("gnu" "http://elpa.gnu.org/packages/") t)
+  (add-to-list 'package-archives
+               '("melpa" . "http://melpa.milkbox.net/packages/") t)
 ;  (add-to-list 'package-archives
 ;               '("marmalade" . "http://marmalade-repo.org/packages/") t)
 ;  (add-to-list 'package-archives
 ;               '("elpa" . "http://marmalade-repo.org/packages/") t)
 
   (setq load-prefer-newer t)
-;  (package-refresh-contents)
+  (package-refresh-contents)
   (require 'use-package) ;; currently you have to evaluate everything up to here, and grab use-package manually :/
   (setq use-package-verbose t)
   (use-package diminish
@@ -914,6 +918,7 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
     ;;  :init
     ;;  (setq git-link-open-in-browser t))
     :config
+    (setq magit-git-executable "/usr/local/bin/git")
     (setq magit-use-overlays nil)
     (defadvice magit-status (around magit-fullscreen activate)
       (window-configuration-to-register :magit-fullscreen)
@@ -931,14 +936,15 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
 #+END_SRC
 ** Smartparens
 #+BEGIN_SRC emacs-lisp
-(use-package smartparens
-    :config
-    (use-package rainbow-delimiters
-      :ensure t
-      :init
-    )
-    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
-)
+  (use-package smartparens
+      :ensure t   
+      :config
+      (use-package rainbow-delimiters
+        :ensure t
+        :init
+      )
+      (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+  )
 #+END_SRC
 ** Projectile
 #+BEGIN_SRC emacs-lisp
@@ -1036,50 +1042,51 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
 #+END_SRC
 ** Elixir
 #+BEGIN_SRC emacs-lisp
-    (use-package elixir-mode
-      :mode "\\.ex\\'"
-      :mode "\\.exs\\'"
+  (use-package elixir-mode
+    :mode "\\.ex\\'"
+    :mode "\\.exs\\'"
+    :config
+    ;(setq alchemist-goto-erlang-source-dir "/path/to/erlang/source/")
+    (setq alchemist-goto-elixir-source-dir "/Users/Theo/Documents/Source/elixir/")
+
+    (use-package alchemist
+      :defer
       :config
-      ;(setq alchemist-goto-erlang-source-dir "/path/to/erlang/source/")
-      (setq alchemist-goto-elixir-source-dir "/Users/Theo/Documents/Source/elixir/")
-
-      (use-package alchemist
-        :defer
-        :pin melpa-stable
-        :config
+      (use-package company-mode
         )
-
-      (defun my-elixir-do-end-close-action (id action context)
-        (when (eq action 'insert)
-          (newline-and-indent)
-          (previous-line)
-          (indent-according-to-mode)))
-
-      (sp-with-modes '(elixir-mode)
-        (sp-local-pair "do" "end"
-                       :when '(("SPC" "RET"))
-                       :post-handlers '(:add my-elixir-do-end-close-action)
-                       :actions '(insert)
-                       )
-        )
-
-      (add-to-list 'display-buffer-alist
-                   `(,(rx bos (or "*alchemist test report*"
-                                  "*alchemist mix*"
-                                  "*alchemist help*"
-                                  "*alchemist elixir*"
-                                  "*alchemist elixirc*"))
-                     (display-buffer-reuse-window
-                      display-buffer-in-side-window)
-                     (reusable-frames . visible)
-                     (side            . right)
-                     (window-width   . 0.5)))
-
-
-      (add-hook 'elixir-mode-hook 'smartparens-mode +1)
-      (add-hook 'elixir-mode-hook 'yas-minor-mode +1)
-      (add-hook 'elixir-mode-hook 'alchemist-mode +1)
       )
+
+    (defun my-elixir-do-end-close-action (id action context)
+      (when (eq action 'insert)
+        (newline-and-indent)
+        (previous-line)
+        (indent-according-to-mode)))
+
+    (sp-with-modes '(elixir-mode)
+      (sp-local-pair "do" "end"
+                     :when '(("SPC" "RET"))
+                     :post-handlers '(:add my-elixir-do-end-close-action)
+                     :actions '(insert)
+                     )
+      )
+
+    (add-to-list 'display-buffer-alist
+                 `(,(rx bos (or "*alchemist test report*"
+                                "*alchemist mix*"
+                                "*alchemist help*"
+                                "*alchemist elixir*"
+                                "*alchemist elixirc*"))
+                   (display-buffer-reuse-window
+                    display-buffer-in-side-window)
+                   (reusable-frames . visible)
+                   (side            . right)
+                   (window-width   . 0.5)))
+
+
+    (add-hook 'elixir-mode-hook 'smartparens-mode +1)
+    (add-hook 'elixir-mode-hook 'yas-minor-mode +1)
+    (add-hook 'elixir-mode-hook 'alchemist-mode +1)
+    )
 #+END_SRC
 ** C# / .Net
 #+BEGIN_SRC emacs-lisp
