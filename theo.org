@@ -99,8 +99,8 @@ When I first copy this set-up into a new machine, I still have to require packag
                '("melpa-stable" . "http://stable.melpa.org/packages/") t)
   (add-to-list 'package-archives
                '("gnu" "http://elpa.gnu.org/packages/") t)
-  (add-to-list 'package-archives
-               '("melpa" . "http://melpa.milkbox.net/packages/") t)
+;  (add-to-list 'package-archives
+;               '("melpa" . "http://melpa.milkbox.net/packages/") t)
 ;  (add-to-list 'package-archives
 ;               '("marmalade" . "http://marmalade-repo.org/packages/") t)
 ;  (add-to-list 'package-archives
@@ -839,6 +839,12 @@ This comes from [[http://whattheemacsd.com/init.el-03.html][Magnars]].
           twittering-icon-mode t
           twittering-use-icon-storage t))
 #+END_SRC
+** ERC / IRC
+  (use-package erc
+    (setq erc-fill-function 'erc-fill-static
+          erc-fill-static-center 40)
+
+  )
 * Development
 I try to keep almost the same keyboard shortcuts for each language..
 "<f1>" = help in context of the cursor position
@@ -1077,7 +1083,7 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
                                 "*alchemist elixir*"
                                 "*alchemist elixirc*"))
                    (display-buffer-reuse-window
-                    display-buffer-in-side-window)
+                    display-buffer-at-bottom)
                    (reusable-frames . visible)
                    (side            . right)
                    (window-width   . 0.5)))
