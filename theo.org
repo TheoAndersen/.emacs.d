@@ -126,6 +126,11 @@ When I first copy this set-up into a new machine, I still have to require packag
 #+END_SRC
 
 ** Saner defaults
+
+*** Bell
+#+BEGIN_SRC emacs-lisp
+  (setq ring-bell-function 'ignore)
+#+END_SRC
 *** Change prompts
 Make yes or no prompts be y or n prompts.
 
@@ -287,7 +292,6 @@ Some features and settings are disabled by default; this is sane behavior for ne
 If q exists the buffer, then bind C-g to do the same.
 
 This way we don't have to try one or the other, but can always just use C-g
-
 ** Whole-line-or-region
 #+BEGIN_SRC emacs-lisp
   (use-package whole-line-or-region
@@ -1412,6 +1416,9 @@ Via [[https://github.com/hrs/dotfiles][Harry Schwartz]].
     "Kill up to, but not including ARGth occurrence of CHAR.")
   (bind-key "M-Z" 'zap-up-to-char)
 #+END_SRC
+
+
+
 
 
 
