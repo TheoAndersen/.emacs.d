@@ -1057,7 +1057,7 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
     :mode "\\.exs\\'"
     :config
     ;(setq alchemist-goto-erlang-source-dir "/path/to/erlang/source/")
-    (setq alchemist-goto-elixir-source-dir "/Users/Theo/Documents/Source/elixir/")
+    (setq alchemist-goto-elixir-source-dir "/Users/Theo/Documents/source/elixir/")
 
     (use-package alchemist
       :defer
