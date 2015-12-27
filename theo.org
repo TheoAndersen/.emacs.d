@@ -844,11 +844,17 @@ This comes from [[http://whattheemacsd.com/init.el-03.html][Magnars]].
           twittering-use-icon-storage t))
 #+END_SRC
 ** ERC / IRC
+#+BEGIN_SRC emacs-lisp
   (use-package erc
     (setq erc-fill-function 'erc-fill-static
-          erc-fill-static-center 40)
-
+          erc-fill-static-center 40
+          erc-hide-list '("JOIN" "PART" "QUIT")
+          erc-track-exlude-types '("JOIN" "NICK" "PART" "QUIT" "MODE" "324" "329" "322" "333" "353" "477"))
+    (erc-colorize-mode 1)
+    (erc-spelling-mode 1)
+    (use-package erc-terminal-notifier)
   )
+#+END_SRC
 * Development
 I try to keep almost the same keyboard shortcuts for each language..
 "<f1>" = help in context of the cursor position

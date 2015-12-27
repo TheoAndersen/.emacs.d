@@ -7,3 +7,6 @@
 [submodule "site-lisp/emacs-async"]
 	path = site-lisp/emacs-async
 	url = git@github.com:jwiegley/emacs-async.git
+[submodule "elpa/erc-terminal-notifier.el"]
+	path = elpa/erc-terminal-notifier.el
+	url = git://github.com/julienXX/erc-terminal-notifier.el.git
