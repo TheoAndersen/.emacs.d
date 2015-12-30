@@ -673,20 +673,26 @@ Dired-details lets me show or hide the details with ) and (, respectively. If, f
     :config
     (setq ag-highlight-search t))
 #+END_SRC
-** Company Mode - Autocompletion
+** Company
+Mode - Autocompletion
 #+BEGIN_SRC emacs-lisp
-  (use-package company
-    :ensure t
-    :bind ("C-." . company-complete)
-    :init
-    (add-hook 'prog-mode-hook 'company-mode)
-    :config
-    (diminish 'company-mode)
-    (bind-keys :map company-active-map
-               ("C-n" . company-select-next)
-               ("C-p" . company-select-previous)
-               ("C-d" . company-show-doc-buffer)
-               ("<tab>" . company-complete)))
+    (use-package company
+      :ensure t
+      :bind ("C-." . company-complete)
+      :init
+      (add-hook 'prog-mode-hook 'company-mode)
+      :config
+      (diminish 'company-mode)
+      (bind-keys :map company-active-map
+                 ("C-n" . company-select-next)
+                 ("C-p" . company-select-previous)
+                 ("C-d" . company-show-doc-buffer)
+                 ("<tab>" . company-complete))
+      (use-package company-quickhelp
+        :config
+        (company-quickhelp-mode 1)
+        )
+      )
 #+END_SRC
 ** Ace Jump Mode - jump to everywhere fast
 #+BEGIN_SRC emacs-lisp
@@ -846,13 +852,45 @@ This comes from [[http://whattheemacsd.com/init.el-03.html][Magnars]].
 ** ERC / IRC
 #+BEGIN_SRC emacs-lisp
   (use-package erc
+    :commands erc
+    :init
     (setq erc-fill-function 'erc-fill-static
           erc-fill-static-center 40
           erc-hide-list '("JOIN" "PART" "QUIT")
-          erc-track-exlude-types '("JOIN" "NICK" "PART" "QUIT" "MODE" "324" "329" "322" "333" "353" "477"))
-    (erc-colorize-mode 1)
-    (erc-spelling-mode 1)
+          erc-track-exlude-types '("JOIN" "NICK" "PART" "QUIT" "MODE" "324" "329" "322" "333" "353" "477")
+          erc-autojoin-channels-alist '(("freenode.net"
+                                         "#emacs"
+                                         "#elixir-lang"
+                                         "#cphex"))
+          erc-server "irc.freenode.net"
+          erc-nick "theoac"
+          )
+    :config
+;    (erc-fill-disable)
+    (visual-line-mode)
+;    (set-visual-wrap-column 90)
+    (use-package erc-colorize 
+      :config
+      (erc-colorize-mode 1)
+      )
     (use-package erc-terminal-notifier)
+  )
+#+END_SRC
+** Sauron - notifications
+#+BEGIN_SRC emacs-lisp
+  (use-package sauron
+    :config
+    (setq sauron-separate-frame nil
+        sauron-hide-mode-line t)
+    (setq sauron-watch-nicks '("theoac")
+        sauron-nick-insensitivity 60)
+    (defun mg/sauron-mode-hook ()
+      (text-scale-set -3))
+    (add-hook 'sauron-mode-hook 'mg/sauron-mode-hook)
+
+    ;; Key bindings
+    (global-set-key (kbd "C-c n n") 'sauron-toggle-hide-show)
+    (global-set-key (kbd "C-c n c") 'sauron-clear)
   )
 #+END_SRC
 * Development
@@ -1104,6 +1142,17 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
     (add-hook 'elixir-mode-hook 'alchemist-mode +1)
     )
 #+END_SRC
+** Elm
+#+BEGIN_SRC emacs-lisp
+    (use-package elm
+      (use-package elm-package)
+      :config
+      (add-hook 'elm-mode-hook #'elm-oracle-setup-completion)
+      (add-to-list 'company-backends 'company-elm)
+  ;    (setq 'auto-complete nil)
+      (defvar elm-compile-arguments '("--yes" "--output=elm.js"))
+      )
+#+END_SRC
 ** C# / .Net
 #+BEGIN_SRC emacs-lisp
 (use-package csharp-mode
@@ -1119,7 +1168,8 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
       :defer
       (progn
 ;        (add-to-list 'company-backends 'company-omnisharp)
-        (setq omnisharp-company-strip-trailing-brackets nil)
+        (setq omnisharp-company-strip-tra
+iling-brackets nil)
         (define-key csharp-mode-map (kbd "C-S-b") 'omnisharp-build-in-emacs)
         (define-key csharp-mode-map (kbd "M-SPC") 'omnisharp-auto-complete)
         (define-key csharp-mode-map (kbd "C-,") 'omnisharp-helm-find-symbols)
