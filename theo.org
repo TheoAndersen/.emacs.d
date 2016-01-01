@@ -97,8 +97,8 @@ When I first copy this set-up into a new machine, I still have to require packag
 
   (add-to-list 'package-archives
                '("melpa-stable" . "http://stable.melpa.org/packages/") t)
-  (add-to-list 'package-archives
-               '("gnu" "https://elpa.gnu.org/packages/") t)
+;  (add-to-list 'package-archives
+;               '("gnu" "https://elpa.gnu.org/packages/") t)
 ;  (add-to-list 'package-archives
 ;               '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
@@ -379,6 +379,7 @@ Finally, I diminish some built-in minor modes.
   (display-battery-mode 1)
   (setq battery-mode-line-format "%p%%") ; Default: "[%b%p%%]"
 
+  (diminish 'flycheck-mode)
   (diminish 'isearch-mode)
 #+END_SRC
 ** Color background of quitable 'temporary' buffers
@@ -659,6 +660,8 @@ Dired-details lets me show or hide the details with ) and (, respectively. If, f
   (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
   (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
   (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
+  :config
+  (diminish 'helm-mode)
 )
 
 #+END_SRC
@@ -939,14 +942,17 @@ When in emacs-lisp-mode, display the argument list for the current function. I l
   (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
   (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
 #+END_SRC
-** DISABLED Flycheck
+** Flycheck
 Flycheck presents a handsome and usable interface for [[http://endlessparentheses.com/Checkdoc%25252C-Package-Developing%25252C-and-Cakes.html][checkdoc]], amongst other things.
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck
-    :disabled t
     :ensure t
     :init
-    (global-flycheck-mode))
+    (add-hook 'after-init-hook 'global-flycheck-mode)
+    :config
+    (diminish 'flycheck-mode)
+    (setq-default flycheck-highlighting-mode 'lines)
+    )
 #+END_SRC
 
 ** Git
@@ -1139,14 +1145,43 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
     (add-hook 'elixir-mode-hook 'alchemist-mode +1)
     )
 #+END_SRC
+
 ** Elm
+- About
+  - https://github.com/jcollard/elm-mode
+  - 
+  - Lets see, a good standard setup would be:
+  - 
+  - [x] Syntax highlighting
+  - [x] Compilation hotkeys (C-c C-c)
+  - [x] REPL hotkeys
+  - [x] Flycheck (should work?!? updates on save)
+  - [x] Lookup types (C-c C-t)  (maybe its me, but its not perfect?)
+  - [x] Autocomplete
+  - [x] Autocomplete with docs
+  - [ ] Autocomplete can use C-h and open docs for element
+  - [ ] Goto definition M-. and M-,
+
 #+BEGIN_SRC emacs-lisp
-    (use-package elm
+    (use-package elm-mode
+      :mode "\\.elm\\'"
+      :init
       :config
-      (add-hook 'elm-mode-hook #'elm-oracle-setup-completion)
+      (diminish 'elm-indent-mode)
+      (add-hook 'elm-mode-hook 'elm-oracle-setup-completion)
       (add-to-list 'company-backends 'company-elm)
-  ;    (setq 'auto-complete nil)
       (defvar elm-compile-arguments '("--yes" "--output=elm.js"))
+      (message "--> Ind i usepackage elm")
+      (use-package flycheck
+        :demand
+        :config
+        (diminish 'flycheck-mode)
+        (use-package flycheck-elm
+          :demand
+          :config
+          )
+        )
+      (add-hook 'elm-mode-hook 'flycheck-elm-setup)
       )
 #+END_SRC
 ** C# / .Net
@@ -1211,6 +1246,7 @@ I use the stock package of org-mode as the default major mode.
     :mode ("\\.org\\'" . org-mode)
     :config
     (progn
+      (diminish 'org-indent-mode)
       (setq default-major-mode 'org-mode
           org-directory "~/org/"
           org-log-done t
