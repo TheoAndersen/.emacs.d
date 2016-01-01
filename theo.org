@@ -98,13 +98,9 @@ When I first copy this set-up into a new machine, I still have to require packag
   (add-to-list 'package-archives
                '("melpa-stable" . "http://stable.melpa.org/packages/") t)
   (add-to-list 'package-archives
-               '("gnu" "http://elpa.gnu.org/packages/") t)
+               '("gnu" "https://elpa.gnu.org/packages/") t)
 ;  (add-to-list 'package-archives
 ;               '("melpa" . "http://melpa.milkbox.net/packages/") t)
-;  (add-to-list 'package-archives
-;               '("marmalade" . "http://marmalade-repo.org/packages/") t)
-;  (add-to-list 'package-archives
-;               '("elpa" . "http://marmalade-repo.org/packages/") t)
 
   (setq load-prefer-newer t)
   (package-refresh-contents)
@@ -568,10 +564,11 @@ All of my packages for interacting with my laptop.
     (dirtrack-mode)
     (setq explicit-shell-file-name (cond ((eq system-type 'darwin) "/bin/bash")
                                          ((eq system-type 'gnu/linux) "/usr/bin/bash")))
-    (when (eq system-type 'darwin)
-      (use-package exec-path-from-shell
-        :init
-        (exec-path-from-shell-initialize))))
+;    (when (eq system-type 'darwin)
+;      (use-package exec-path-from-shell
+;        :init
+;        (exec-path-from-shell-initialize)))
+)
 #+END_SRC
 ** Dired - Directories tree-view
 #+BEGIN_SRC emacs-lisp
@@ -1145,7 +1142,6 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
 ** Elm
 #+BEGIN_SRC emacs-lisp
     (use-package elm
-      (use-package elm-package)
       :config
       (add-hook 'elm-mode-hook #'elm-oracle-setup-completion)
       (add-to-list 'company-backends 'company-elm)
