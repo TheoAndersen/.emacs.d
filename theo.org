@@ -1163,26 +1163,26 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
   - [ ] Goto definition M-. and M-,
 
 #+BEGIN_SRC emacs-lisp
-    (use-package elm-mode
-      :mode "\\.elm\\'"
-      :init
+  (use-package elm-mode
+    :mode "\\.elm\\'"
+    :init
+    :config
+    (diminish 'elm-indent-mode)
+    (add-hook 'elm-mode-hook 'elm-oracle-setup-completion)
+    (add-to-list 'company-backends 'company-elm)
+    (defvar elm-compile-arguments '("--yes" "--output=elm.js"))
+    (use-package flycheck
+      :demand
       :config
-      (diminish 'elm-indent-mode)
-      (add-hook 'elm-mode-hook 'elm-oracle-setup-completion)
-      (add-to-list 'company-backends 'company-elm)
-      (defvar elm-compile-arguments '("--yes" "--output=elm.js"))
-      (message "--> Ind i usepackage elm")
-      (use-package flycheck
+      (diminish 'flycheck-mode)
+      (use-package flycheck-elm
         :demand
         :config
-        (diminish 'flycheck-mode)
-        (use-package flycheck-elm
-          :demand
-          :config
-          )
+        (setq flycheck-elm-reporting-mode 'errors-only)
         )
-      (add-hook 'elm-mode-hook 'flycheck-elm-setup)
       )
+    (add-hook 'elm-mode-hook 'flycheck-elm-setup)
+    )
 #+END_SRC
 ** C# / .Net
 #+BEGIN_SRC emacs-lisp
