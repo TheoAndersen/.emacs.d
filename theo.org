@@ -32,6 +32,7 @@ Rectangle mark mode... men virker ikke helt så godt som i Visual Studio
 ** Hvad søren er der galt med de der auto escaped " osv, den prøver at sætte ind alle de forkerte steder?j
 ** /done/ Projectiles/Helm should filter out node_modules in searches
 Hvis man tilføjer det man vil filtrere ud i .projectile filen så virker det
+** Compilation/Test resultater vises kun når det går skidt.. ellers 'x' i modelinen
 ** Elixir
 *** Comments shortcut missing
 *** Autosuggest tips would be nice
@@ -701,7 +702,12 @@ Mode - Autocompletion
     :bind ("M-SPC" . ace-jump-char-mode)
     :init
     (use-package ace-jump-buffer
-      :ensure t)
+      :ensure t
+      :config
+      (add-to-list 'bs-configurations
+                   '("nonSystem" nil nil "^\*.*" nil nil))
+      (setq ajb-bs-configuration "nonSystem")
+      )
     (use-package ace-link
       :ensure t
       :init
@@ -919,6 +925,8 @@ I try to keep almost the same keyboard shortcuts for each language..
 *** Emacs lisp
 #+BEGIN_SRC emacs-lisp
 ;  (define-key Emacs-l (kbd "C-S-b") 'omnisharp-build-in-emacs)
+    
+
 #+END_SRC
 
 *** Elisp-Slime-Nav
@@ -1015,6 +1023,8 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
       (add-to-list 'projectile-globally-ignored-directories "elpa")
       (add-to-list 'projectile-globally-ignored-directories ".cache")
       (add-to-list 'projectile-globally-ignored-directories "node_modules")
+      (add-to-list 'projectile-globally-ignored-directories "deps")
+      (add-to-list 'projectile-globally-ignored-directories "_build")
       (add-to-list 'projectile-globally-ignored-files "#*.*")
     )
   )
