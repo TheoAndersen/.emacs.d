@@ -689,10 +689,10 @@ Mode - Autocompletion
                  ("C-p" . company-select-previous)
                  ("C-d" . company-show-doc-buffer)
                  ("<tab>" . company-complete))
-      (use-package company-quickhelp
-        :config
-        (company-quickhelp-mode 1)
-        )
+;         (use-package company-quickhelp
+;         :config
+;         (company-quickhelp-mode 1)
+        ; )
       )
 #+END_SRC
 ** Ace Jump Mode - jump to everywhere fast
@@ -818,11 +818,12 @@ This comes from [[http://whattheemacsd.com/init.el-03.html][Magnars]].
 #+END_SRC
 ** Golden Ratio - make the current buffer a bit larger than the rest
 #+BEGIN_SRC emacs-lisp
-  (use-package golden-ratio
-    :ensure t
-    :diminish golden-ratio-mode
-    :init
-    (golden-ratio-mode 1))
+    (use-package golden-ratio
+      :ensure t
+      :diminish golden-ratio-mode
+      :init
+      (golden-ratio-mode 1)
+      (add-to-list 'golden-ratio-exclude-buffer-names " *NeoTree*"))
 #+END_SRC
 ** Regex Builder
 #+BEGIN_SRC emacs-lisp
