@@ -556,6 +556,11 @@ based on the answer by @mellowmaroon in http://stackoverflow.com/a/20064658
                   (point))))
     (comment-or-uncomment-region start end)))
 #+END_SRC
+** Errors
+#+BEGIN_SRC emacs-lisp
+  (define-key global-map (kbd "C-x '") 'next-error)
+#+END_SRC
+
 * System
 All of my packages for interacting with my laptop.
 ** Shell
@@ -1036,6 +1041,7 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
 (use-package web-mode
   :mode ("\\.html?\\'" . web-mode)
   :mode ("\\.hbs?\\'" . web-mode)
+  :mode ("\\.html.eex?\\'" . web-mode)
   :ensure web-mode
   :bind ("C-c k" . web-mode-comment-or-uncomment)
   :config
