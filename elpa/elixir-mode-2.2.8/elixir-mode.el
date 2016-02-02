@@ -112,6 +112,16 @@
   "For use with atoms & map keys."
   :group 'font-lock-faces)
 
+(defvar elixir-ignored-var-face 'elixir-ignored-var-face)
+(defface elixir-ignored-var-face
+  '((((class color) (min-colors 88) (background light))
+     :foreground "#424242")
+    (((class color) (background dark))
+     (:foreground "#616161"))
+    (t nil))
+  "For use with ignored variables (starting with underscore)."
+  :group 'font-lock-faces)
+
 (eval-when-compile
   (defconst elixir-rx-constituents
     `(
@@ -131,21 +141,18 @@
                       (zero-or-more (any "a-z" "A-Z" "0-9" "_" "\"" "'" "!" "@" "?")))
                      (and "\"" (one-or-more (not (any "\""))) "\"")
                      (and "'" (one-or-more (not (any "'"))) "'"))))
-      (builtin . ,(rx (or line-start (not (any ".")))
-                      symbol-start
-                      (or "case" "cond" "for" "if" "unless" "try" "receive"
-                          "raise" "quote" "unquote" "unquote_splicing" "throw"
-                          "super")
+      (builtin . ,(rx symbol-start
+                      (or "case" "cond" "for" "if" "quote" "raise" "receive" "send"
+                          "super" "throw" "try" "unless" "unquote" "unquote_splicing"
+                          "with")
                       symbol-end))
-      (builtin-declaration . ,(rx (or line-start (not (any ".")))
-                                  symbol-start
+      (builtin-declaration . ,(rx symbol-start
                                   (or "def" "defp" "defmodule" "defprotocol"
                                       "defmacro" "defmacrop" "defdelegate"
                                       "defexception" "defstruct" "defimpl"
                                       "defcallback" "defoverridable")
                                   symbol-end))
-      (builtin-namespace . ,(rx (or line-start (not (any ".")))
-                                symbol-start
+      (builtin-namespace . ,(rx symbol-start
                                 (or "import" "require" "use" "alias")
                                 symbol-end))
       ;; Set aside code point syntax for `elixir-negation-face'.
@@ -163,12 +170,10 @@
       (identifiers . ,(rx (one-or-more (any "A-Z" "a-z" "_"))
                           (zero-or-more (any "A-Z" "a-z" "0-9" "_"))
                           (optional (or "?" "!"))))
-      (keyword . ,(rx (or line-start (not (any ".")))
-                      symbol-start
+      (keyword . ,(rx symbol-start
                       (or "fn" "do" "end" "after" "else" "rescue" "catch")
                       symbol-end))
-      (keyword-operator . ,(rx (or line-start (not (any ".")))
-                               symbol-start
+      (keyword-operator . ,(rx symbol-start
                                (or "not" "and" "or" "when" "in")
                                symbol-end))
       ;; Module and submodule names start with upper case letter. This
@@ -202,6 +207,9 @@
              (rx-to-string `(and ,@sexps) t))
             (t
              (rx-to-string (car sexps) t))))))
+
+(defsubst elixir-syntax-in-string-or-comment-p ()
+  (nth 8 (syntax-ppss)))
 
 (defsubst elixir-syntax-count-quotes (quote-char &optional point limit)
   "Count number of quotes around point (max is 3).
@@ -263,23 +271,31 @@ is used to limit the scan."
     (?\[ . "]")))
 
 (defun elixir-syntax-replace-property-in-sigil ()
-  (let ((heredoc-p (save-excursion
-                     (goto-char (match-beginning 0))
-                     (looking-at-p "~s\"\"\""))))
-    (unless heredoc-p
-      (forward-char 1)
-      (let* ((start-delim (char-after (1- (point))))
-             (end-delim (or (assoc-default start-delim elixir-sigil-delimiter-pair)
-                            (char-to-string start-delim)))
-             (end (save-excursion
-                    (skip-chars-forward (concat "^" end-delim))
-                    (point)))
-             (word-syntax (string-to-syntax "w")))
-        (when (memq start-delim '(?' ?\"))
-          (setq end (1+ end))
-          (forward-char -1))
-        (while (re-search-forward "[\"'#]" end t)
-          (put-text-property (1- (point)) (point) 'syntax-table word-syntax))))))
+  (unless (elixir-syntax-in-string-or-comment-p)
+    (let ((heredoc-p (save-excursion
+                       (goto-char (match-beginning 0))
+                       (looking-at-p "~[sS]\"\"\""))))
+      (unless heredoc-p
+        (forward-char 1)
+        (let* ((start-delim (char-after (1- (point))))
+               (end-delim (or (assoc-default start-delim elixir-sigil-delimiter-pair)
+                              (char-to-string start-delim)))
+               (end (save-excursion
+                      (let (finish)
+                        (while (not finish)
+                          (skip-chars-forward (concat "^" end-delim))
+                          (if (or (not (eq (char-before) ?\\))
+                                  (eq (char-before (1- (point))) ?\\)
+                                  (eobp))
+                              (setq finish t)
+                            (forward-char 1)))
+                        (point))))
+               (word-syntax (string-to-syntax "w")))
+          (when (memq start-delim '(?' ?\"))
+            (setq end (1+ end))
+            (forward-char -1))
+          (while (re-search-forward "[\"'#]" end 'move)
+            (put-text-property (1- (point)) (point) 'syntax-table word-syntax)))))))
 
 (defun elixir-syntax-propertize-function (start end)
   (let ((case-fold-search nil))
@@ -317,8 +333,9 @@ is used to limit the scan."
      0 elixir-attribute-face)
 
     ;; Keywords
-    (,(elixir-rx (group (or builtin builtin-declaration builtin-namespace
-                            keyword keyword-operator)))
+    (,(elixir-rx (and (or line-start (not (any ".")))
+                      (group (or builtin builtin-declaration builtin-namespace
+                                 keyword keyword-operator))))
      1 font-lock-keyword-face)
 
     ;; Function names, i.e. `def foo do'.
@@ -327,63 +344,56 @@ is used to limit the scan."
                  (group identifiers))
      2 font-lock-function-name-face)
 
-    ;; Sigils
-    (,(elixir-rx (group sigils))
-     1 font-lock-builtin-face)
-
     ;; Sigil patterns. Elixir has support for eight different sigil delimiters.
     ;; This isn't a very DRY approach here but it gets the job done.
-    (,(elixir-rx sigils
-                 (and "/" (group (one-or-more (not (any "/")))) "/"))
-     1 font-lock-string-face)
-    (,(elixir-rx sigils
-                 (and "[" (group (one-or-more (not (any "]")))) "]"))
-     1 font-lock-string-face)
-    (,(elixir-rx sigils
-                 (and "{" (group (one-or-more (not (any "}")))) "}"))
-     1 font-lock-string-face)
-    (,(elixir-rx sigils
-                 (and "(" (group (one-or-more (not (any ")")))) ")"))
-     1 font-lock-string-face)
-    (,(elixir-rx sigils
-                 (and "|" (group (one-or-more (not (any "|")))) "|"))
-     1 font-lock-string-face)
-    (,(elixir-rx sigils
-                 (and "\"" (group (one-or-more (not (any "\"")))) "\""))
-     1 font-lock-string-face)
-    (,(elixir-rx sigils
-                 (and "'" (group (one-or-more (not (any "'")))) "'"))
-     1 font-lock-string-face)
-    (,(elixir-rx sigils
-                 (and "<" (group (one-or-more (not (any ">")))) ">"))
-     1 font-lock-string-face)
-
-    ;; Regex patterns. Elixir has support for eight different regex delimiters.
-    ;; This isn't a very DRY approach here but it gets the job done.
-    (,(elixir-rx "~r"
-                 (and "/" (group (one-or-more (not (any "/")))) "/"))
-     1 font-lock-string-face)
-    (,(elixir-rx "~r"
-                 (and "[" (group (one-or-more (not (any "]")))) "]"))
-     1 font-lock-string-face)
-    (,(elixir-rx "~r"
-                 (and "{" (group (one-or-more (not (any "}")))) "}"))
-     1 font-lock-string-face)
-    (,(elixir-rx "~r"
-                 (and "(" (group (one-or-more (not (any ")")))) ")"))
-     1 font-lock-string-face)
-    (,(elixir-rx "~r"
-                 (and "|" (group (one-or-more (not (any "|")))) "|"))
-     1 font-lock-string-face)
-    (,(elixir-rx "~r"
-                 (and "\"" (group (one-or-more (not (any "\"")))) "\""))
-     1 font-lock-string-face)
-    (,(elixir-rx "~r"
-                 (and "'" (group (one-or-more (not (any "'")))) "'"))
-     1 font-lock-string-face)
-    (,(elixir-rx "~r"
-                 (and "<" (group (one-or-more (not (any ">")))) ">"))
-     1 font-lock-string-face)
+    (,(elixir-rx (group sigils)
+                 (and "/"
+                      (group (zero-or-more (or (and "\\" "/") (not (any "/" "\n" "\r")))))
+                      "/"))
+     (1 font-lock-builtin-face)
+     (2 font-lock-string-face))
+    (,(elixir-rx (group sigils)
+                 (and "["
+                      (group (zero-or-more (or (and "\\" "]") (not (any "]" "\n" "\r")))))
+                      "]"))
+     (1 font-lock-builtin-face)
+     (2 font-lock-string-face))
+    (,(elixir-rx (group sigils)
+                 (and "{"
+                      (group (zero-or-more (or (and "\\" "}") (not (any "}" "\n" "\r")))))
+                      "}"))
+     (1 font-lock-builtin-face)
+     (2 font-lock-string-face))
+    (,(elixir-rx (group sigils)
+                 (and "("
+                      (group (zero-or-more (or (and "\\" ")") (not (any ")" "\n" "\r")))))
+                      ")"))
+     (1 font-lock-builtin-face)
+     (2 font-lock-string-face))
+    (,(elixir-rx (group sigils)
+                 (and "|"
+                      (group (zero-or-more (or (and "\\" "|") (not (any "|" "\n" "\r")))))
+                      "|"))
+     (1 font-lock-builtin-face)
+     (2 font-lock-string-face))
+    (,(elixir-rx (group sigils)
+                 (and "\""
+                      (group (zero-or-more (or (and "\\" "\"") (not (any "\"" "\n" "\r")))))
+                      "\""))
+     (1 font-lock-builtin-face)
+     (2 font-lock-string-face))
+    (,(elixir-rx (group sigils)
+                 (and "'"
+                      (group (zero-or-more (or (and "\\" "'") (not (any "'" "\n" "\r")))))
+                      "'"))
+     (1 font-lock-builtin-face)
+     (2 font-lock-string-face))
+    (,(elixir-rx (group sigils)
+                 (and "<"
+                      (group (zero-or-more (or (and "\\" ">") (not (any ">" "\n" "\r")))))
+                      ">"))
+     (1 font-lock-builtin-face)
+     (2 font-lock-string-face))
 
     ;; Modules
     (,(elixir-rx (group module-names))
@@ -404,6 +414,14 @@ is used to limit the scan."
                  (or (or sigils identifiers space)
                      (one-or-more "\n")))
      1 font-lock-variable-name-face)
+
+    ;; Gray out variables starting with "_"
+    (,(elixir-rx symbol-start
+                 (group (and "_"
+                             (any "A-Z" "a-z" "0-9"))
+                        (zero-or-more (any "A-Z" "a-z" "0-9" "_"))
+                        (optional (or "?" "!"))))
+     1 elixir-ignored-var-face)
 
     ;; Map keys
     (,(elixir-rx (group (and (one-or-more identifiers) ":")))
