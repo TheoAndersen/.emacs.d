@@ -1160,6 +1160,8 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
     (add-hook 'elixir-mode-hook 'smartparens-mode +1)
     (add-hook 'elixir-mode-hook 'yas-minor-mode +1)
     (add-hook 'elixir-mode-hook 'alchemist-mode +1)
+    (diminish 'smartparens-mode)
+    (diminish 'yas-minor-mode)
     )
 #+END_SRC
 
