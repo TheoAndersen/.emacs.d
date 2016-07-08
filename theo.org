@@ -100,8 +100,8 @@ When I first copy this set-up into a new machine, I still have to require packag
                '("melpa-stable" . "http://stable.melpa.org/packages/") t)
 ;  (add-to-list 'package-archives
 ;               '("gnu" "https://elpa.gnu.org/packages/") t)
-;  (add-to-list 'package-archives
-;               '("melpa" . "http://melpa.milkbox.net/packages/") t)
+  (add-to-list 'package-archives
+               '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
   (setq load-prefer-newer t)
   (package-refresh-contents)
@@ -828,7 +828,8 @@ This comes from [[http://whattheemacsd.com/init.el-03.html][Magnars]].
       :diminish golden-ratio-mode
       :init
       (golden-ratio-mode 1)
-      (add-to-list 'golden-ratio-exclude-buffer-names " *NeoTree*"))
+      (add-to-list 'golden-ratio-exclude-buffer-names " *NeoTree*")
+      (add-to-list 'golden-ratio-exclude-buffer-names "*Choices*"))
 #+END_SRC
 ** Regex Builder
 #+BEGIN_SRC emacs-lisp
