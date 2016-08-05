@@ -1,30 +1,30 @@
 #+TITLE: Theo Andersen Carton's Emacs configuration
-#+OPTIONS: toc:4 h:4
-* Missing pieces
-** Kan ikke markere i en firkant og redigere på alle linjer samtidigt
+#+OPTIONS: toc: 4 h: 4
+    * Missing pieces
+        ** Kan ikke markere i en firkant og redigere på alle linjer samtidigt
 Rectangle mark mode... men virker ikke helt så godt som i Visual Studio
-** Web-mode format document (en nemmere måde end mark-page og <tab>)
-** HVordan går jeg til start og slut, når nu multiple-cursors har C-> og C-<?
+    ** Web - mode format document (en nemmere måde end mark- page og <tab>)
+        ** HVordan går jeg til start og slut, når nu multiple- cursors har C-> og C- <?
 ** /elixir/ Hvordan får jeg autokompileret og ind i iex, mode så jeg bare heletiden kan prøve på ny?
 ** Hvad er paredit?
 ** Kan man få emacs til at forstå elisp sektionerne bedre heri (indrykning, autocomplete osv??)
-** Kunne flytte ting nemmere
-*** M-p and M-n should jump 10 lines up and down, if it dosen't match paragraphs
-**** Markdown - cannot move paragraphs with M-p and M-n
-*** M-p and M-b dosen't work in markdown?!??
-*** Kunne flytte ikke kun en lijne, men flere op og ned på samme tid med M-<pilop> osv..
-** Kommentarer skal virke på samme måde alle steder (fx. ruby, c# osv..)
-** Org mode specifikke forbedringer
-*** Org-mode - Every point starting with [] should color the [whatever] in another color to make it stand out
-** Windows specifikke forbedringer
-*** How do i enable drag and drop so that i can drag and drop a file on top of emacs                                             :windows:
+        ** Kunne flytte ting nemmere
+        *** M - p and M- n should jump 10 lines up and down, if it dosen't match paragraphs
+            **** Markdown - cannot move paragraphs with M- p and M- n
+                *** M - p and M- b dosen't work in markdown?!??
+                    *** Kunne flytte ikke kun en lijne, men flere op og ned på samme tid med M-<pilop> osv..
+** Kommentarer skal virke på samme måde alle steder (fx.ruby, c# osv..)
+    ** Org mode specifikke forbedringer
+        *** Org - mode - Every point starting with [] should color the [whatever] in another color to make it stand out
+            ** Windows specifikke forbedringer
+                *** How do i enable drag and drop so that i can drag and drop a file on top of emacs                                             : windows:
 *** How do i make emacs open files if i select them from explorer (it dosen't work right)                                        :windows:
-** Markdown specifikke forbedringer
-*** Enable truncate lines and word-wrap for markdown format                                                                     :markdown:
-*** Tilføje Flyspell automatisk ved markdown-mode                                                                               :markdown:
-** Able to scafold an html5 page easily (snippets?)
-** Hide Helm-buffers so that i only see the content buffers
-** Ignore .emacs.d/elpa/* from recentf (.places?)
+    ** Markdown specifikke forbedringer
+    *** Enable truncate lines and word- wrap for markdown format                                                                     :markdown:
+*** Tilføje Flyspell automatisk ved markdown- mode                                                                               :markdown:
+** Able to scafold an html5 page easily (snippets ?)
+    ** Hide Helm- buffers so that i only see the content buffers
+        ** Ignore.emacs.d / elpa/* from recentf (.places?)
 ** Hvorfor virker js2-refactor ikke med extract method?
 --> den er ikke lavet til den opsætning... pull request??
 ** Noget der kan åbne en shell der hvor man er lige nu..
@@ -1237,6 +1237,42 @@ iling-brackets nil)
   )
 )
 #+END_SRC
+** TypeScript
+Reference
+
+- [x] Syntax highlighting
+- [x] load tide-mode when file opens
+- [x] format ts document on save
+- [x] Jump to definition [M-.] <-- really cool stuff
+- [x] Jump to reference  [M-,] <--/
+- [x] Automatic errors shown inline when coding
+- [x] Auto-suggestions
+- [ ] Auto-suggestions include a bit of documentation?
+- [x] Lookup documentation for symbol at point [C-c d]
+- [x] rename all occurences of symbol at point [M-x tide-rename-symbol]
+
+#+BEGIN_SRC emacs-lisp
+  (use-package typescript-mode        
+     :mode ("\\.ts\\'" . typescript-mode)
+     :interpreter ("typescript" . typescript-mode)
+     :config
+     (use-package tide
+       :defer
+       :config
+       (progn
+         (tide-setup)
+         (flycheck-mode +1)
+         (setq flycheck-check-syntax-automatically '(save mode-enabled))
+         (eldoc-mode +1)
+         (company-mode +1)
+         (setq company-tooltip-align-annotations t)
+         (add-hook 'before-save-hook 'tide-format-before-save)
+         (setq tide-format-options '(:insertSpaceAfterFunctionKeywordForAnonymousFunctions t :placeOpenBraceOnNewLineForFunctions nil))
+         )
+       )
+     (add-hook 'typescript-mode-hook 'tide-mode +1)
+     )
+#+END_SRC
 * Words and Numbers
 "GNU Office Suite Pro Edition," coming to a cubicle near you!
 ** Org Mode
@@ -1524,6 +1560,9 @@ Via [[https://github.com/hrs/dotfiles][Harry Schwartz]].
     "Kill up to, but not including ARGth occurrence of CHAR.")
   (bind-key "M-Z" 'zap-up-to-char)
 #+END_SRC
+
+
+
 
 
 
