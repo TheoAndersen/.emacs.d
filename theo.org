@@ -1179,6 +1179,7 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
   - [x] Lookup types (C-c C-t)  (maybe its me, but its not perfect?)
   - [x] Autocomplete
   - [x] Autocomplete with docs
+  - [x] Autoformats on save (elm-format) https://github.com/avh4/elm-format
   - [ ] Autocomplete can use C-h and open docs for element
   - [ ] Goto definition M-. and M-,
 
@@ -1191,6 +1192,7 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
     (add-hook 'elm-mode-hook 'elm-oracle-setup-completion)
     (add-to-list 'company-backends 'company-elm)
     (defvar elm-compile-arguments '("--yes" "--output=elm.js"))
+    (setq elm-format-on-save 't)
     (use-package flycheck
       :demand
       :config
