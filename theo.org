@@ -115,11 +115,16 @@ When I first copy this set-up into a new machine, I still have to require packag
          '(defadvice ,mode (after rename-modeline activate)
             (setq mode-name ,new-name)))))
 #+END_SRC
-** Backups
+** Backups and temporary files
 #+BEGIN_SRC emacs-lisp
   (setq backup-directory-alist
         `(("." . ,(expand-file-name
                    (concat user-emacs-directory "backups")))))
+
+(setq backup-directory-alist
+          `((".*" . ,temporary-file-directory)))
+    (setq auto-save-file-name-transforms
+          `((".*" ,temporary-file-directory t)))
 #+END_SRC
 
 ** Saner defaults
@@ -992,6 +997,7 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
     :config
     (setq magit-git-executable "/usr/local/bin/git")
     (setq magit-use-overlays nil)
+    (setq magit-diff-refine-hunk 'all)
     (defadvice magit-status (around magit-fullscreen activate)
       (window-configuration-to-register :magit-fullscreen)
       ad-do-it
