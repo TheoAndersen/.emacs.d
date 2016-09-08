@@ -1,6 +1,6 @@
 #+TITLE: Theo Andersen Carton's Emacs configuration
 #+OPTIONS: toc: 4 h: 4
-    * Missing pieces
+* Missing pieces
         ** Kan ikke markere i en firkant og redigere på alle linjer samtidigt
 Rectangle mark mode... men virker ikke helt så godt som i Visual Studio
     ** Web - mode format document (en nemmere måde end mark- page og <tab>)
@@ -40,6 +40,7 @@ Hvis man tilføjer det man vil filtrere ud i .projectile filen så virker det
 *** Indentation could be more aggressive.
 its getting better all the tiiimme..
 *** Flycheck for elixir??
+** Add transcription-mode to config
 * Introduction
 ** Quotations
 *** On Emacs
@@ -299,6 +300,14 @@ This way we don't have to try one or the other, but can always just use C-g
   (use-package whole-line-or-region
     :init
   )
+#+END_SRC
+** Tags
+#+BEGIN_SRC emacs-lisp
+  (use-package etags
+    :init
+    (setq tags-add-tables nil
+          tags-revert-without-query t)
+    )
 #+END_SRC
 * Appearance
 ** Turn off unnecessary graphical features (like menu, etc.)
@@ -1066,25 +1075,35 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
 )
 #+END_SRC
 ** Javascript
+
+- [x] syntax highligting 
+- [ ] goto definition [M-.]
+- [ ] reference
+- [ ] auto-complete
+
 #+BEGIN_SRC emacs-lisp
-(use-package js2-mode
-  :mode ("\\.js?\\'" . js2-mode)
-  :mode ("\\.json?\\'" . js2-mode)
-  :ensure js2-mode
-    ;; :bind
-    ;;  (
-    ;;     ("C-c k" . comment-or-uncomment-region)
-    ;;   )
-  :config
-  (progn
-    (setq-default js2-auto-indent-p t)
-    (setq-default js2-basic-offset 2)
-    (use-package js2-refactor
-       :init
-       (js2r-add-keybindings-with-prefix "C-c "))
-    )
-    
- )
+    (use-package js2-mode
+      :mode ("\\.js?\\'" . js2-mode)
+      :mode ("\\.json?\\'" . js2-mode)
+      :ensure js2-mode
+        ;; :bind
+        ;;  (
+        ;;     ("C-c k" . comment-or-uncomment-region)
+        ;;   )
+      :config
+      (use-package tern
+        :defer
+        :config)
+      ;; (progn
+      ;;   # (setq-default js2-auto-indent-p t)
+      ;;  # (setq-default js2-basic-offset 2)
+      ;;   # # (use-package js2-refactor
+      ;;   # #    :init
+      ;;   # #    (js2r-add-keybindings-with-prefix "C-c "))
+      ;;   # # )
+      (add-hook 'js-mode-hook (lambda() (tern-mode t)))
+      (add-to-list 'company-backends 'company-tern)
+     )
 #+END_SRC
 ** Erlang
 #+BEGIN_SRC emacs-lisp
@@ -1187,26 +1206,40 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
   - [x] Autocomplete with docs
   - [x] Autoformats on save (elm-format) https://github.com/avh4/elm-format
   - [ ] Autocomplete can use C-h and open docs for element
-  - [ ] Goto definition M-. and M-,
+  - [X] Goto definition M-. and M-,
+    - [ ] TAGS file isn't being generated when you enter a project..
+    - [ ] Dosen't just automatically find the tags table
 
 #+BEGIN_SRC emacs-lisp
   (use-package elm-mode
     :mode "\\.elm\\'"
+    :bind (("M-." . elm-mode-goto-tag-at-point)
+           ("M-," . pop-tag-mark))
     :init
     :config
     (diminish 'elm-indent-mode)
     (add-hook 'elm-mode-hook 'elm-oracle-setup-completion)
+    (add-hook 'elm-mode-hook 'elm-mode-generate-tags)
     (add-to-list 'company-backends 'company-elm)
     (defvar elm-compile-arguments '("--yes" "--output=elm.js"))
     (setq elm-format-on-save 't)
+    (setq elm-tags-on-save 't)
+    (setq elm-tags-exclude-elm-stuff 'nil)
     (use-package flycheck
       :demand
       :config
+      (setq flycheck-display-errors-delay 0)
       (diminish 'flycheck-mode)
       (use-package flycheck-elm
         :demand
         :config
-        (setq flycheck-elm-reporting-mode 'errors-only)
+        (setq flycheck-elm-reporting-mode 'all)
+        )
+      (use-package flycheck-pos-tip
+        :disabled
+        :demand
+        :config
+        (flycheck-pos-tip-mode)
         )
       )
     (add-hook 'elm-mode-hook 'flycheck-elm-setup)
@@ -1258,28 +1291,29 @@ Reference
 - [ ] Auto-suggestions include a bit of documentation?
 - [x] Lookup documentation for symbol at point [C-c d]
 - [x] rename all occurences of symbol at point [M-x tide-rename-symbol]
+- [ ] shortcut to convert all instances of " to ' (to satisfy the linter)
 
 #+BEGIN_SRC emacs-lisp
-  (use-package typescript-mode        
-     :mode ("\\.ts\\'" . typescript-mode)
-     :interpreter ("typescript" . typescript-mode)
-     :config
-     (use-package tide
-       :defer
+    (use-package typescript-mode        
+       :mode ("\\.ts\\'" . typescript-mode)
+       :interpreter ("typescript" . typescript-mode)
        :config
-       (progn
-         (tide-setup)
-         (flycheck-mode +1)
-         (setq flycheck-check-syntax-automatically '(save mode-enabled))
-         (eldoc-mode +1)
-         (company-mode +1)
-         (setq company-tooltip-align-annotations t)
-         (add-hook 'before-save-hook 'tide-format-before-save)
-         (setq tide-format-options '(:insertSpaceAfterFunctionKeywordForAnonymousFunctions t :placeOpenBraceOnNewLineForFunctions nil))
+       (use-package tide
+         :defer
+         :config
+         (progn
+           (tide-setup)
+           (flycheck-mode +1)
+           (setq flycheck-check-syntax-automatically '(save mode-enabled))
+           (eldoc-mode +1)
+           (company-mode +1)
+           (setq company-tooltip-align-annotations t)
+           (add-hook 'before-save-hook 'tide-format-before-save)
+           (setq tide-format-options '(:insertSpaceAfterFunctionKeywordForAnonymousFunctions t :placeOpenBraceOnNewLineForFunctions nil))
+           )
          )
+       (add-hook 'typescript-mode-hook 'tide-mode +1)
        )
-     (add-hook 'typescript-mode-hook 'tide-mode +1)
-     )
 #+END_SRC
 * Words and Numbers
 "GNU Office Suite Pro Edition," coming to a cubicle near you!
@@ -1355,6 +1389,9 @@ My settings for capture were some of my first Elisp :) I did need, and still nee
 
 I use org-struct in mu4e. See above.
 ** Markdown
+- [ ] Enabled word-wrap and truncate lines pr defalt
+- [ ] make M-p + M-n work to jump paragraphs again
+
 #+BEGIN_SRC emacs-lisp
   (use-package markdown-mode
    :defer
@@ -1569,24 +1606,40 @@ Via [[https://github.com/hrs/dotfiles][Harry Schwartz]].
   (bind-key "M-Z" 'zap-up-to-char)
 #+END_SRC
 
+** Focus or open iterm on mac
+- [x] f8 -> focus iterm
+- [x] C-c f8 -> open new iterm and focus
 
+#+BEGIN_SRC emacs-lisp
+(defun get-file-dir-or-home ()
+  "If inside a file buffer, return the directory, else return home"
+  (interactive)
+  (let ((filename (buffer-file-name)))
+    (if (not (and filename (file-exists-p filename)))
+	"~/"
+  (file-name-directory filename))))'
 
+(defun iterm-goto-filedir-or-home ()
+  "Go to present working dir and focus iterm"
+  (interactive)
+  (do-applescript
+   (concat
+    " tell application \"iTerm2\"\n"
+    "   tell the current session of current window\n"
+    (format "     write text \"cd %s\" \n" (get-file-dir-or-home))
+    "   end tell\n"
+    " end tell\n"
+    " do shell script \"open -a iTerm\"\n"
+    ))
+  )
 
+(defun iterm-focus ()
+  (interactive)
+  (do-applescript
+   " do shell script \"open -a iTerm\"\n"
+   ))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+(bind-key "<f8>" 'iterm-focus)
+(bind-key "C-c <f8>" 'iterm-goto-filedir-or-home)
+#+END_SRC
 
