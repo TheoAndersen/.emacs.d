@@ -1207,8 +1207,10 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
   - [x] Autoformats on save (elm-format) https://github.com/avh4/elm-format
   - [ ] Autocomplete can use C-h and open docs for element
   - [X] Goto definition M-. and M-,
-    - [ ] TAGS file isn't being generated when you enter a project..
-    - [ ] Dosen't just automatically find the tags table
+    - [X] TAGS file isn't being generated when you enter a project..
+    - [X] Dosen't just automatically find the tags table
+  - [ ] Successfull compille (C-c C-c) shows a check in the statusbar
+  - [ ] Warnings are gone after elm-format (they blink, and then they're gone
 
 #+BEGIN_SRC emacs-lisp
   (use-package elm-mode
@@ -1228,7 +1230,7 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
     (use-package flycheck
       :demand
       :config
-      (setq flycheck-display-errors-delay 0)
+      (setq flycheck-display-errors-delay 0.1)
       (diminish 'flycheck-mode)
       (use-package flycheck-elm
         :demand
@@ -1255,13 +1257,12 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
       (setq omnisharp-server-executable-path "C:\\\Dev\\tools\\OmniSharpServer\\OmniSharp\\bin\\Debug\\OmniSharp.exe")
     )
 
-      (setq omnisharp-server-executable-path "/Users/Theo/Documents/tools/OmniSharpServer/OmniSharp/bin/Debug/OmniSharp.exe")
+      (setq omnisharp-server-executable-path "/Users/theo/Documents/tools/omnisharp/OmniSharp")
     (use-package omnisharp
       :defer
       (progn
 ;        (add-to-list 'company-backends 'company-omnisharp)
-        (setq omnisharp-company-strip-tra
-iling-brackets nil)
+        (setq omnisharp-company-strip-trailing-brackets nil)
         (define-key csharp-mode-map (kbd "C-S-b") 'omnisharp-build-in-emacs)
         (define-key csharp-mode-map (kbd "M-SPC") 'omnisharp-auto-complete)
         (define-key csharp-mode-map (kbd "C-,") 'omnisharp-helm-find-symbols)
@@ -1391,11 +1392,20 @@ I use org-struct in mu4e. See above.
 ** Markdown
 - [ ] Enabled word-wrap and truncate lines pr defalt
 - [ ] make M-p + M-n work to jump paragraphs again
+- [ ] Able to popup occur (thingy) that shows all headlines?
 
 #+BEGIN_SRC emacs-lisp
-  (use-package markdown-mode
-   :defer
-   )
+  ;(defun spell-check-and-wrap-at-80 ()
+  ;  "Enable three minor modes for neat text."
+  ;  (flyspell-mode)
+  ;  (auto-fill-mode)
+  ;  (set-fill-column 80))
+
+  ;  (use-package markdown-mode
+  ;    :mode ("\\.\\(m\\(ark\\)?down\\|md\\)$" . markdown-mode)
+  ;    :init
+  ;    (add-hook 'markdown-mode-hook 'spell-check-and-wrap-at-80)
+  ;    )
 #+END_SRC
 ** Calc
 #+BEGIN_SRC emacs-lisp
