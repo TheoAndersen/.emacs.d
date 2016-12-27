@@ -309,6 +309,19 @@ This way we don't have to try one or the other, but can always just use C-g
           tags-revert-without-query t)
     )
 #+END_SRC
+** Working with large files
+
+Disable specific features, when the file is particurarely big (http://stackoverflow.com/a/18317181)
+#+BEGIN_SRC emacs-lisp
+  (defun my-find-file-check-make-large-file-read-only-hook ()
+    "If a file is over a given size, make the buffer read only."
+    (when (> (buffer-size) (* 1024 1024))
+      (setq buffer-read-only t)
+      (buffer-disable-undo)
+      (fundamental-mode)))
+
+  (add-hook 'find-file-hook 'my-find-file-check-make-large-file-read-only-hook)
+#+END_SRC
 * Appearance
 ** Turn off unnecessary graphical features (like menu, etc.)
 *** No menu, scroll or tool bar
