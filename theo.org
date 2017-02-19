@@ -1095,28 +1095,24 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
 - [ ] auto-complete
 
 #+BEGIN_SRC emacs-lisp
-    (use-package js2-mode
-      :mode ("\\.js?\\'" . js2-mode)
-      :mode ("\\.json?\\'" . js2-mode)
-      :ensure js2-mode
-        ;; :bind
-        ;;  (
-        ;;     ("C-c k" . comment-or-uncomment-region)
-        ;;   )
-      :config
-      (use-package tern
-        :defer
-        :config)
-      ;; (progn
-      ;;   # (setq-default js2-auto-indent-p t)
-      ;;  # (setq-default js2-basic-offset 2)
-      ;;   # # (use-package js2-refactor
-      ;;   # #    :init
-      ;;   # #    (js2r-add-keybindings-with-prefix "C-c "))
-      ;;   # # )
-      (add-hook 'js-mode-hook (lambda() (tern-mode t)))
-      (add-to-list 'company-backends 'company-tern)
-     )
+  (use-package js2-mode
+    :load-path "elpa/"
+    :mode ("\\.js?\\'" . js2-mode)
+    :mode ("\\.json?\\'" . js2-mode)
+    :ensure js2-mode
+    ;; :bind
+    ;;  (
+    ;;     ("C-c k" . comment-or-uncomment-region)
+    ;;   )
+    :config
+    (use-package tern
+      :defer
+      :config)
+    (use-package prettier-js) 
+    (add-hook 'js-mode-hook (lambda() (tern-mode t)))
+    (add-hook 'js-mode-hook (lambda() (add-hook 'before-save-hook 'prettier-before-save)))
+    (add-to-list 'company-backends 'company-tern)
+    )
 #+END_SRC
 ** Erlang
 #+BEGIN_SRC emacs-lisp

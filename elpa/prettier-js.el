@@ -78,7 +78,7 @@ a `before-save-hook'."
   "Add this to .emacs to run refmt on the current buffer when saving:
  (add-hook 'before-save-hook 'prettier-before-save)."
   (interactive)
-  (when (string-equal (symbol-name major-mode) prettier-target-mode) (prettier)))
+  (when (string-equal (symbol-name major-mode) "js2-mode") (prettier)))
 
 (defun prettier--goto-line (line)
   (goto-char (point-min))
