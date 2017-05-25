@@ -1325,6 +1325,51 @@ Reference
        (add-hook 'typescript-mode-hook 'tide-mode +1)
        )
 #+END_SRC
+** Python
+
+- [X] Elpy loads with 'tensorflow' environment on opening .py file
+- [X] Flymake
+- [ ] Remove the warning when compiling (something emacs related..)
+- [X] enable iPython support, and figure out how it works
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package elpy
+    :ensure t
+    :config
+    (progn
+      ;; Use Flycheck instead of Flymake
+      (when (require 'flycheck nil t)
+        (remove-hook 'elpy-modules 'elpy-module-flymake)
+        (remove-hook 'elpy-modules 'elpy-module-yasnippet)
+        (remove-hook 'elpy-mode-hook 'elpy-module-highlight-indentation)
+        (add-hook 'elpy-mode-hook 'flycheck-mode))
+      (flycheck-mode +1)
+      ;; jedi is great
+      (setq elpy-rpc-backend "jedi")
+      (elpy-enable)
+      (pyvenv-activate "~/tensorflow")
+      (add-hook 'python-mode-hook
+                (lambda ()
+                  ;; explicitly load company for the occasion when the deferred
+                  ;; loading with use-package hasn't kicked in yet
+                  (company-mode)))
+      (company-mode +1)
+      (setq ansi-color-for-comint-mode t)
+      (elpy-use-ipython)
+      (setq ansi-color-for-comint-mode t)
+      (setq python-shell-interpreter "ipython"
+            python-shell-interpreter-args "--simple-prompt -i")
+      )
+    )
+
+
+                                          ;(add-hook 'python-mode-hook #'smartparens-strict-mode)
+                                          ; )
+#+END_SRC
+
+#+RESULTS:
+
 * Words and Numbers
 "GNU Office Suite Pro Edition," coming to a cubicle near you!
 ** Org Mode
