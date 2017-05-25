@@ -14,7 +14,7 @@
  '(helm-ag-fuzzy-match t)
  '(package-selected-packages
    (quote
-    (py-autopep8 ein helm-swoop dockerfile-mode vlf org-present zoom-frm zenburn-theme web-mode use-package undo-tree tss transcribe tide smooth-scrolling smartparens sass-mode rainbow-delimiters omnisharp neotree multiple-cursors markdown-mode magit js2-mode helm-projectile helm-ag golden-ratio git-timemachine fsharp-mode flycheck-pos-tip flycheck-elm feature-mode expand-region emms elm-mode elixir-yasnippets elisp-slime-nav ecukes company-tern alchemist ace-link ace-jump-zap ace-jump-buffer ac-ispell)))
+    (spaceline-all-the-icons all-the-icons py-autopep8 ein helm-swoop dockerfile-mode vlf org-present zoom-frm zenburn-theme web-mode use-package undo-tree tss transcribe tide smooth-scrolling smartparens sass-mode rainbow-delimiters omnisharp neotree multiple-cursors markdown-mode magit js2-mode helm-projectile helm-ag golden-ratio git-timemachine fsharp-mode flycheck-pos-tip flycheck-elm feature-mode expand-region emms elm-mode elixir-yasnippets elisp-slime-nav ecukes company-tern alchemist ace-link ace-jump-zap ace-jump-buffer ac-ispell)))
  '(vc-annotate-background "#2B2B2B")
  '(vc-annotate-color-map
    (quote
