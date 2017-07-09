@@ -1,10 +1,10 @@
 #+TITLE: Theo Andersen Carton's Emacs configuration
 #+OPTIONS: toc: 4 h: 4
 * Missing pieces
-        ** Kan ikke markere i en firkant og redigere på alle linjer samtidigt
+** Kan ikke markere i en firkant og redigere på alle linjer samtidigt
 Rectangle mark mode... men virker ikke helt så godt som i Visual Studio
-    ** Web - mode format document (en nemmere måde end mark- page og <tab>)
-        ** HVordan går jeg til start og slut, når nu multiple- cursors har C-> og C- <?
+** Web - mode format document (en nemmere måde end mark- page og <tab>)
+** HVordan går jeg til start og slut, når nu multiple- cursors har C-> og C- <?
 ** /elixir/ Hvordan får jeg autokompileret og ind i iex, mode så jeg bare heletiden kan prøve på ny?
 ** Hvad er paredit?
 ** Kan man få emacs til at forstå elisp sektionerne bedre heri (indrykning, autocomplete osv??)
