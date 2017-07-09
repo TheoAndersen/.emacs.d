@@ -161,7 +161,7 @@ Remove the warning if a buffer or file does not exist, so you can create them.
                  (y-or-n-p (format "Directory `%s' does not exist! Create it?" parent-directory)))
         (make-directory parent-directory t))))
 
-  (add-to-list 'find-file-not-found-functions #'create-non-existent-directory)
+  (add-to-list 'find-file-not-found-functions 'create-non-existent-directory)
 #+END_SRC
 *** Better ediff
 The default Ediff behavior is confusing and not desirable. This fixes it.
@@ -338,34 +338,55 @@ Disable specific features, when the file is particurarely big (http://stackoverf
 #+END_SRC
 ** Font and Theming - Use the Zenburn theme, only slightly modified
 #+BEGIN_SRC emacs-lisp
-  (use-package zenburn-theme
-    :ensure t
-    :init)
+  (defun set-theme-dark ()
+    (interactive)
+    (use-package zenburn-theme
+      :ensure t
+      :init
+      :config
+      (set-face-background 'default "#3a3a3a") ;; a little darker background please
+      (set-face-attribute 'region nil :background "#000") ;; To hard to see regions if not very black
+      (disable-theme 'plan9)
+      (load-theme 'zenburn t)
+      )
+    )
 
-(load-theme 'zenburn t)
-(set-face-background 'default "#3a3a3a") ;; a little darker background please
-(set-face-attribute 'region nil :background "#000") ;; To hard to see regions if not very black
+  (defun set-theme-light ()
+    (interactive)
+    (use-package plan9-theme
+      :ensure t
+      :init
+      :config
+      (disable-theme 'zenburn)
+      (load-theme 'plan9)
+      )
+    )
 
-(when is-mac
- (custom-set-faces
-  '(default ((t (:height 180 :family "Inconsolata" :weight medium))))
-  )
- )
+  (global-set-key (kbd "C-c t 1") 'set-theme-dark)
+  (global-set-key (kbd "C-c t 2") 'set-theme-light)
 
-(when is-windows
- (set-face-font 'default "-outline-Consolas-normal-normal-normal-mono-18-*-*-*-c-*-iso8859-1")
- (set-face-font 'bold "-outline-Consolas-bold-normal-normal-normal-18-*-*-*-c-*-iso8859")
- (set-face-font 'italic "-outline-Consolas-normal-i-normal-normal-18-*-*-*-c-*-iso8859")
- (set-face-font 'bold-italic "-outline-Consolas-bold-i-normal-normal-18-*-*-*-c-*-iso8859-1")
- (setq locale-coding-system 'utf-8)
- (set-terminal-coding-system 'utf-8)
- (set-keyboard-coding-system 'utf-8)
- (set-selection-coding-system 'utf-8)
- (prefer-coding-system 'utf-8)
+  (set-theme-light)
 
- (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
- (set-clipboard-coding-system 'utf-16le-dos)
-)
+  (when is-mac
+    (custom-set-faces
+     '(default ((t (:height 180 :family "Inconsolata" :weight medium))))
+     )
+    )
+
+  (when is-windows
+    (set-face-font 'default "-outline-Consolas-normal-normal-normal-mono-18-*-*-*-c-*-iso8859-1")
+    (set-face-font 'bold "-outline-Consolas-bold-normal-normal-normal-18-*-*-*-c-*-iso8859")
+    (set-face-font 'italic "-outline-Consolas-normal-i-normal-normal-18-*-*-*-c-*-iso8859")
+    (set-face-font 'bold-italic "-outline-Consolas-bold-i-normal-normal-18-*-*-*-c-*-iso8859-1")
+    (setq locale-coding-system 'utf-8)
+    (set-terminal-coding-system 'utf-8)
+    (set-keyboard-coding-system 'utf-8)
+    (set-selection-coding-system 'utf-8)
+    (prefer-coding-system 'utf-8)
+
+    (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+    (set-clipboard-coding-system 'utf-16le-dos)
+    )
 
 #+END_SRC
 ** Slimmer mode line
@@ -890,7 +911,7 @@ This comes from [[http://whattheemacsd.com/init.el-03.html][Magnars]].
           neo-window-fixed-size nil
           neo-show-hidden-files t)
     (add-hook 'neotree-mode-hook (lambda () (setq-local line-spacing 0)))
-    (add-hook 'neotree-mode-hook (lambda () (setq-local tab-width 1)))
+    (add-hook 'neotree-mode-hook (lambda () (setq-local tab-width 0)))
     )
 #+END_SRC
 * Networking
@@ -1139,7 +1160,6 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
     (use-package prettier-js) 
     (add-hook 'js-mode-hook (lambda() (tern-mode t)))
     (add-hook 'js-mode-hook (lambda() (add-hook 'before-save-hook 'prettier-before-save)))
-    (add-to-list 'company-backends 'company-tern)
     )
 #+END_SRC
 ** Erlang
@@ -1363,44 +1383,52 @@ Reference
 
 #+BEGIN_SRC emacs-lisp
 
-    (use-package elpy
-      :ensure t
-      :config
-      (progn
-        ;; Use Flycheck instead of Flymake
-        (when (require 'flycheck nil t)
-          (remove-hook 'elpy-modules 'elpy-module-flymake)
-          (remove-hook 'elpy-modules 'elpy-module-yasnippet)
-          (remove-hook 'elpy-mode-hook 'elpy-module-highlight-indentation)
-          (add-hook 'elpy-mode-hook 'flycheck-mode))
-        (flycheck-mode +1)
-        ;; jedi is great
-        (setq elpy-rpc-backend "jedi")
-        (elpy-enable)
-        (pyvenv-activate "~/tensorflow")
-        (add-hook 'python-mode-hook
-                  (lambda ()
-                    ;; explicitly load company for the occasion when the deferred
-                    ;; loading with use-package hasn't kicked in yet
-                    (company-mode)))
-        (company-mode +1)
-        (setq ansi-color-for-comint-mode t)
-        (elpy-use-ipython)
-        (setq ansi-color-for-comint-mode t)
-        (setq python-shell-interpreter "ipython"
-              python-shell-interpreter-args "--simple-prompt -i")
-        (require 'py-autopep8)
-        (add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
-        )
+  (use-package elpy
+    :ensure t
+    :config
+    (progn
+      ;; Use Flycheck instead of Flymake
+      (when (require 'flycheck nil t)
+        (remove-hook 'elpy-modules 'elpy-module-flymake)
+        (remove-hook 'elpy-modules 'elpy-module-yasnippet)
+        (remove-hook 'elpy-mode-hook 'elpy-module-highlight-indentation)
+        (add-hook 'elpy-mode-hook 'flycheck-mode))
+      (flycheck-mode +1)
+      ;; jedi is great
+      (setq elpy-rpc-backend "jedi")
+      (elpy-enable)
+      (pyvenv-activate "~/python_ml")
+      (add-hook 'python-mode-hook
+                (lambda ()
+                  ;; explicitly load company for the occasion when the deferred
+                  ;; loading with use-package hasn't kicked in yet
+                  (company-mode)))
+      (company-mode +1)
+      (setq ansi-color-for-comint-mode t)
+
+      (elpy-use-ipython)
+      (setq python-shell-interpreter "ipython3"
+         python-shell-interpreter-args "--simple-prompt -i")
+      (require 'py-autopep8)
+      (add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
       )
-
-
-                                            ;(add-hook 'python-mode-hook #'smartparens-strict-mode)
-                                            ; )
+    )
 #+END_SRC
 
 #+RESULTS:
 
+** Java
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package jdee-mode
+  ;;     :mode ("\\.java\\'" . jdee-mode)
+  ;;     :init
+  ;;     (progn
+  ;;       (setq jdee-server-dir "~/Documents/projects/java")
+  ;;       (setq jdee-checksty
+  ;;       )
+  ;;     )
+  ;; )
+#+END_SRC
 * Words and Numbers
 "GNU Office Suite Pro Edition," coming to a cubicle near you!
 ** Org Mode
@@ -1436,7 +1464,8 @@ I use the stock package of org-mode as the default major mode.
           org-log-done t
           org-startup-indented t
           org-agenda-inhibit-startup nil
-          org-startup-with-inline-images t
+          org-image-display-line 't
+          org-image-actual-width (/ (display-pixel-width) 1.7)
           org-completion-use-ido t
           org-agenda-start-on-weekday nil
           org-refile-targets (quote ((nil :maxlevel . 9)
