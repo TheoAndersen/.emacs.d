@@ -322,6 +322,11 @@ Disable specific features, when the file is particurarely big (http://stackoverf
 
   (add-hook 'find-file-hook 'my-find-file-check-make-large-file-read-only-hook)
 #+END_SRC
+** Start emacs daemon
+#+BEGIN_SRC emacs-lisp
+  (load "server")
+  (unless (server-running-p) (server-start))
+#+END_SRC
 * Appearance
 ** Turn off unnecessary graphical features (like menu, etc.)
 *** No menu, scroll or tool bar
@@ -347,6 +352,7 @@ Disable specific features, when the file is particurarely big (http://stackoverf
       (set-face-background 'default "#3a3a3a") ;; a little darker background please
       (set-face-attribute 'region nil :background "#000") ;; To hard to see regions if not very black
       (disable-theme 'plan9)
+      (disable-theme 'leuven)
       (load-theme 'zenburn t)
       )
     )
@@ -358,12 +364,27 @@ Disable specific features, when the file is particurarely big (http://stackoverf
       :init
       :config
       (disable-theme 'zenburn)
-      (load-theme 'plan9)
+      (disable-theme 'leuven)
+      (load-theme 'plan9 t)
       )
     )
 
+  (defun set-theme-leuven ()
+    (interactive)
+    (use-package leuven-theme
+      :ensure t
+      :init
+      :config
+      (disable-theme 'zenburn)
+      (disable-theme 'plan9)
+      (load-theme 'leuven t)
+      )
+    )
+
+
   (global-set-key (kbd "C-c t 1") 'set-theme-dark)
   (global-set-key (kbd "C-c t 2") 'set-theme-light)
+  (global-set-key (kbd "C-c t 3") 'set-theme-leuven)
 
   (set-theme-light)
 
