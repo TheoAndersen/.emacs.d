@@ -662,96 +662,107 @@ All of my packages for interacting with my laptop.
 #+END_SRC
 ** Dired - Directories tree-view
 #+BEGIN_SRC emacs-lisp
-  (use-package dired
-    :defer t
-    :bind ("<f2>" . dired)
-    :init
-    (use-package dired-x
-      :defer t
-      )  ; enables dired-jump, C-x C-j
-    :config
-    (put 'dired-find-alternate-file 'disabled nil)
-    (setq dired-dwim-target t
-          dired-recursive-deletes 'always
-          dired-recursive-copies 'always)
-    (bind-keys :map dired-mode-map
-               ("<return>" . dired-find-alternate-file)
-               ("^" . (lambda () (interactive) (find-alternate-file "..")))
-               ("'" . wdired-change-to-wdired-mode))
-;    (when (eq system-type 'darwin)
-;      (add-to-list 'dired-omit-extensions ".DS_STORE"))
-;    (use-package dired-details
-;      :ensure t
-;      :init
-;      (dired-details-install))
-    (use-package dired-subtree
-      :disabled t
-      :init
-      (bind-keys :map dired-mode-map
-                 :prefix "C-,"
-                 :prefix-map dired-subtree-map
-                 :prefix-docstring "Dired subtree map."
-                 ("C-i" . dired-subtree-insert)
-                 ("C-/" . dired-subtree-apply-filter)
-                 ("C-k" . dired-subtree-remove)
-                 ("C-n" . dired-subtree-next-sibling)
-                 ("C-p" . dired-subtree-previous-sibling)
-                 ("C-u" . dired-subtree-up)
-                 ("C-d" . dired-subtree-down)
-                 ("C-a" . dired-subtree-beginning)
-                 ("C-e" . dired-subtree-end)
-                 ("m" . dired-subtree-mark-subtree)
-                 ("u" . dired-subtree-unmark-subtree)
-                 ("C-o C-f" . dired-subtree-only-this-file)
-                 ("C-o C-d" . dired-subtree-only-this-directory))))
+  ;; (use-package dired
+  ;;   :defer t
+  ;;   :bind ("<f2>" . dired)
+  ;;   :init
+  ;;   (use-package dired-x
+  ;;     :defer t
+  ;;     )  ; enables dired-jump, C-x C-j
+  ;;   :config
+  ;;   (put 'dired-find-alternate-file 'disabled nil)
+  ;;   (setq dired-dwim-target t
+  ;;         dired-recursive-deletes 'always
+  ;;         dired-recursive-copies 'always)
+  ;;   (bind-keys :map dired-mode-map
+  ;;              ("<return>" . dired-find-alternate-file)
+  ;;              ("^" . (lambda () (interactive) (find-alternate-file "..")))
+  ;;              ("'" . wdired-change-to-wdired-mode))
+
 #+END_SRC
 
 Some of these suggestions are adapted from Xah Lee's [[http://ergoemacs.org/emacs/emacs_dired_tips.html][article on Dired]]. dired-find-alternate-file, which is bound to a, is disabled by default. <return> was previously dired-advertised-find-file, and ^ was previously dired-up-directory. Relatedly, I re-bind 'q' to my kill-this-buffer function below.
 
 Dired-details lets me show or hide the details with ) and (, respectively. If, for some reason, it becomes hard to remember this, dired-details+ makes the parentheses interchangeable.
-** Helm - doing and finding stuff much faster
+** Projectile
 #+BEGIN_SRC emacs-lisp
+  (use-package projectile
+    :ensure t
+    :diminish projectile-mode
+    :init
+    (progn
+      (projectile-global-mode)
+      (setq projectile-enable-caching t)
+      (add-to-list 'projectile-globally-ignored-directories "elpa")
+      (add-to-list 'projectile-globally-ignored-directories ".cache")
+      (add-to-list 'projectile-globally-ignored-directories "node_modules")
+      (add-to-list 'projectile-globally-ignored-directories "deps")
+      (add-to-list 'projectile-globally-ignored-directories "_build")
+      (add-to-list 'projectile-globally-ignored-files "#*.*")
+    )
+  )
+#+END_SRC
+*** TODO Ignore everything under node_modules folders
 
-(use-package helm
-  :ensure t
-  :init
-   (use-package helm-projectile
-     :ensure t
-     :init
-     (projectile-global-mode)
-     (setq projectile-completion-system 'helm)
-     (helm-projectile-on)
-   )
-   (use-package helm-swoop
-     :init
-     (global-set-key (kbd "C-c u") 'helm-swoop)
-   )
-   
-  (when (executable-find "curl")
-    (setq helm-google-suggest-use-curl-p t))
+** Ivy
 
-  (setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
-        helm-buffers-fuzzy-matching           t ; fuzzy matching buffer names when non--nil
-        helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
-        helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
-        helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
-        helm-ff-file-name-history-use-recentf t)
-  (helm-mode 1)
+   #+BEGIN_SRC emacs-lisp
+        (use-package ivy 
+          :ensure t
+          :diminish (ivy-mode . "")
+          :bind
+          (
+           ("C-x b" . ivy-switch-buffer)
+           (:map ivy-mode-map
+                 ("C-'" . ivy-avy))
+           )
+          :config
+          (ivy-mode 1)
+          ;; add ‘recentf-mode’ and bookmarks to ‘ivy-switch-buffer’.
+          (setq ivy-use-virtual-buffers t)
+          ;; number of result lines to display
+          (setq ivy-height 10)
+          ;; does not count candidates
+          (setq ivy-count-format "")
+          ;; no regexp by default
+          (setq ivy-initial-inputs-alist nil)
+          ;; configure regexp engine.
+          (setq ivy-re-builders-alist
+                ;; allow input not in order
+                '((t   . ivy--regex-ignore-order)))
+          )
 
-  (global-set-key (kbd "C-c h") 'helm-command-prefix)
-  (global-unset-key (kbd "C-x c"))
-  (global-set-key (kbd "M-x") 'helm-M-x)
-  (global-set-key (kbd "M-y") 'helm-show-kill-ring)
-  (global-set-key (kbd "C-x b") 'helm-mini)
-  (global-set-key (kbd "C-x C-f") 'helm-find-files)
-  (global-set-key (kbd "C-c o") 'helm-occur)
+        (use-package counsel
+          :ensure t
+          :bind
+          (
+           ("M-x" . counsel-M-x)
+           ("C-c k" . counsel-ag)
+           ("C-x C-f" . counsel-find-file)
+           )
+          )
 
-  (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
-  (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
-  (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
-  :config
-  (diminish 'helm-mode)
-)
+        (use-package counsel-projectile
+          :ensure t
+          :init
+          (counsel-projectile-on)
+          :bind
+          (
+           ("C-c p p" . counsel-projectile)
+           ("C-c p f" . counsel-projectile-find-file)
+           ("C-c p s s" . counsel-projectile-ag)
+           )
+          )
+
+        (use-package swiper
+          :ensure t
+          :bind
+          (
+           ("C-c o" . swiper)
+           )
+          )
+
+
 
 #+END_SRC
 ** Ag - Silver searcher (fast text searching)
@@ -810,7 +821,7 @@ Mode - Autocompletion
                ("b" . ace-jump-buffer)
                ("o" . ace-jump-buffer-other-window)
                ("p" . ace-jump-projectile-buffers)
-               ("z" . ace-jump-zap-to-char)
+               ("z" . ace-jump-azap-to-char)
                ("Z" . ace-jump-zap-up-to-char)))
 
   (bind-key "C-x SPC" 'cycle-spacing)
@@ -1116,25 +1127,6 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
       (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
   )
 #+END_SRC
-** Projectile
-#+BEGIN_SRC emacs-lisp
-  (use-package projectile
-    :ensure t
-    :diminish projectile-mode
-    :init
-    (progn
-      (projectile-global-mode)
-      (setq projectile-enable-caching t)
-      (add-to-list 'projectile-globally-ignored-directories "elpa")
-      (add-to-list 'projectile-globally-ignored-directories ".cache")
-      (add-to-list 'projectile-globally-ignored-directories "node_modules")
-      (add-to-list 'projectile-globally-ignored-directories "deps")
-      (add-to-list 'projectile-globally-ignored-directories "_build")
-      (add-to-list 'projectile-globally-ignored-files "#*.*")
-    )
-  )
-#+END_SRC
-*** TODO Ignore everything under node_modules folders
 ** Web
 #+BEGIN_SRC emacs-lisp
 (use-package web-mode
@@ -1307,6 +1299,7 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
     (setq elm-tags-exclude-elm-stuff 'nil)
     (use-package flycheck
       :demand
+      :diminish (flycheck-mode . "")
       :config
       (setq flycheck-display-errors-delay 0.1)
       (diminish 'flycheck-mode)
@@ -1477,10 +1470,10 @@ I use the stock package of org-mode as the default major mode.
 #+BEGIN_SRC emacs-lisp
   (use-package org
     :mode ("\\.org\\'" . org-mode)
+    :diminish (org-indent-mode . "")
     :config
     (progn
-      (diminish 'org-indent-mode)
-      (setq default-major-mode 'org-mode
+       (setq default-major-mode 'org-mode
           org-directory "~/org/"
           org-log-done t
           org-startup-indented t
@@ -1606,8 +1599,8 @@ This function opens the agenda in full screen.
 By default, pressing 'q' in either Dired or package-menu runs quit-window, which quits the window and buries its buffer. I'd prefer the buffer to close.
 
 #+BEGIN_SRC emacs-lisp
-  (bind-keys :map dired-mode-map
-             ("q" . kill-this-buffer))
+  ;; (bind-keys :map dired-mode-map
+  ;;            ("q" . kill-this-buffer))
 
   (bind-keys :map package-menu-mode-map
              ("q" . kill-this-buffer))
