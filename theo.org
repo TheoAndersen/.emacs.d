@@ -386,7 +386,7 @@ Disable specific features, when the file is particurarely big (http://stackoverf
   (global-set-key (kbd "C-c t 2") 'set-theme-light)
   (global-set-key (kbd "C-c t 3") 'set-theme-leuven)
 
-  (set-theme-light)
+  (set-theme-dark)
 
   (when is-mac
     (custom-set-faces
