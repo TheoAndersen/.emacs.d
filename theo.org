@@ -1529,9 +1529,6 @@ I use org-struct in mu4e. See above.
     "Enable three minor modes for neat text."
     (flyspell-mode)
     (diminish 'flyspell-mode "")
-    (auto-fill-mode)
-    (diminish 'auto-fill-function "")
-    (set-fill-column 80)
     (setq truncate-lines nil)
     (setq word-wrap t))
 
