@@ -709,60 +709,61 @@ Dired-details lets me show or hide the details with ) and (, respectively. If, f
 ** Ivy
 
    #+BEGIN_SRC emacs-lisp
-        (use-package ivy 
-          :ensure t
-          :diminish (ivy-mode . "")
-          :bind
-          (
-           ("C-x b" . ivy-switch-buffer)
-           (:map ivy-mode-map
-                 ("C-'" . ivy-avy))
-           )
-          :config
-          (ivy-mode 1)
-          ;; add ‘recentf-mode’ and bookmarks to ‘ivy-switch-buffer’.
-          (setq ivy-use-virtual-buffers t)
-          ;; number of result lines to display
-          (setq ivy-height 10)
-          ;; does not count candidates
-          (setq ivy-count-format "")
-          ;; no regexp by default
-          (setq ivy-initial-inputs-alist nil)
-          ;; configure regexp engine.
-          (setq ivy-re-builders-alist
-                ;; allow input not in order
-                '((t   . ivy--regex-ignore-order)))
-          )
+     (use-package ivy 
+       :ensure t
+       :diminish (ivy-mode . "")
+       :bind
+       (
+        ("C-x b" . ivy-switch-buffer)
+        (:map ivy-mode-map
+              ("C-'" . ivy-avy))
+        )
+       :config
+       (ivy-mode 1)
+       ;; add ‘recentf-mode’ and bookmarks to ‘ivy-switch-buffer’.
+       (setq ivy-use-virtual-buffers t)
+       ;; number of result lines to display
+       (setq ivy-height 10)
+       ;; does not count candidates
+       (setq ivy-count-format "")
+       ;; no regexp by default
+       (setq ivy-initial-inputs-alist nil)
+       ;; configure regexp engine.
+       (setq ivy-re-builders-alist
+             ;; allow input not in order
+             '((t   . ivy--regex-ignore-order)))
+       )
 
-        (use-package counsel
-          :ensure t
-          :bind
-          (
-           ("M-x" . counsel-M-x)
-           ("C-c k" . counsel-ag)
-           ("C-x C-f" . counsel-find-file)
-           )
-          )
+     (use-package counsel
+       :ensure t
+       :bind
+       (
+        ("M-x" . counsel-M-x)
+        ("C-c k" . counsel-ag)
+        ("C-x C-f" . counsel-find-file)
+        )
+       )
 
-        (use-package counsel-projectile
-          :ensure t
-          :init
-          (counsel-projectile-on)
-          :bind
-          (
-           ("C-c p p" . counsel-projectile)
-           ("C-c p f" . counsel-projectile-find-file)
-           ("C-c p s s" . counsel-projectile-ag)
-           )
-          )
+     (use-package counsel-projectile
+       :ensure t
+       :init
+       (counsel-projectile-on)
+       :bind
+       (
+        ("C-c p p" . counsel-projectile)
+        ("C-c p f" . counsel-projectile-find-file)
+        ("C-c p s s" . counsel-projectile-ag)
+        ("C-c p s r g" . counsel-projectile-rg)  ;; remember C-M-m to preview...
+        )
+       )
 
-        (use-package swiper
-          :ensure t
-          :bind
-          (
-           ("C-c o" . swiper)
-           )
-          )
+     (use-package swiper
+       :ensure t
+       :bind
+       (
+        ("C-c o" . swiper)
+        )
+       )
 
 
 
@@ -1172,10 +1173,19 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
     (use-package tern
       :defer
       :config)
-    (use-package prettier-js) 
+    (use-package prettier-js
+      ) 
+    (setq prettier-js-args '(
+                           "--write" ""
+                                                      
+                           ))
+
+    (add-hook 'js2-mode-hook 'prettier-js-mode)
     (add-hook 'js-mode-hook (lambda() (tern-mode t)))
     (add-hook 'js-mode-hook (lambda() (add-hook 'before-save-hook 'prettier-before-save)))
     )
+
+
 #+END_SRC
 ** Erlang
 #+BEGIN_SRC emacs-lisp
@@ -1525,23 +1535,23 @@ I use org-struct in mu4e. See above.
 - [ ] Able to popup occur (thingy) that shows all headlines?
 
 #+BEGIN_SRC emacs-lisp
-  (defun spell-check-and-wrap-at-80 ()
-    "Enable three minor modes for neat text."
-    (flyspell-mode)
-    (diminish 'flyspell-mode "")
-    (setq truncate-lines nil)
-    (setq word-wrap t))
+    (defun spell-check-and-wrap-at-80 ()
+      "Enable three minor modes for neat text."
+      (flyspell-mode)
+      (diminish 'flyspell-mode "")
+      (setq truncate-lines nil)
+      (setq word-wrap t))
 
-  (use-package markdown-mode
-    :mode ("\\.\\(m\\(ark\\)?down\\|md\\)$" . markdown-mode)
-    :diminish (flyspell-mode . "")
-    :bind (
-           :map markdown-mode-map
-           ("M-n" . markdown-forward-block)
-           ("M-p" . markdown-backward-block))
-    :init
-    (add-hook 'markdown-mode-hook 'spell-check-and-wrap-at-80)
-    )
+    (use-package markdown-mode
+      :mode ("\\.\\(m\\(ark\\)?down\\|md\\)$" . markdown-mode)
+      :diminish (flyspell-mode . "")
+      :bind (
+             :map markdown-mode-map
+             ("M-n" . markdown-forward-block)
+             ("M-p" . markdown-backward-block))
+      :init
+      (add-hook 'markdown-mode-hook 'spell-check-and-wrap-at-80)
+      )
 #+END_SRC
 ** Calc
 #+BEGIN_SRC emacs-lisp
