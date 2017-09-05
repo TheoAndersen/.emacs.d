@@ -434,9 +434,11 @@ Finally, I diminish some built-in minor modes.
                   ; mode-line-position
                   ; (vc-mode vc-mode)
                   ; "  "
+                  venv-current-name 
+                  " "
                   mode-line-modes
                   "   "
-                  ; mode-line-misc-info
+  ;;                mode-line-misc-info
                   display-time-string
                   "         "
                   battery-mode-line-string
@@ -471,6 +473,7 @@ This dosen't work for helm buffers so far, because they are a bit special
 * Icons
 #+BEGIN_SRC emacs-lisp
   (use-package all-the-icons
+    :ensure t
     :config
     (setq all-the-icons-scale-factor 0.9)
   )
@@ -918,15 +921,15 @@ This comes from [[http://whattheemacsd.com/init.el-03.html][Magnars]].
     (setq-default save-place t)
     (setq save-place-file (expand-file-name ".places" user-emacs-directory)))
 #+END_SRC
-** Golden Ratio - make the current buffer a bit larger than the rest
+** DISABLED - Golden Ratio - make the current buffer a bit larger than the rest
 #+BEGIN_SRC emacs-lisp
-    (use-package golden-ratio
-      :ensure t
-      :diminish golden-ratio-mode
-      :init
-      (golden-ratio-mode 1)
-      (add-to-list 'golden-ratio-exclude-buffer-names " *NeoTree*")
-      (add-to-list 'golden-ratio-exclude-buffer-names "*Choices*"))
+;     (use-package golden-ratio
+;       :ensure t
+;       :diminish golden-ratio-mode
+;       :init
+;       (golden-ratio-mode 1)
+;       (add-to-list 'golden-ratio-exclude-buffer-names " *NeoTree*")
+;       (add-to-list 'golden-ratio-exclude-buffer-names "*Choices*"))
 #+END_SRC
 ** Regex Builder
 #+BEGIN_SRC emacs-lisp
@@ -1406,39 +1409,70 @@ Reference
 - [ ] Remove the warning when compiling (something emacs related..)
 - [X] enable iPython support, and figure out how it works
 - [ ] enable ipython notebook support by Ein
+- [ ] run tests from emacs
+- [ ] documentation from emacs
+- [ ] python formatter?
+- [ ] Autocomplete dosen't really work?
+- [ ] Autocomplete cant find tf. (or tf.contrib)
+- [ ] Når man bygger kommer advarslen op først?
 
 #+BEGIN_SRC emacs-lisp
 
-  (use-package elpy
-    :ensure t
-    :config
-    (progn
-      ;; Use Flycheck instead of Flymake
-      (when (require 'flycheck nil t)
-        (remove-hook 'elpy-modules 'elpy-module-flymake)
-        (remove-hook 'elpy-modules 'elpy-module-yasnippet)
-        (remove-hook 'elpy-mode-hook 'elpy-module-highlight-indentation)
-        (add-hook 'elpy-mode-hook 'flycheck-mode))
-      (flycheck-mode +1)
-      ;; jedi is great
-      (setq elpy-rpc-backend "jedi")
-      (elpy-enable)
-      (pyvenv-activate "~/python_ml")
-      (add-hook 'python-mode-hook
-                (lambda ()
-                  ;; explicitly load company for the occasion when the deferred
-                  ;; loading with use-package hasn't kicked in yet
-                  (company-mode)))
-      (company-mode +1)
-      (setq ansi-color-for-comint-mode t)
+    (defun projectile-pyenv-mode-set ()
+      "Set pyenv version matching project name."
+      (let ((project (projectile-project-name)))
+        (if (member project (pyenv-mode-versions))
+            (pyenv-mode-set project)
+          (pyenv-mode-unset))))
 
-      (elpy-use-ipython)
-      (setq python-shell-interpreter "ipython3"
-         python-shell-interpreter-args "--simple-prompt -i")
-      (require 'py-autopep8)
-      (add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
-      )
-    )
+
+          (use-package elpy
+            :ensure t
+            :config
+            (progn
+              ;; Use Flycheck instead of Flymake
+              (when (require 'flycheck nil t)
+                (remove-hook 'elpy-modules 'elpy-module-flymake)
+                (remove-hook 'elpy-modules 'elpy-module-yasnippet)
+                ;; (remove-hook 'elpy-mode-hook 'elpy-module-highlight-indentation)
+                (add-hook 'elpy-mode-hook 'flycheck-mode))
+              (flycheck-mode +1)
+              ;; jedi is great
+  ;            (pyvenv-mode 1)
+
+              (elpy-enable)
+              (setq elpy-rpc-backend "jedi")
+      ;;        (pyvenv-activate "~/python_ml")
+    ;;          (require 'pyenv-mode-auto)
+
+              ;(add-hook 'projectile-switch-project-hook 'projectile-pyenv-mode-set)
+              (add-hook 'venv-postactivate-hook 'jedi:stop-server)
+              (add-hook 'venv-postdeactivate-hook 'jedi:stop-server)
+              (add-hook 'python-mode-hook
+                        (lambda ()
+                          ;; explicitly load company for the occasion when the deferred
+                          ;; loading with use-package hasn't kicked in yet
+                          (company-mode)))
+              (company-mode +1)
+              (setq ansi-color-for-comint-mode t)
+
+                                                  ;      (elpy-use-ipython)
+              (setq elpy-rpc-python-command "python3")
+
+              (setq python-shell-interpreter "python3")
+              ;;           python-shell-interpreter-args "--simple-prompt -i")
+              (require 'py-autopep8)
+              (add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
+              (setq python-shell-prompt-detect-failure-warning nil) ;; to avoid that annoying warning on compile
+              )
+            )
+
+          (use-package company-jedi
+            :ensure t
+            :config
+            (defun my/python-mode-hook ()
+              (add-to-list 'company-backends 'company-jedi))
+            (add-hook 'python-mode-hook 'my/python-mode-hook))
 #+END_SRC
 
 #+RESULTS:
