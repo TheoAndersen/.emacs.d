@@ -1,0 +1,7 @@
+{
+  "elpa/elpy-20170903.143/elpy/tests/test_jedibackend.py": true,
+  "elpa/elpy-20170903.143/elpy/tests/test_pydocutils.py": true,
+  "elpa/elpy-20170903.143/elpy/tests/test_refactor.py": true,
+  "elpa/elpy-20170903.143/elpy/tests/test_ropebackend.py": true,
+  "elpa/elpy-20170903.143/elpy/tests/test_server.py": true
+}
