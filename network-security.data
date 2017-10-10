@@ -1,0 +1,8 @@
+(
+ (:id "sha1:6b7da726492f3f371e935bf87332715a39259c81" :fingerprint "sha1:69:f2:fb:8b:5b:9d:db:90:cb:54:52:1c:85:36:e7:da:98:fb:a2:07" :host "lbmulti-yics.lb.slack-msgs.com:443" :conditions (:insecure :unknown-ca :invalid))
+ (:id "sha1:3610b5db0fe7ea0b8bfcfc1865a8284b9417abcf" :fingerprint "sha1:69:f2:fb:8b:5b:9d:db:90:cb:54:52:1c:85:36:e7:da:98:fb:a2:07" :host "lbmulti-8tpu.lb.slack-msgs.com:443" :conditions (:insecure :unknown-ca :invalid))
+ (:id "sha1:e4133c94a1a6f3370a54faa029cc8f56d7b9274c" :fingerprint "sha1:69:f2:fb:8b:5b:9d:db:90:cb:54:52:1c:85:36:e7:da:98:fb:a2:07" :host "lbmulti-7je8.lb.slack-msgs.com:443" :conditions (:insecure :unknown-ca :invalid))
+ (:id "sha1:0fbf7089576257b168faeb7c296d98ab29ca0acf" :fingerprint "sha1:a3:d1:e5:ea:a7:89:d9:e8:a2:cf:73:44:3d:7e:8c:03:a9:d5:42:4e" :host "slack.com:443" :conditions (:insecure :unknown-ca :invalid))
+ (:id "sha1:5cce342a9a99ff6632dc081a41f5f4a28e8e10fc" :fingerprint "sha1:c9:4f:05:0e:50:48:da:fd:71:ee:ca:36:bf:ab:10:0a:52:70:16:99" :host "raw.githubusercontent.com:443" :conditions (:insecure :unknown-ca :invalid))
+ (:id "sha1:379522f41fcdf5d279b33c30780e7512c9348430" :fingerprint "sha1:d4:ee:9d:2a:67:12:b3:61:4c:27:2d:15:8b:04:fc:c8:ca:08:a0:b6" :host "github.com:443" :conditions (:insecure :unknown-ca :invalid))
+)

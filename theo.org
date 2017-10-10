@@ -95,28 +95,31 @@ I set up packages, Melpa, and use-package bright and early so that I can make us
 When I first copy this set-up into a new machine, I still have to require package, add MELPA, initialize package, and grab use-package, solarized-theme, and a couple of others (including my tid-mode) from the package archives and the internet. This could be improved, but it's not so bad.
 
 #+BEGIN_SRC emacs-lisp
-  (require 'package)
-  ;; Melpa-stable tager sidste taggede commit, hvor Melpa tager sidste commit
+    (require 'package)
+    ;; Melpa-stable tager sidste taggede commit, hvor Melpa tager sidste commit
 
-  (add-to-list 'package-archives
-               '("melpa-stable" . "http://stable.melpa.org/packages/") t)
-;  (add-to-list 'package-archives
-;               '("gnu" "https://elpa.gnu.org/packages/") t)
-  (add-to-list 'package-archives
-               '("melpa" . "http://melpa.milkbox.net/packages/") t)
+    (add-to-list 'package-archives
+                 '("melpa-stable" . "http://stable.melpa.org/packages/") t)
+  ;  (add-to-list 'package-archives
+  ;               '("gnu" "https://elpa.gnu.org/packages/") t)
+    (add-to-list 'package-archives
+                 '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
-  (setq load-prefer-newer t)
-;  (package-refresh-contents)
-  (require 'use-package) ;; currently you have to evaluate everything up to here, and grab use-package manually :/
-  (setq use-package-verbose t)
-  (use-package diminish
-    :ensure t
-    :init
-    (defmacro rename-modeline (package-name mode new-name)
-      `(eval-after-load ,package-name
-         '(defadvice ,mode (after rename-modeline activate)
-            (setq mode-name ,new-name)))))
+    (setq load-prefer-newer t)
+  ;  (package-refresh-contents)
+    (require 'use-package) ;; currently you have to evaluate everything up to here, and grab use-package manually :/
+    (setq use-package-verbose t)
+    (use-package diminish
+      :ensure t
+      :init
+      (defmacro rename-modeline (package-name mode new-name)
+        `(eval-after-load ,package-name
+           '(defadvice ,mode (after rename-modeline activate)
+              (setq mode-name ,new-name)))))
 #+END_SRC
+
+#+RESULTS:
+
 ** Backups and temporary files
 #+BEGIN_SRC emacs-lisp
   (setq backup-directory-alist
@@ -1057,6 +1060,31 @@ This comes from [[http://whattheemacsd.com/init.el-03.html][Magnars]].
     (global-set-key (kbd "C-c n c") 'sauron-clear)
   )
 #+END_SRC
+** Slack
+#+BEGIN_SRC emacs-lisp
+(use-package slack
+  :commands (slack-start)
+  :init
+  (setq slack-buffer-emojify t) ;; if you want to enable emoji, default nil
+  (setq slack-prefer-current-team t)
+  :config
+  (slack-register-team
+   :name "nineconsult.slack.com"
+   :default t
+   :client-id "2922885541.244486781478"
+   :client-secret "f5c767d78df479926406f9d142b4e2f2"
+   :token ""
+   :subscribed-channels '(test-rename rrrrr)))
+
+(use-package alert
+  :commands (alert)
+  :init
+  (setq alert-default-style 'notifier))
+#+END_SRC
+
+#+RESULTS:
+: notifier
+
 * Development
 I try to keep almost the same keyboard shortcuts for each language..
 "<f1>" = help in context of the cursor position
