@@ -364,8 +364,8 @@ Disable specific features, when the file is particurarely big (http://stackoverf
       (define-key evil-insert-state-map   (kbd "C-g") #'evil-keyboard-quit) 
       (define-key evil-window-map         (kbd "C-g") #'evil-keyboard-quit) 
       (define-key evil-operator-state-map (kbd "C-g") #'evil-keyboard-quit) 
-      ;;(evil-set-colors-on-states)
       (evil-mode 1)
+      ;;(evil-set-colors-on-states)
     ))
 #+END_SRC
 * Appearance
@@ -506,9 +506,24 @@ This dosen't work for helm buffers so far, because they are a bit special
 #+END_SRC
 ** Spaceline
 #+BEGIN_SRC emacs-lisp
-(use-package spaceline-all-the-icons :after spaceline)
-(use-package spaceline :after powerline
-  :config (setq-default mode-line-format '("%e" (:eval (spaceline-ml-ati)))))
+        ;;(use-package spaceline-all-the-icons :after spaceline)
+        ;;(use-package spaceline :after powerline
+        ;;  :config (setq-default mode-line-format '("%e" (:eval ;;(spaceline-ml-ati)))))
+
+  (require 'telephone-line-config)
+
+      (setq telephone-line-lhs
+              '((evil   . (telephone-line-evil-tag-segment))
+                (accent . (telephone-line-vc-segment
+                           telephone-line-erc-modified-channels-segment
+                           telephone-line-process-segment))
+                (nil    . (telephone-line-minor-mode-segment
+                           telephone-line-buffer-segment))))
+      (setq telephone-line-rhs
+              '((nil    . (telephone-line-misc-info-segment))
+                (accent . (telephone-line-major-mode-segment))
+                (evil   . (telephone-line-airline-position-segment))))
+        (telephone-line-evil-config)
 #+END_SRC
 * Icons
 #+BEGIN_SRC emacs-lisp
