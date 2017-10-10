@@ -328,6 +328,43 @@ Disable specific features, when the file is particurarely big (http://stackoverf
   (load "server")
   (unless (server-running-p) (server-start))
 #+END_SRC
+** Evil-mode 
+#+BEGIN_SRC emacs-lisp
+    (defun evil-keyboard-quit ()
+      "Keyboard quit and force normal state."
+      (interactive)
+      (and evil-mode (evil-force-normal-state))
+      (keyboard-quit)
+      )
+
+    (defun evil-set-colors-on-states ()
+      ;; change mode-line color by evil state
+      (lexical-let ((default-color (cons (face-background 'mode-line)
+                                         (face-foreground 'mode-line))))
+        (add-hook 'post-command-hook
+                  (lambda ()
+                    (let ((color (cond ((minibufferp) default-color)
+                                       ((evil-insert-state-p) '("#e80000" . "#ffffff"))
+                                       ((evil-emacs-state-p)  '("#444488" . "#ffffff"))
+                                       ((buffer-modified-p)   '("#006fa0" . "#ffffff"))
+                                       (t default-color))))
+                      (set-face-background 'mode-line (car color))
+                      (set-face-foreground 'mode-line (cdr color))))))
+  )
+
+    (use-package evil
+      :ensure t
+      :config
+      (progn
+      (define-key evil-normal-state-map   (kbd "C-g") #'evil-keyboard-quit) 
+      (define-key evil-motion-state-map   (kbd "C-g") #'evil-keyboard-quit) 
+      (define-key evil-insert-state-map   (kbd "C-g") #'evil-keyboard-quit) 
+      (define-key evil-window-map         (kbd "C-g") #'evil-keyboard-quit) 
+      (define-key evil-operator-state-map (kbd "C-g") #'evil-keyboard-quit) 
+      ;;(evil-set-colors-on-states)
+      (evil-mode 1)
+    ))
+#+END_SRC
 * Appearance
 ** Turn off unnecessary graphical features (like menu, etc.)
 *** No menu, scroll or tool bar
