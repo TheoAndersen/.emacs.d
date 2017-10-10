@@ -21,6 +21,7 @@
    (quote
     (telephone-line pyenv-mode-auto smooth-scroll company-jedi virtualenvwrapper rg ripgrep prettier-js counsel leuven-theme spaceline-all-the-icons all-the-icons py-autopep8 ein helm-swoop dockerfile-mode vlf org-present zoom-frm zenburn-theme web-mode use-package undo-tree tss transcribe tide smooth-scrolling smartparens sass-mode rainbow-delimiters omnisharp neotree multiple-cursors markdown-mode magit js2-mode helm-projectile helm-ag golden-ratio git-timemachine fsharp-mode flycheck-pos-tip flycheck-elm feature-mode expand-region emms elm-mode elixir-yasnippets elisp-slime-nav ecukes company-tern alchemist ace-link ace-jump-zap ace-jump-buffer ac-ispell)))
  '(pdf-view-midnight-colors (quote ("#DCDCCC" . "#383838")))
+ '(telephone-line-evil-use-short-tag t)
  '(telephone-line-mode t)
  '(vc-annotate-background "#2B2B2B")
  '(vc-annotate-color-map
@@ -50,5 +51,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:height 180 :family "Inconsolata" :weight medium))))
+ '(telephone-line-evil-emacs ((t (:inherit telephone-line-evil))))
+ '(telephone-line-evil-insert ((t (:inherit telephone-line-evil :background "dark red"))))
  '(telephone-line-evil-normal ((t (:inherit telephone-line-evil :background "forest green"))))
  '(telephone-line-evil-operator ((t (:inherit telephone-line-evil :background "forest green")))))
