@@ -506,24 +506,49 @@ This dosen't work for helm buffers so far, because they are a bit special
 #+END_SRC
 ** Spaceline
 #+BEGIN_SRC emacs-lisp
-        ;;(use-package spaceline-all-the-icons :after spaceline)
-        ;;(use-package spaceline :after powerline
-        ;;  :config (setq-default mode-line-format '("%e" (:eval ;;(spaceline-ml-ati)))))
+  ;;(use-package spaceline-all-the-icons :after spaceline)
+  ;;(use-package spaceline :after powerline
+  ;;  :config (setq-default mode-line-format '("%e" (:eval ;;(spaceline-ml-ati)))))
 
-  (require 'telephone-line-config)
+  (require 'telephone-line-utils)
+
+  (telephone-line-defsegment* my-major-mode-segment ()
+    (let ((mode (cond
+                 ((string= mode-name "Fundamental") "text")
+                 ((string= mode-name "Emacs-Lisp") "elisp")
+                 ((string= mode-name "Javascript-IDE") "js")
+                 (t (downcase mode-name)))))
+      (propertize mode 'face `(:foreground "#9d81ba"))))
+
+
+  (use-package telephone-line
+    :config
+    (progn
+      ;;(require 'telephone-line-config)
 
       (setq telephone-line-lhs
-              '((evil   . (telephone-line-evil-tag-segment))
-                (accent . (telephone-line-vc-segment
-                           telephone-line-erc-modified-channels-segment
-                           telephone-line-process-segment))
-                (nil    . (telephone-line-minor-mode-segment
-                           telephone-line-buffer-segment))))
+            '((evil   . (telephone-line-evil-tag-segment))
+              (accent . (;;telephone-line-vc-segment
+                                          ;       telephone-line-erc-modified-channels-segment
+                         telephone-line-process-segment))
+              (nil    . (telephone-line-minor-mode-segment
+                         telephone-line-buffer-segment))))
+
       (setq telephone-line-rhs
-              '((nil    . (telephone-line-misc-info-segment))
-                (accent . (telephone-line-major-mode-segment))
-                (evil   . (telephone-line-airline-position-segment))))
-        (telephone-line-evil-config)
+            '((nil    . (telephone-line-misc-info-segment))
+              (nil    . (my-major-mode-segment))
+              ;;               (nil   . (telephone-line-airline-position-segment))
+              ))
+      (setq telephone-line-evil-use-short-tag t)
+
+      (telephone-line-mode 1)
+      ;; (telephone-line-evil-config)
+
+      ;; (setq telephone-line-evil-emacs ((t (:inherit telephone-line-evil))))
+      ;; (setq telephone-line-evil-insert ((t (:inherit telephone-line-evil :background "dark red"))))
+      ;; (setq telephone-line-evil-normal ((t (:inherit telephone-line-evil :background "forest green"))))
+      )
+    )
 #+END_SRC
 * Icons
 #+BEGIN_SRC emacs-lisp
@@ -556,7 +581,7 @@ Although keybindings are also located elsewhere, this section will aim to provid
 #+BEGIN_SRC emacs-lisp
   (bind-keys ("M-/" .  hippie-expand)
              ("C-x C-b" .  ibuffer)
-             ("C-s" . isearch-forward-regexp)
+           ("C-s" . isearch-forward-regexp)
              ("C-r" . isearch-backward-regexp)
              ("C-M-s" . isearch-forward)
              ("C-M-r" . isearch-backward))
