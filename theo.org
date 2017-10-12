@@ -359,15 +359,25 @@ Disable specific features, when the file is particurarely big (http://stackoverf
       :ensure t
       :config
       (progn
-      (define-key evil-normal-state-map   (kbd "C-g") #'evil-keyboard-quit) 
-      (define-key evil-motion-state-map   (kbd "C-g") #'evil-keyboard-quit) 
-      (define-key evil-insert-state-map   (kbd "C-g") #'evil-keyboard-quit) 
-      (define-key evil-window-map         (kbd "C-g") #'evil-keyboard-quit) 
-      (define-key evil-operator-state-map (kbd "C-g") #'evil-keyboard-quit) 
-      (evil-mode 1)
-      ;;(evil-set-colors-on-states)
-    ))
+            (use-package evil-escape
+                :ensure t
+                :diminish evil-escape-mode
+                :config
+                (global-set-key (kbd "C-g") 'evil-escape)
+                (evil-escape-mode))
+            ;; (define-key evil-normal-state-map   (kbd "C-g") #'evil-keyboard-quit) 
+            ;; (define-key evil-motion-state-map   (kbd "C-g") #'evil-keyboard-quit) 
+            ;; (define-key evil-insert-state-map   (kbd "C-g") #'evil-keyboard-quit) 
+            ;; (define-key evil-window-map         (kbd "C-g") #'evil-keyboard-quit) 
+            ;; (define-key evil-operator-state-map (kbd "C-g") #'evil-keyboard-quit) 
+            (evil-mode 1)
+            ;;(evil-set-colors-on-states)
+        ))
 #+END_SRC
+
+#+RESULTS:
+: t
+
 * Appearance
 ** Turn off unnecessary graphical features (like menu, etc.)
 *** No menu, scroll or tool bar
@@ -658,8 +668,8 @@ This dosen't work for helm buffers so far, because they are a bit special
 
   ;; Right edge
   (setq telephone-line-rhs
-        '((nil    . (my-vc-segment))
-          (accent   . (my-position-segment))
+        '(;(nil    . (my-vc-segment))
+          ;(accent   . (my-position-segment))
           (nil      . (my-major-mode-segment))
           (accent   . ((my-coding-segment :active)))))
 
@@ -1324,7 +1334,7 @@ This code from [[http://whattheemacsd.com/setup-magit.el-01.html][Magnars]] open
     ;;  :init
     ;;  (setq git-link-open-in-browser t))
     :config
-    (setq magit-git-executable "/usr/local/bin/git")
+    (setq magit-git-executable "git")
     (setq magit-use-overlays nil)
     (setq magit-diff-refine-hunk 'all)
     (defadvice magit-status (around magit-fullscreen activate)
@@ -1677,12 +1687,12 @@ Reference
               (setq ansi-color-for-comint-mode t)
 
                                                   ;      (elpy-use-ipython)
-              (setq elpy-rpc-python-command "python3")
+              (setq elpy-rpc-python-command "python")
 
-              (setq python-shell-interpreter "python3")
+              (setq python-shell-interpreter "python")
               ;;           python-shell-interpreter-args "--simple-prompt -i")
               (require 'py-autopep8)
-              (add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
+             (add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
               (setq python-shell-prompt-detect-failure-warning nil) ;; to avoid that annoying warning on compile
               )
             )
